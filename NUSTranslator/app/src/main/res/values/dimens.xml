@@ -1,5 +1,12 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!--Action Bar-->
+    <dimen name="actionBar_height">48dp</dimen>
+    <dimen name="dropDownMenu_dividerHeight">1dp</dimen>
+    <dimen name="dropDownMenu_textSize">16dp</dimen>
+
+    <!--Buttons-->
+    <dimen name="button_session_height">44dp</dimen>
+    <dimen name="button_margin">16dp</dimen>
+    <dimen name="button_textSize">20dp</dimen>
 </resources>

@@ -5,4 +5,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <!--Buttons-->
+    <string name="button_session_inactive">START</string>
 </resources>

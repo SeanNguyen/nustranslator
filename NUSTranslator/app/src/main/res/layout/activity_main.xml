@@ -1,11 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    tools:context=".MainActivity" android:background="@color/violetThemeColor">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/button_session_height"
+        android:layout_marginLeft="@dimen/button_margin"
+        android:layout_marginRight="@dimen/button_margin"
+        android:layout_marginBottom="@dimen/button_margin"
+        android:text="@string/button_session_inactive"
+        android:textSize="@dimen/button_textSize"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/sessionButton"
+        android:background="@drawable/button_session"
+        android:textColor="@color/violetThemeColor"
+        android:textStyle="bold"/>
 </RelativeLayout>
