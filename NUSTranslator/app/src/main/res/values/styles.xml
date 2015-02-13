@@ -2,57 +2,57 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light">
-        <item name="android:actionBarStyle">@style/CustomActionBar</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
-        <item name="android:actionBarSize">@dimen/actionBar_height</item>
+        <!--actionBar-->
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+        <item name="android:actionOverflowButtonStyle">@style/OverFlowIcon</item>
+        <item name="android:actionBarSize">48dp</item>
         <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
-        <item name="android:spinnerDropDownItemStyle">@style/PopupMenuListItem</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu</item>
         <item name="android:itemTextAppearance">@style/MenuTextAppearance</item>
+        <item name="android:popupWindowStyle">@style/popupMenuStyle</item>
+
+        <item name="android:spinnerDropDownItemStyle">@style/spinnerDropDownItemStyle</item>
+
+        <item name="android:textViewStyle">@style/defaultText</item>
     </style>
 
     <!-- ActionBar styles -->
-    <style name="CustomActionBar"
-        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/whiteThemeColor</item>
-        <item name="android:titleTextStyle">@style/ActionBarTitleText</item>
     </style>
 
-    <!-- ActionBar title text -->
-    <style name="ActionBarTitleText"
-        parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+    <style name="ActionBarTitleText" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/violetThemeColor</item>
     </style>
 
-    <!-- Change Overflow Menu ListView Divider Property -->
     <style name="PopupMenuListView" parent="@android:style/Widget.Holo.ListView.DropDown">
-        <item name="android:divider">@color/violetThemeColor</item>
-        <item name="android:dividerHeight">@dimen/dropDownMenu_dividerHeight</item>
-    </style>
-    <style name="PopupMenuListItem" parent="android:Widget.DropDownItem.Spinner">
-        <item name="android:height">100dp</item>
-        <item name="android:layout_height">100dp</item>
+        <item name="android:background">@drawable/button_session</item>
+        <item name="android:divider">@color/grayThemeColor</item>
+        <item name="android:dividerHeight">1dp</item>
     </style>
 
-    <!-- Change Overflow Menu ListView Text Size and Text Size -->
     <style name="MenuTextAppearance">
         <item name="android:textColor">@color/violetThemeColor</item>
-        <item name="android:textSize">@dimen/dropDownMenu_textSize</item>
+        <item name="android:textSize">16dp</item>
     </style>
 
-    <!-- Change Overflow Menu Background -->
-    <style name="PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
-        <item name="android:popupBackground">@color/whiteThemeColor</item>
-    </style>
-
-    <!--Overflow icon-->
-    <style name="OverFlow" parent="android:Widget.Holo.ActionButton.Overflow">
+    <style name="OverFlowIcon" parent="android:Widget.Holo.ActionButton.Overflow">
         <item name="android:src">@drawable/menu_icon</item>
     </style>
 
-    <!--Colors-->
-    <color name="violetThemeColor">#494da0</color>
-    <color name="whiteThemeColor">#f1f1f1</color>
+    <style name="popupMenuStyle" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">@drawable/button_session</item>
+    </style>
+
+    <style name="defaultText" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/whiteThemeColor</item>
+        <item name="android:textSize">@dimen/textSize</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="spinnerDropDownItemStyle">
+        <item name="android:textSize">@dimen/textSize</item>
+        <item name="android:textColor">@color/violetThemeColor</item>
+        <item name="android:background">@drawable/button_session</item>
+    </style>
 
 </resources>

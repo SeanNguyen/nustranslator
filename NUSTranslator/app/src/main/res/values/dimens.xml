@@ -1,12 +1,9 @@
 <resources>
-
-    <!--Action Bar-->
-    <dimen name="actionBar_height">48dp</dimen>
-    <dimen name="dropDownMenu_dividerHeight">1dp</dimen>
-    <dimen name="dropDownMenu_textSize">16dp</dimen>
+    <!--global default-->
+    <dimen name="textSize">16dp</dimen>
+    <dimen name="padding">16dp</dimen>
 
     <!--Buttons-->
     <dimen name="button_session_height">44dp</dimen>
-    <dimen name="button_margin">16dp</dimen>
     <dimen name="button_textSize">20dp</dimen>
 </resources>

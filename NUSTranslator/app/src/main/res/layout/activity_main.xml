@@ -1,20 +1,72 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    tools:context=".MainActivity" android:background="@color/violetThemeColor">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding"
+    tools:context=".MainActivity"
+    android:background="@color/violetThemeColor"
+    android:orientation="vertical">
 
-
-    <Button
+    <RelativeLayout
+        android:id="@+id/resultView"
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/button_session_height"
-        android:layout_marginLeft="@dimen/button_margin"
-        android:layout_marginRight="@dimen/button_margin"
-        android:layout_marginBottom="@dimen/button_margin"
-        android:text="@string/button_session_inactive"
-        android:textSize="@dimen/button_textSize"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/sessionButton"
-        android:background="@drawable/button_session"
-        android:textColor="@color/violetThemeColor"
-        android:textStyle="bold"/>
-</RelativeLayout>
+        android:layout_height="0dp"
+        android:layout_weight="60"/>
+
+    <RelativeLayout
+        android:id="@+id/controlView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="40">
+        <TextView
+            android:id="@+id/fromText"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/toText"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="From"
+            android:textSize="@dimen/textSize"
+            android:textColor="@color/whiteThemeColor"/>
+
+        <TextView
+            android:id="@id/toText"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sessionButton"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="To"
+            android:textSize="@dimen/textSize"
+            android:textColor="@color/whiteThemeColor"/>
+
+        <Spinner
+            android:id="@+id/originalLanguages_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/fromText"
+            android:layout_toRightOf="@id/fromText"
+            android:layout_marginRight="30dp"/>
+
+        <Spinner
+            android:id="@+id/destinationLanguages_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/toText"
+            android:layout_toRightOf="@id/toText"
+            android:layout_marginRight="30dp"/>
+
+        <Button
+            android:id = "@id/sessionButton"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/button_session_height"
+            android:layout_alignParentBottom="true"
+            android:text="@string/button_session_inactive"
+            android:textSize="@dimen/button_textSize"
+            android:background="@drawable/button_session"
+            android:textColor="@color/violetThemeColor"
+            android:textStyle="bold"
+            android:onClick="onSessionButtonClick"/>
+    </RelativeLayout>
+
+</LinearLayout>
