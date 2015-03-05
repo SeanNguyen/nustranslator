@@ -34,7 +34,13 @@ public class MainBusiness {
             stopListen();
         } else {
             appModel.setAppState(States.ACTIVE);
-            startListen();
+            Thread dataThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    startListen();
+                }
+            });
+            dataThread.start();
         }
         return appModel.getAppState();
     }

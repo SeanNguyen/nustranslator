@@ -27,38 +27,29 @@ public class AudioStreamer {
 
     //Public Methods
     public void startStream(final AudioRecord recorder) {
-
-        Thread streamThread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                streaming = true;
-                int minBufSize = AudioRecord.getMinBufferSize(Configurations.Recorder_sampleRate,
-                        Configurations.Recorder_channelConfig,
-                        Configurations.Recorder_audioFormat);
-                byte[] buffer = new byte[minBufSize];
-                final InetAddress destination;
-                try {
-                    destination = InetAddress.getByName(Configurations.Server_address);
-                    DatagramSocket socket = new DatagramSocket();
-                    while (streaming == true) {
-                        //reading data from MIC into buffer
-                        recorder.read(buffer, 0, buffer.length);
-                        //putting buffer in the packet
-                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, destination, Configurations.Server_port);
-                        socket.send(packet);
-                    }
-                } catch (UnknownHostException e) {
-                    Log.e("VS", "UnknownHostException");
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        streaming = true;
+        int minBufSize = AudioRecord.getMinBufferSize(Configurations.Recorder_sampleRate,
+                Configurations.Recorder_channelConfig,
+                Configurations.Recorder_audioFormat);
+        byte[] buffer = new byte[minBufSize];
+        final InetAddress destination;
+        try {
+            destination = InetAddress.getByName(Configurations.Server_address);
+            DatagramSocket socket = new DatagramSocket();
+            while (streaming == true) {
+                //reading data from MIC into buffer
+                recorder.read(buffer, 0, buffer.length);
+                //putting buffer in the packet
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, destination, Configurations.Server_port);
+                socket.send(packet);
             }
-
-        });
-        streamThread.start();
+        } catch (UnknownHostException e) {
+            Log.e("VS", "UnknownHostException");
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopStream() {
