@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator;
+package sg.edu.nus.nustranslator.presentation;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,24 +12,23 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-enum States {
-    ACTIVE,
-    INACTIVE
-};
+import sg.edu.nus.nustranslator.R;
+import sg.edu.nus.nustranslator.business.MainBusiness;
+import sg.edu.nus.nustranslator.model.States;
 
 public class MainActivity extends Activity {
 
     //attributes
-    States appState = States.INACTIVE;
+    MainBusiness mainBusiness;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainBusiness = new MainBusiness(this);
         addItemsToSpinners();
-        setResultView();
+        setResultView(States.INACTIVE);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -40,13 +39,9 @@ public class MainActivity extends Activity {
 
     //events
     public void onSessionButtonClick(View view) {
-        if (this.appState == States.ACTIVE) {
-            this.appState = States.INACTIVE;
-        } else {
-            this.appState = States.ACTIVE;
-        }
-        setResultView();
-        setSessionButtonText();
+        States currentAppState = mainBusiness.changeState();
+        setResultView(currentAppState);
+        setSessionButtonText(currentAppState);
     }
 
     //private helper methods
@@ -86,11 +81,11 @@ public class MainActivity extends Activity {
         spinner.setAdapter(adapter);
     }
 
-    private void setResultView() {
+    private void setResultView(States appState) {
         ViewGroup resultView = (ViewGroup) findViewById(R.id.resultView);
         resultView.removeAllViews();
         View content;
-        if (this.appState == States.ACTIVE) {
+        if (appState == States.ACTIVE) {
             content = LayoutInflater.from(this).inflate(R.layout.resultview_active, resultView, false);
         } else {
             content = LayoutInflater.from(this).inflate(R.layout.resultview_inactive, resultView, false);
@@ -98,8 +93,8 @@ public class MainActivity extends Activity {
         resultView.addView(content);
     }
 
-    private void setSessionButtonText() {
-        if (this.appState == States.ACTIVE) {
+    private void setSessionButtonText(States appState) {
+        if (appState == States.ACTIVE) {
             Button button = (Button) findViewById(R.id.sessionButton);
             button.setText(R.string.button_session_active);
         } else {
