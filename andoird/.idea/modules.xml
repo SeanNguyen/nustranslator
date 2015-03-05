@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/andoird.iml" filepath="$PROJECT_DIR$/andoird.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/repo.iml" filepath="$PROJECT_DIR$/repo.iml" />
     </modules>
   </component>
 </project>
