@@ -47,16 +47,17 @@ public class MainBusiness {
 
     //Private Helper Methods
     private void startListen() {
-        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
+        recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION,
                 Configurations.Recorder_sampleRate,
                 Configurations.Recorder_channelConfig,
                 Configurations.Recorder_audioFormat,
-                Configurations.Recorder_minBuffSize);
+                Configurations.Recorder_minBuffSize * 10);
         this.recorder.startRecording();
         this.dataTransporter.startAudioStream(recorder, this.context);
     }
 
     private void stopListen() {
+        this.recorder.stop();
         this.recorder.release();
         this.dataTransporter.stopStream();
     }
