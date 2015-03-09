@@ -13,6 +13,8 @@ public class Configurations {
     public static final int Recorder_minBuffSize = 10240;
 
     //server;
-    public static final String Server_address = "172.24.212.144"; //IP of local machine is "http://172.24.212.144/"
+    //IP of local machine via NUS network "http://172.24.212.144/"
+    //IP of local machine viw Connectify "http://192.168.41.1/"
+    public static final String Server_address = "192.168.41.1";
     public static final int Server_port = 50050;
 }
