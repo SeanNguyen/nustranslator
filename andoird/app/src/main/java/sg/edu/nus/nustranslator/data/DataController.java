@@ -54,14 +54,19 @@ public class DataController {
         try {
             FileOutputStream outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             outputStream.write(model.getDataVersion());
+            outputStream.write(Configurations.newline.getBytes());
             outputStream.write(noOfLanguage);
+            outputStream.write(Configurations.newline.getBytes());
             outputStream.write(noOfPair);
+            outputStream.write(Configurations.newline.getBytes());
             for (int i = 0; i < noOfLanguage; i++) {
                 String language = languages.get(i);
                 outputStream.write(language.getBytes());
+                outputStream.write(Configurations.newline.getBytes());
                 Vector<String> sentences = model.getSentencesOfLanguage(language);
                 for (int j = 0; j < noOfPair; j++) {
                     outputStream.write(sentences.get(j).getBytes());
+                    outputStream.write(Configurations.newline.getBytes());
                 }
             }
             outputStream.close();
@@ -97,6 +102,7 @@ public class DataController {
                 }
                 model.addLanguage(language, sentences);
             }
+            scanner.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
