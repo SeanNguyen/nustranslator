@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.Vector;
+
+import sg.edu.nus.nustranslator.Configurations;
 import sg.edu.nus.nustranslator.R;
 import sg.edu.nus.nustranslator.business.MainBusiness;
 import sg.edu.nus.nustranslator.model.States;
@@ -40,6 +43,24 @@ public class MainActivity extends Activity {
         States currentAppState = mainBusiness.changeState();
         setResultView(currentAppState);
         setSessionButtonText(currentAppState);
+    }
+
+    public void updateSpeechRecognitionResult(Vector<String> results) {
+        if(results == null) {
+            return;
+        }
+        TextView topResult = (TextView) findViewById(R.id.firstResult);
+        TextView similarResults = (TextView) findViewById(R.id.otherResults);
+        if (results.size() == 0) {
+            topResult.setText("");
+            similarResults.setText("");
+        }
+        topResult.setText(results.get(0));
+        String similarResultText = "";
+        for (int i = 1; i < results.size(); i++) {
+            similarResultText += results.get(i) + Configurations.newline;
+        }
+        similarResults.setText(similarResultText);
     }
 
     //private helper methods

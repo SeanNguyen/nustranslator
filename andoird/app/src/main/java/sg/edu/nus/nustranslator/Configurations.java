@@ -30,4 +30,7 @@ public class Configurations {
 
     //Data storage
     public static final String data_fileName = "data.txt";
+
+    //String Manipulation
+    public static final String newline = String.format("%n");
 }
