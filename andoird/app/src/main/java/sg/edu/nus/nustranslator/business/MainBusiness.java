@@ -27,19 +27,13 @@ public class MainBusiness {
             this.speechRecognizer.stopListen();
         } else {
             appModel.setAppState(States.ACTIVE);
-            Thread dataThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    speechRecognizer.startListen();
-                }
-            });
-            dataThread.start();
+            speechRecognizer.startListen();
         }
         return appModel.getAppState();
     }
 
     public void onSpeechRecognitionResultUpdate(String input) {
-
+        
     }
 
     //Private Helper Methods
