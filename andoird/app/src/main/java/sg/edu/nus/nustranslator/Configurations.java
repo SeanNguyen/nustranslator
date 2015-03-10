@@ -27,4 +27,7 @@ public class Configurations {
 
     //Sphinx Keywords
     public static final String Sphinx_keyword_search = "search";
+
+    //Data storage
+    public static final String data_fileName = "data.txt";
 }

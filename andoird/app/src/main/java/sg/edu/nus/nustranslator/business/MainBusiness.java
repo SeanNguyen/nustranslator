@@ -33,7 +33,7 @@ public class MainBusiness {
     }
 
     public void onSpeechRecognitionResultUpdate(String input) {
-        
+
     }
 
     //Private Helper Methods

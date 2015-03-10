@@ -5,7 +5,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
 import sg.edu.nus.nustranslator.Configurations;
-import sg.edu.nus.nustranslator.datatransportation.DataTransporter;
+import sg.edu.nus.nustranslator.data.DataController;
 
 /**
  * Created by Storm on 3/10/2015.
@@ -13,7 +13,7 @@ import sg.edu.nus.nustranslator.datatransportation.DataTransporter;
 class RemoteSpeechRecognizer implements ISpeechRecognizer {
 
     AudioRecord recorder;
-    DataTransporter dataTransporter = new DataTransporter();
+    DataController dataController = new DataController();
     Context context;
 
     public RemoteSpeechRecognizer(Context context) {
@@ -28,13 +28,13 @@ class RemoteSpeechRecognizer implements ISpeechRecognizer {
                 Configurations.Recorder_audioFormat,
                 Configurations.Recorder_minBuffSize * 10);
         this.recorder.startRecording();
-        this.dataTransporter.startAudioStream(recorder, this.context);
+        this.dataController.startAudioStream(recorder, this.context);
     }
 
     @Override
     public void stopListen() {
         this.recorder.stop();
         this.recorder.release();
-        this.dataTransporter.stopStream();
+        this.dataController.stopStream();
     }
 }
