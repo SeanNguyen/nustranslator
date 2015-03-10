@@ -86,7 +86,6 @@ public class DataController {
 
             int noOfLanguage = Integer.getInteger(scanner.nextLine());
             int noOfPair = Integer.getInteger(scanner.nextLine());
-            model.setNumberOfLanguage(noOfLanguage);
             model.setNumberOfPair(noOfPair);
 
             for (int i = 0; i <noOfLanguage; i++) {

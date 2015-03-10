@@ -9,11 +9,13 @@ import java.util.Vector;
 public class AppModel {
 
     private States appState = States.INACTIVE;
-    private int numberOfLanguage = 0;
     private int numberOfPair = 0;
     private int dataVersion = 0;
     private Vector<String> languages = new Vector<String>();
     private HashMap<String, Vector<String>> languageSentencesMap = new HashMap<String, Vector<String>>();
+
+    private String originalLanguage;
+    private String destinationLanguage;
 
     //constructor
     public AppModel() {
@@ -36,6 +38,7 @@ public class AppModel {
     }
 
     public void addLanguage (String language, Vector<String> sentences) {
+        this.languages.add(language);
         this.languageSentencesMap.put(language, sentences);
     }
 
@@ -44,11 +47,7 @@ public class AppModel {
     }
 
     public int getNumberOfLanguage() {
-        return this.numberOfLanguage;
-    }
-
-    public void setNumberOfLanguage(int n) {
-        this.numberOfLanguage = n;
+        return this.languages.size();
     }
 
     public int getNumberOfPair() {
@@ -65,5 +64,21 @@ public class AppModel {
 
     public void setDataVersion(int version) {
         this.dataVersion = version;
+    }
+
+    public String getOriginalLanguage() {
+        return this.originalLanguage;
+    }
+
+    public String getDestinationLanguage() {
+        return  this.destinationLanguage;
+    }
+
+    public void setOriginalLanguage(String lang) {
+        this.originalLanguage = lang;
+    }
+
+    public void setDestinationLanguage(String lang) {
+        this.destinationLanguage = lang;
     }
 }
