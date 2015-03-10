@@ -5,20 +5,15 @@ import android.media.AudioRecord;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import sg.edu.nus.nustranslator.model.AppModel;
-
 /**
  * Created by Storm on 3/6/2015.
  */
 public class DataTransporter {
     //Attributes
-    AppModel appmodel;
-    AudioStreamer audioStreamer;
+    AudioStreamer audioStreamer = new AudioStreamer();
 
     //Constructor
-    public DataTransporter(AppModel appModel) {
-        this.appmodel = appModel;
-        this.audioStreamer = new AudioStreamer();
+    public DataTransporter() {
     }
 
     //Public Methods
