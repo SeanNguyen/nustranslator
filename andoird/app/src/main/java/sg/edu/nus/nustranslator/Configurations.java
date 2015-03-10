@@ -17,4 +17,14 @@ public class Configurations {
     //IP of local machine viw Connectify "http://192.168.41.1/"
     public static final String Server_address = "192.168.41.1";
     public static final int Server_port = 50050;
+
+    //Sphinx Config
+    public static final String Sphinx_models_dir = "models";
+    public static final String Sphinx_languageModel_dir = "lm/languageModel.lm";
+    public static final String Sphinx_acousticModel_dir = "hmm/en-us-semi";
+    public static final String Sphinx_dictionary_dir = "dict/localLib.dic";
+    public static final float Sphinx_keywordThreshold = 1e-20f;
+
+    //Sphinx Keywords
+    public static final String Sphinx_keyword_search = "search";
 }

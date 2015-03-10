@@ -13,12 +13,10 @@ public class MainBusiness {
     //attributes
     AppModel appModel = new AppModel();
     ISpeechRecognizer speechRecognizer;
-    Context context;
 
     //constructor
     public MainBusiness(Context context) {
-        this.context = context;
-        this.speechRecognizer = new RemoteSpeechRecognizer(context);
+        this.speechRecognizer = new LocalSpeechRecognizer(context, this);
     }
 
     //Public methods
@@ -38,6 +36,10 @@ public class MainBusiness {
             dataThread.start();
         }
         return appModel.getAppState();
+    }
+
+    public void onSpeechRecognitionResultUpdate(String input) {
+
     }
 
     //Private Helper Methods
