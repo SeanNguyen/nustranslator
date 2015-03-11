@@ -10,7 +10,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 
-class Server {
+class AudioServer {
 
 	private static AudioFormat audioFormat = new AudioFormat(Configurations.sampleRate, 16, 1, true, false);;
 	
