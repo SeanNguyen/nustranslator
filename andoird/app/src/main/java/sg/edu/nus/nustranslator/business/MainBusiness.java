@@ -33,8 +33,7 @@ public class MainBusiness {
     public MainBusiness(MainActivity context) {
         this.mainActivity = context;
         this.speechRecognizer = new LocalSpeechRecognizer(context, this);
-        //this.dataController.serializeData(appModel, context);
-        //this.dataController.deserializeData(appModel, context);
+        this.dataController.deserializeData(appModel, context);
     }
 
     //Public methods
@@ -85,7 +84,6 @@ public class MainBusiness {
             double similarity = Fuzzy.similarity(input, lowerCasedSentence);
             for (int j = topResult.size() - 1; j > -1 ; j--) {
                 //get the one which closer to 1
-                //double compare = Math.abs(similarity - 1) - Math.abs(Fuzzy.similarity(input, topResult.get(j)) - 1);
                 if (similarity < Fuzzy.similarity(input, topResult.get(j))) {
                     if (j < 4) {
                         topResult.insertElementAt(sentences.get(i), j);

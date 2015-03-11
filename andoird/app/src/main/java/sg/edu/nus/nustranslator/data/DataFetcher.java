@@ -1,5 +1,7 @@
 package sg.edu.nus.nustranslator.data;
 
+import android.util.Log;
+
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.Vector;
@@ -30,6 +32,7 @@ class DataFetcher {
             String line = scanner.nextLine();
             int dataVersion = Integer.parseInt(line);
             if (model.getDataVersion() >= dataVersion) {
+                Log.e("FETCH DATA", "Data is up to date");
                 return true;
             }
             model.setDataVersion(dataVersion);
@@ -49,9 +52,16 @@ class DataFetcher {
                 model.addLanguage(language, sentences);
             }
             scanner.close();
+
+            //logging
+            Log.e("FETCH DATA", "Finish Fetching Data");
+            Log.e("FETCH DATA", "Data Version: " + dataVersion);
+            Log.e("FETCH DATA", "Number of language: " + numberOfLanguage);
+            Log.e("FETCH DATA", "Number of sentence each: " + numberOfPair);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("FETCH DATA", "Fail Fetching Data");
             return false;
         }
     }

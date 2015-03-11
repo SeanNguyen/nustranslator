@@ -5,8 +5,9 @@ import android.media.AudioRecord;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import java.io.FileOutputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -53,21 +54,22 @@ public class DataController {
         int noOfPair = model.getNumberOfPair();
         Vector<String> languages = model.getAllLanguages();
         try {
-            FileOutputStream outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            outputStream.write(model.getDataVersion());
-            outputStream.write(Configurations.Newline.getBytes());
-            outputStream.write(noOfLanguage);
-            outputStream.write(Configurations.Newline.getBytes());
-            outputStream.write(noOfPair);
-            outputStream.write(Configurations.Newline.getBytes());
+            BufferedWriter outputStream = new BufferedWriter(
+                    new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
+            outputStream.write(String.valueOf(model.getDataVersion()));
+            outputStream.newLine();
+            outputStream.write(String.valueOf(noOfLanguage));
+            outputStream.newLine();
+            outputStream.write(String.valueOf(noOfPair));
+            outputStream.newLine();
             for (int i = 0; i < noOfLanguage; i++) {
                 String language = languages.get(i);
-                outputStream.write(language.getBytes());
-                outputStream.write(Configurations.Newline.getBytes());
+                outputStream.write(language);
+                outputStream.newLine();
                 Vector<String> sentences = model.getSentencesOfLanguage(language);
                 for (int j = 0; j < noOfPair; j++) {
-                    outputStream.write(sentences.get(j).getBytes());
-                    outputStream.write(Configurations.Newline.getBytes());
+                    outputStream.write(sentences.get(j));
+                    outputStream.newLine();
                 }
             }
             outputStream.close();
@@ -105,6 +107,8 @@ public class DataController {
             }
             scanner.close();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
