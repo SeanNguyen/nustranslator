@@ -35,5 +35,5 @@ public class Configurations {
     public static final String Newline = String.format("%n");
 
     //UX
-    public static final long UX_resetTime = 1000;
+    public static final long UX_resetTime = 300;
 }
