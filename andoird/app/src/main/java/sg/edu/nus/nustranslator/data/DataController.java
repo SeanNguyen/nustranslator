@@ -19,6 +19,7 @@ import sg.edu.nus.nustranslator.model.AppModel;
 public class DataController {
     //Attributes
     AudioStreamer audioStreamer = new AudioStreamer();
+    DataFetcher dataFetcher = new DataFetcher();
 
     //Constructor
     public DataController() {
@@ -47,26 +48,26 @@ public class DataController {
         //number of sentence in each language
         //Language name
         //sentences
-        String fileName = Configurations.data_fileName;
+        String fileName = Configurations.Data_fileName;
         int noOfLanguage = model.getNumberOfLanguage();
         int noOfPair = model.getNumberOfPair();
         Vector<String> languages = model.getAllLanguages();
         try {
             FileOutputStream outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             outputStream.write(model.getDataVersion());
-            outputStream.write(Configurations.newline.getBytes());
+            outputStream.write(Configurations.Newline.getBytes());
             outputStream.write(noOfLanguage);
-            outputStream.write(Configurations.newline.getBytes());
+            outputStream.write(Configurations.Newline.getBytes());
             outputStream.write(noOfPair);
-            outputStream.write(Configurations.newline.getBytes());
+            outputStream.write(Configurations.Newline.getBytes());
             for (int i = 0; i < noOfLanguage; i++) {
                 String language = languages.get(i);
                 outputStream.write(language.getBytes());
-                outputStream.write(Configurations.newline.getBytes());
+                outputStream.write(Configurations.Newline.getBytes());
                 Vector<String> sentences = model.getSentencesOfLanguage(language);
                 for (int j = 0; j < noOfPair; j++) {
                     outputStream.write(sentences.get(j).getBytes());
-                    outputStream.write(Configurations.newline.getBytes());
+                    outputStream.write(Configurations.Newline.getBytes());
                 }
             }
             outputStream.close();
@@ -82,15 +83,15 @@ public class DataController {
         //number of sentence in each language
         //Language name
         //sentences
-        String fileName = Configurations.data_fileName;
+        String fileName = Configurations.Data_fileName;
         Vector<String> languages = model.getAllLanguages();
         try {
             Scanner scanner = new Scanner(context.openFileInput(fileName));
-            int dataVersion = Integer.getInteger(scanner.nextLine());
+            int dataVersion = Integer.parseInt(scanner.nextLine());
             model.setDataVersion(dataVersion);
 
-            int noOfLanguage = Integer.getInteger(scanner.nextLine());
-            int noOfPair = Integer.getInteger(scanner.nextLine());
+            int noOfLanguage = Integer.parseInt(scanner.nextLine());
+            int noOfPair = Integer.parseInt(scanner.nextLine());
             model.setNumberOfPair(noOfPair);
 
             for (int i = 0; i <noOfLanguage; i++) {
@@ -106,5 +107,10 @@ public class DataController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateData(AppModel model, Context context) {
+        dataFetcher.fetchData(model);
+        serializeData(model, context);
     }
 }

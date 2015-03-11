@@ -14,8 +14,8 @@ public class AppModel {
     private Vector<String> languages = new Vector<String>();
     private HashMap<String, Vector<String>> languageSentencesMap = new HashMap<String, Vector<String>>();
 
-    private String originalLanguage;
-    private String destinationLanguage;
+    private String originalLanguage = "English";
+    private String destinationLanguage = "Vietnamese";
 
     //constructor
     public AppModel() {
@@ -31,10 +31,10 @@ public class AppModel {
     }
 
     public Vector<String> getSentencesOfLanguage(String language) {
-        if (this.languageSentencesMap != null) {
-            return this.languageSentencesMap.get(language);
+        if (this.languageSentencesMap == null) {
+            return null;
         }
-        return null;
+        return this.languageSentencesMap.get(language);
     }
 
     public void addLanguage (String language, Vector<String> sentences) {

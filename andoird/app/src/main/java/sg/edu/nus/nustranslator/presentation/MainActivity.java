@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -38,6 +39,20 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_updateData:
+                mainBusiness.updateData();
+                return true;
+            case R.id.action_about:
+                //show about
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     //events
     public void onSessionButtonClick(View view) {
         States currentAppState = mainBusiness.changeState();
@@ -54,11 +69,12 @@ public class MainActivity extends Activity {
         if (results.size() == 0) {
             topResult.setText("");
             similarResults.setText("");
+            return;
         }
         topResult.setText(results.get(0));
         String similarResultText = "";
         for (int i = 1; i < results.size(); i++) {
-            similarResultText += results.get(i) + Configurations.newline;
+            similarResultText += results.get(i) + Configurations.Newline;
         }
         similarResults.setText(similarResultText);
     }
@@ -93,6 +109,11 @@ public class MainActivity extends Activity {
         View session = findViewById(R.id.sessionView);
 
         if (appState == States.ACTIVE) {
+            TextView topResult = (TextView) findViewById(R.id.firstResult);
+            topResult.setText("");
+            TextView otherResult = (TextView) findViewById(R.id.otherResults);
+            otherResult.setText("");
+
             languageSelection.setVisibility(View.GONE);
             session.setVisibility(View.VISIBLE);
         } else {

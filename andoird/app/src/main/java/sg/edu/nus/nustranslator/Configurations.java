@@ -29,8 +29,11 @@ public class Configurations {
     public static final String Sphinx_keyword_search = "search";
 
     //Data storage
-    public static final String data_fileName = "data.txt";
+    public static final String Data_fileName = "data.txt";
 
     //String Manipulation
-    public static final String newline = String.format("%n");
+    public static final String Newline = String.format("%n");
+
+    //UX
+    public static final long UX_resetTime = 1000;
 }
