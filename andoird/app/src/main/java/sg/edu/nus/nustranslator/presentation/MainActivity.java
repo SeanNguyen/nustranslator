@@ -60,10 +60,11 @@ public class MainActivity extends Activity {
         setSessionButtonText(currentAppState);
     }
 
-    public void updateSpeechRecognitionResult(Vector<String> results) {
+    public void updateSpeechRecognitionResult(Vector<String> results, String translatedResult) {
         if(results == null) {
             return;
         }
+        //Set speech recognition result
         TextView topResult = (TextView) findViewById(R.id.firstResult);
         TextView similarResults = (TextView) findViewById(R.id.otherResults);
         if (results.size() == 0) {
@@ -77,6 +78,10 @@ public class MainActivity extends Activity {
             similarResultText += results.get(i) + Configurations.Newline;
         }
         similarResults.setText(similarResultText);
+
+        //set translation result
+        TextView translationTextView = (TextView) findViewById(R.id.resultText);
+        translationTextView.setText(translatedResult);
     }
 
     //private helper methods
@@ -113,6 +118,8 @@ public class MainActivity extends Activity {
             topResult.setText("");
             TextView otherResult = (TextView) findViewById(R.id.otherResults);
             otherResult.setText("");
+            TextView translatedResult = (TextView) findViewById(R.id.resultText);
+            translatedResult.setText("");
 
             languageSelection.setVisibility(View.GONE);
             session.setVisibility(View.VISIBLE);

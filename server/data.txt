@@ -1,4 +1,4 @@
-2
+3
 2
 7
 English
@@ -10,10 +10,10 @@ Stand Up Slowly
 Stand Up Normally
 Sit Down
 Vietnamese
-Dung Len
-Dung Len
-Dung Len
-Dung Len
-Dung Len
-Dung Len
-Ngoi Xuong
+Translated Sentence 1
+Translated Sentence 2
+Translated Sentence 3
+Translated Sentence 4
+Translated Sentence 5
+Translated Sentence 6
+Translated Sentence 7

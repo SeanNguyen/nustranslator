@@ -1,9 +1,12 @@
 package sg.edu.nus.nustranslator.business;
 
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 import net.java.frej.fuzzy.Fuzzy;
 
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -17,7 +20,7 @@ import sg.edu.nus.nustranslator.presentation.MainActivity;
 /**
  * Created by Storm on 3/5/2015.
  */
-public class MainBusiness {
+public class MainBusiness implements TextToSpeech.OnUtteranceCompletedListener {
 
     //attributes
     private AppModel appModel = new AppModel();
@@ -29,11 +32,32 @@ public class MainBusiness {
     private Timer resetTimer = new Timer();
     private TimerTask resetTimerTask;
 
+    private TextToSpeech textToSpeech;
+    private String translatedResult;
+
     //constructor
     public MainBusiness(MainActivity context) {
         this.mainActivity = context;
         this.speechRecognizer = new LocalSpeechRecognizer(context, this);
         this.dataController.deserializeData(appModel, context);
+
+        this.textToSpeech = new TextToSpeech(this.mainActivity.getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    textToSpeech.setLanguage(Locale.US);
+                }
+            }
+        });
+        this.textToSpeech.setOnUtteranceCompletedListener(this);
+    }
+
+    //Public interface methods
+    @Override
+    public void onUtteranceCompleted(String utteranceId) {
+        if (utteranceId.equals(this.translatedResult)) {
+            this.resetSpeechRecognizer();
+        }
     }
 
     //Public methods
@@ -54,10 +78,17 @@ public class MainBusiness {
             return;
         }
         Log.e("Speech Partial Result", input);
+
+        //reset timer
         resetTimer();
-        Vector<String> topResults = getTopResults(input);
-        mainActivity.updateSpeechRecognitionResult(topResults);
         this.lastRecognitionUpdate = input;
+
+        //get results
+        Vector<String> topResults = getTopResults(input);
+        this.translatedResult = getTranslation(topResults);
+
+        //update UI
+        mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
     }
 
     public void updateData() {
@@ -115,10 +146,23 @@ public class MainBusiness {
         this.resetTimerTask = new TimerTask() {
             @Override
             public void run() {
-                resetSpeechRecognizer();
+                speechRecognizer.stopListen();
+                HashMap<String, String> text2SpeechParas = new HashMap<>();
+                text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, translatedResult);
+                textToSpeech.speak(translatedResult, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
             }
         };
         this.resetTimer = new Timer();
         this.resetTimer.schedule(resetTimerTask, Configurations.UX_resetTime);
     }
+
+    private String getTranslation(Vector<String> inputs) {
+        if (inputs == null || inputs.size() == 0) {
+            return "";
+        }
+        String result;
+        String destinationLanguage = this.appModel.getDestinationLanguage();
+        return appModel.getTranslation(inputs.firstElement());
+    }
+
 }

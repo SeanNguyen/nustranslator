@@ -30,6 +30,14 @@ public class AppModel {
         this.appState = state;
     }
 
+    public String getTranslation(String input) {
+        Vector<String> originalSentences = this.languageSentencesMap.get(this.originalLanguage);
+        Vector<String> destinationSentences = this.languageSentencesMap.get(this.destinationLanguage);
+        int index = originalSentences.indexOf(input);
+        String result = destinationSentences.get(index);
+        return result;
+    }
+
     public Vector<String> getSentencesOfLanguage(String language) {
         if (this.languageSentencesMap == null) {
             return null;
