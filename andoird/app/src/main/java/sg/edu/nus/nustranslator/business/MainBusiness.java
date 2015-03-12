@@ -51,10 +51,9 @@ public class MainBusiness {
 
     public void onSpeechRecognitionResultUpdate(String input) {
         if (this.lastRecognitionUpdate != null && this.lastRecognitionUpdate.equals(input)) {
-            Log.e("IGNORED", input);
             return;
         }
-        Log.e("TIMER", input);
+        Log.e("Speech Partial Result", input);
         resetTimer();
         Vector<String> topResults = getTopResults(input);
         mainActivity.updateSpeechRecognitionResult(topResults);
@@ -80,19 +79,24 @@ public class MainBusiness {
             return topResult;
         }
         for (int i = 0; i < sentences.size(); i++) {
-            String lowerCasedSentence = sentences.get(i).toLowerCase();
-            double similarity = Fuzzy.similarity(input, lowerCasedSentence);
-            for (int j = topResult.size() - 1; j > -1 ; j--) {
-                //get the one which closer to 1
-                if (similarity < Fuzzy.similarity(input, topResult.get(j))) {
-                    if (j < 4) {
-                        topResult.insertElementAt(sentences.get(i), j);
-                    }
-                    break;
-                }
-            }
             if (topResult.size() == 0) {
                 topResult.add(sentences.get(i));
+            } else {
+                input = input.toLowerCase();
+                String lowerCasedSentence = sentences.get(i).toLowerCase();
+                double similarity = Fuzzy.similarity(input, lowerCasedSentence);
+                for (int j = topResult.size() - 1; j > -1; j--) {
+                    //note: the closer to 0, the more similar
+                    double topResultSimilarity = Fuzzy.similarity(input, topResult.get(j));
+                    boolean isMoreSimilar = similarity < topResultSimilarity;
+                    if (isMoreSimilar && j == 0) {
+                        topResult.insertElementAt(sentences.get(i), j);
+                        break;
+                    } else if (!isMoreSimilar && j < 4) {
+                        topResult.insertElementAt(sentences.get(i), j + 1);
+                        break;
+                    }
+                }
             }
             if (topResult.size() > 5) {
                 topResult.removeElementAt(4);
