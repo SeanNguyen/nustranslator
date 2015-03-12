@@ -1,4 +1,4 @@
-Language model created by QuickLM on Tue Mar 10 05:24:31 EDT 2015
+Language model created by QuickLM on Wed Mar 11 21:26:25 EDT 2015
 Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
 
 The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
@@ -7,43 +7,58 @@ The code that was used to produce this language model is available in Open Sourc
 Please visit http://www.speech.cs.cmu.edu/tools/ for more information
 
 The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
-This model based on a corpus of 3 sentences and 9 words
+This model based on a corpus of 8 sentences and 11 words
 
 \data\
-ngram 1=9
-ngram 2=10
-ngram 3=7
+ngram 1=11
+ngram 2=16
+ngram 3=14
 
 \1-grams:
--0.9379 </s> -0.3010
--0.9379 <s> -0.2478
--1.4150 CLOSE -0.2840
--1.4150 DOOR -0.2478
--1.4150 DOWN -0.2478
--1.4150 SIT -0.2840
--1.4150 STAND -0.2840
--1.4150 THE -0.2840
--1.4150 UP -0.2478
+-0.9777 </s> -0.3010
+-0.9777 <s> -0.2527
+-1.8808 DOWN -0.2527
+-1.8808 LATER -0.2527
+-1.8808 NORMALLY -0.2527
+-1.5798 NOW -0.2527
+-1.8808 QUICKLY -0.2527
+-1.8808 SIT -0.2953
+-1.8808 SLOWLY -0.2527
+-1.0357 STAND -0.2591
+-1.0357 UP -0.2126
 
 \2-grams:
--0.7782 <s> CLOSE 0.0000
--0.7782 <s> SIT 0.0000
--0.7782 <s> STAND 0.0000
--0.3010 CLOSE THE 0.0000
--0.3010 DOOR </s> -0.3010
+-1.2041 <s> SIT 0.0000
+-0.3590 <s> STAND 0.0000
 -0.3010 DOWN </s> -0.3010
+-0.3010 LATER </s> -0.3010
+-0.3010 NORMALLY </s> -0.3010
+-0.3010 NOW </s> -0.3010
+-0.3010 QUICKLY </s> -0.3010
 -0.3010 SIT DOWN 0.0000
--0.3010 STAND UP 0.0000
--0.3010 THE DOOR 0.0000
--0.3010 UP </s> -0.3010
+-0.3010 SLOWLY </s> -0.3010
+-0.3010 STAND UP -0.0000
+-1.1461 UP </s> -0.3010
+-1.1461 UP LATER 0.0000
+-1.1461 UP NORMALLY 0.0000
+-0.8451 UP NOW 0.0000
+-1.1461 UP QUICKLY 0.0000
+-1.1461 UP SLOWLY 0.0000
 
 \3-grams:
--0.3010 <s> CLOSE THE
 -0.3010 <s> SIT DOWN
 -0.3010 <s> STAND UP
--0.3010 CLOSE THE DOOR
 -0.3010 SIT DOWN </s>
--0.3010 STAND UP </s>
--0.3010 THE DOOR </s>
+-1.1461 STAND UP </s>
+-1.1461 STAND UP LATER
+-1.1461 STAND UP NORMALLY
+-0.8451 STAND UP NOW
+-1.1461 STAND UP QUICKLY
+-1.1461 STAND UP SLOWLY
+-0.3010 UP LATER </s>
+-0.3010 UP NORMALLY </s>
+-0.3010 UP NOW </s>
+-0.3010 UP QUICKLY </s>
+-0.3010 UP SLOWLY </s>
 
 \end\

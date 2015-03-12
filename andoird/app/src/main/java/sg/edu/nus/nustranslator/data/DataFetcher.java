@@ -35,7 +35,6 @@ class DataFetcher {
                 Log.e("FETCH DATA", "Data is up to date");
                 return true;
             }
-            model.setDataVersion(dataVersion);
 
             //language sentence
             int numberOfLanguage = Integer.parseInt(scanner.nextLine());
@@ -52,6 +51,7 @@ class DataFetcher {
                 model.addLanguage(language, sentences);
             }
             scanner.close();
+            model.setDataVersion(dataVersion);
 
             //logging
             Log.e("FETCH DATA", "Finish Fetching Data");
