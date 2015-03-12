@@ -1,9 +1,19 @@
-1
 2
 2
+7
 English
 Stand Up
+Stand Up Now
+Stand Up Later
+Stand Up Quickly
+Stand Up Slowly
+Stand Up Normally
 Sit Down
 Vietnamese
+Dung Len
+Dung Len
+Dung Len
+Dung Len
+Dung Len
 Dung Len
 Ngoi Xuong
