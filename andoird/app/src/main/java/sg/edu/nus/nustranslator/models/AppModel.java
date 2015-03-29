@@ -28,6 +28,15 @@ public class AppModel {
     }
 
     //public methods
+    public void resetModel() {
+        this.numberOfPair = 0;
+        this.dataVersion = 0;
+        this.languages = new Vector<>();
+        this.languageSentencesMap = new HashMap<>();
+        this.originalLanguage = "";
+        this.destinationLanguage = "";
+    }
+
     public States getAppState() {
         return this.appState;
     }

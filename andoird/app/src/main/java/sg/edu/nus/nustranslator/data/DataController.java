@@ -87,6 +87,7 @@ public class DataController {
         //number of sentence in each language
         //Language name
         //sentences
+        model.resetModel();
         String fileName = Configurations.Data_fileName;
         Vector<String> languages = model.getAllLanguages();
         try {
