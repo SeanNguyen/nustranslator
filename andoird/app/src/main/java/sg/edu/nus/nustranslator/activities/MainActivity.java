@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.presentation;
+package sg.edu.nus.nustranslator.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -14,21 +14,21 @@ import android.widget.TextView;
 
 import java.util.Vector;
 
-import sg.edu.nus.nustranslator.Configurations;
+import sg.edu.nus.nustranslator.ultis.Configurations;
 import sg.edu.nus.nustranslator.R;
-import sg.edu.nus.nustranslator.business.MainBusiness;
-import sg.edu.nus.nustranslator.model.States;
+import sg.edu.nus.nustranslator.controllers.MainController;
+import sg.edu.nus.nustranslator.models.States;
 
 public class MainActivity extends Activity {
 
     //attributes
-    MainBusiness mainBusiness;
+    MainController mainController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mainBusiness = new MainBusiness(this);
+        mainController = new MainController(this);
         addItemsToSpinners();
     }
 
@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_updateData:
-                mainBusiness.updateData();
+                mainController.updateData();
                 return true;
             case R.id.action_about:
                 //show about
@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
     }
     //events
     public void onSessionButtonClick(View view) {
-        States currentAppState = mainBusiness.changeState();
+        States currentAppState = mainController.changeState();
         setResultView(currentAppState);
         setSessionButtonText(currentAppState);
     }

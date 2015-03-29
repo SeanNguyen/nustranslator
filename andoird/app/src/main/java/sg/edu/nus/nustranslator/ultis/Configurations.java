@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator;
+package sg.edu.nus.nustranslator.ultis;
 
 import android.media.AudioFormat;
 

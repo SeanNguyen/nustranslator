@@ -1,10 +1,10 @@
-package sg.edu.nus.nustranslator.business;
+package sg.edu.nus.nustranslator.controllers;
 
 import android.content.Context;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
-import sg.edu.nus.nustranslator.Configurations;
+import sg.edu.nus.nustranslator.ultis.Configurations;
 import sg.edu.nus.nustranslator.data.DataController;
 
 /**

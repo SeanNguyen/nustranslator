@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.business;
+package sg.edu.nus.nustranslator.controllers;
 
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -11,16 +11,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import sg.edu.nus.nustranslator.Configurations;
+import sg.edu.nus.nustranslator.ultis.Configurations;
 import sg.edu.nus.nustranslator.data.DataController;
-import sg.edu.nus.nustranslator.model.AppModel;
-import sg.edu.nus.nustranslator.model.States;
-import sg.edu.nus.nustranslator.presentation.MainActivity;
+import sg.edu.nus.nustranslator.models.AppModel;
+import sg.edu.nus.nustranslator.models.States;
+import sg.edu.nus.nustranslator.activities.MainActivity;
 
 /**
  * Created by Storm on 3/5/2015.
  */
-public class MainBusiness implements TextToSpeech.OnUtteranceCompletedListener {
+public class MainController implements TextToSpeech.OnUtteranceCompletedListener {
 
     //attributes
     private AppModel appModel = new AppModel();
@@ -36,7 +36,7 @@ public class MainBusiness implements TextToSpeech.OnUtteranceCompletedListener {
     private String translatedResult;
 
     //constructor
-    public MainBusiness(MainActivity context) {
+    public MainController(MainActivity context) {
         this.mainActivity = context;
         this.speechRecognizer = new LocalSpeechRecognizer(context, this);
         this.dataController.deserializeData(appModel, context);
@@ -84,6 +84,9 @@ public class MainBusiness implements TextToSpeech.OnUtteranceCompletedListener {
         this.lastRecognitionUpdate = input;
 
         //get results
+        if (!isMatch(input)) {
+            return;
+        }
         Vector<String> topResults = getTopResults(input);
         this.translatedResult = getTranslation(topResults);
 
@@ -102,6 +105,16 @@ public class MainBusiness implements TextToSpeech.OnUtteranceCompletedListener {
     }
 
     //Private Helper Methods
+    private boolean isMatch(String sentence) {
+        sentence = sentence.toLowerCase();
+        String originalLanguage = appModel.getOriginalLanguage();
+        Vector<String> sentences = appModel.getSentencesOfLanguage(originalLanguage);
+        if (sentences.indexOf(sentence) > -1) {
+            return true;
+        }
+        return false;
+    }
+
     private Vector<String> getTopResults(String input) {
         String originalLanguage = appModel.getOriginalLanguage();
         Vector<String> sentences = appModel.getSentencesOfLanguage(originalLanguage);

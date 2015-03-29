@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.business;
+package sg.edu.nus.nustranslator.controllers;
 
 import android.content.Context;
 
@@ -8,7 +8,7 @@ import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
-import sg.edu.nus.nustranslator.Configurations;
+import sg.edu.nus.nustranslator.ultis.Configurations;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
@@ -19,9 +19,9 @@ class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionListener {
 
     private SpeechRecognizer recognizer;
     private Context context;
-    private MainBusiness parent;
+    private MainController parent;
 
-    public LocalSpeechRecognizer(final Context context, MainBusiness parent) {
+    public LocalSpeechRecognizer(final Context context, MainController parent) {
         this.context = context;
         this.parent = parent;
         setupRecognizer(context);
@@ -68,7 +68,7 @@ class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionListener {
             this.recognizer = defaultSetup()
                     .setAcousticModel(new File(modelsDir, Configurations.Sphinx_acousticModel_dir))
                     .setDictionary(new File(modelsDir, Configurations.Sphinx_dictionary_dir))
-                    .setRawLogDir(assetDir)
+                    .setBoolean("-remove_noise", true)
                     .setKeywordThreshold(Configurations.Sphinx_keywordThreshold)
                     .getRecognizer();
             this.recognizer.addListener(this);

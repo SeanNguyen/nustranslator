@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.model;
+package sg.edu.nus.nustranslator.models;
 
 import java.util.HashMap;
 import java.util.Vector;

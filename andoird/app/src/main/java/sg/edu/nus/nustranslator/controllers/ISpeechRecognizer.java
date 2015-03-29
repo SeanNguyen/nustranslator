@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.business;
+package sg.edu.nus.nustranslator.controllers;
 
 /**
  * Created by Storm on 3/10/2015.

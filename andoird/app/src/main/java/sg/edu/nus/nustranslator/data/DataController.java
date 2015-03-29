@@ -11,8 +11,8 @@ import java.io.OutputStreamWriter;
 import java.util.Scanner;
 import java.util.Vector;
 
-import sg.edu.nus.nustranslator.Configurations;
-import sg.edu.nus.nustranslator.model.AppModel;
+import sg.edu.nus.nustranslator.ultis.Configurations;
+import sg.edu.nus.nustranslator.models.AppModel;
 
 /**
  * Created by Storm on 3/6/2015.

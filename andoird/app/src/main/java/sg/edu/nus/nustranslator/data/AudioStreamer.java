@@ -5,7 +5,7 @@ import android.media.AudioRecord;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
-import sg.edu.nus.nustranslator.Configurations;
+import sg.edu.nus.nustranslator.ultis.Configurations;
 
 /**
  * Created by Storm on 3/6/2015.
