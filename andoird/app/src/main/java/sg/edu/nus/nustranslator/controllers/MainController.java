@@ -23,7 +23,7 @@ import sg.edu.nus.nustranslator.activities.MainActivity;
 public class MainController implements TextToSpeech.OnUtteranceCompletedListener {
 
     //attributes
-    private AppModel appModel = new AppModel();
+    private AppModel appModel = AppModel.getInstance();
     private ISpeechRecognizer speechRecognizer;
     private DataController dataController = new DataController();
     private MainActivity mainActivity;
@@ -40,6 +40,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         this.mainActivity = context;
         this.speechRecognizer = new LocalSpeechRecognizer(context, this);
         this.dataController.deserializeData(appModel, context);
+        mainActivity.updateLanguageChoices(appModel.getAllLanguages());
 
         this.textToSpeech = new TextToSpeech(this.mainActivity.getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -85,7 +86,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 
         //get results
         if (!isMatch(input)) {
-            return;
+            //return;
         }
         Vector<String> topResults = getTopResults(input);
         this.translatedResult = getTranslation(topResults);
@@ -108,7 +109,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
     private boolean isMatch(String sentence) {
         sentence = sentence.toLowerCase();
         String originalLanguage = appModel.getOriginalLanguage();
-        Vector<String> sentences = appModel.getSentencesOfLanguage(originalLanguage);
+        Vector<String> sentences = appModel.getSentencesByLanguageName(originalLanguage);
         if (sentences.indexOf(sentence) > -1) {
             return true;
         }
@@ -117,7 +118,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 
     private Vector<String> getTopResults(String input) {
         String originalLanguage = appModel.getOriginalLanguage();
-        Vector<String> sentences = appModel.getSentencesOfLanguage(originalLanguage);
+        Vector<String> sentences = appModel.getSentencesByLanguageName(originalLanguage);
         Vector<String> topResult = new Vector<String>();
         if (sentences == null) {
             return topResult;

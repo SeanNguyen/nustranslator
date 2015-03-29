@@ -1,6 +1,7 @@
 package sg.edu.nus.nustranslator.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -14,22 +15,22 @@ import android.widget.TextView;
 
 import java.util.Vector;
 
-import sg.edu.nus.nustranslator.ultis.Configurations;
 import sg.edu.nus.nustranslator.R;
 import sg.edu.nus.nustranslator.controllers.MainController;
 import sg.edu.nus.nustranslator.models.States;
+import sg.edu.nus.nustranslator.ultis.Configurations;
 
 public class MainActivity extends Activity {
 
     //attributes
     MainController mainController;
 
+    //events
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainController = new MainController(this);
-        addItemsToSpinners();
     }
 
     @Override
@@ -46,6 +47,10 @@ public class MainActivity extends Activity {
             case R.id.action_updateData:
                 mainController.updateData();
                 return true;
+            case R.id.action_viewAllSentences:
+                Intent intent = new Intent(this, HelpActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.action_about:
                 //show about
                 return true;
@@ -53,7 +58,7 @@ public class MainActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    //events
+
     public void onSessionButtonClick(View view) {
         States currentAppState = mainController.changeState();
         setResultView(currentAppState);
@@ -61,7 +66,7 @@ public class MainActivity extends Activity {
     }
 
     public void updateSpeechRecognitionResult(Vector<String> results, String translatedResult) {
-        if(results == null) {
+        if (results == null) {
             return;
         }
         //Set speech recognition result
@@ -84,26 +89,23 @@ public class MainActivity extends Activity {
         translationTextView.setText(translatedResult);
     }
 
-    //private helper methods
-    private void addItemsToSpinners() {
-        String[] languages = {"English", "Mandarin", "Vietnamese", "Thai"};
+    public void updateLanguageChoices(Vector<String> languages) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item_layout, languages) {
-
-            public View getView(int position, View convertView,ViewGroup parent) {
+            public View getView(int position, View convertView, ViewGroup parent) {
                 View v = super.getView(position, convertView, parent);
                 ((TextView) v).setTextSize(16);
                 return v;
             }
 
-            public View getDropDownView(int position, View convertView,ViewGroup parent) {
-                View v = super.getDropDownView(position, convertView,parent);
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View v = super.getDropDownView(position, convertView, parent);
                 ((TextView) v).setGravity(Gravity.CENTER);
                 return v;
             }
         };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         Spinner spinner = (Spinner) findViewById(R.id.originalLanguages_spinner);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner = (Spinner) findViewById(R.id.destinationLanguages_spinner);
         spinner.setAdapter(adapter);

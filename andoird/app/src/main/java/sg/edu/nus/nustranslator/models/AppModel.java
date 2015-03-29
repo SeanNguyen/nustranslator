@@ -8,17 +8,23 @@ import java.util.Vector;
  */
 public class AppModel {
 
+    private static AppModel instance = new AppModel();
+
     private States appState = States.INACTIVE;
     private int numberOfPair = 0;
     private int dataVersion = 0;
     private Vector<String> languages = new Vector<String>();
     private HashMap<String, Vector<String>> languageSentencesMap = new HashMap<String, Vector<String>>();
 
-    private String originalLanguage = "English";
-    private String destinationLanguage = "Vietnamese";
+    private String originalLanguage;
+    private String destinationLanguage;
 
     //constructor
-    public AppModel() {
+    private AppModel() {
+    }
+
+    public static AppModel getInstance() {
+        return instance;
     }
 
     //public methods
@@ -38,14 +44,23 @@ public class AppModel {
         return result;
     }
 
-    public Vector<String> getSentencesOfLanguage(String language) {
+    public Vector<String> getSentencesByLanguageName(String language) {
         if (this.languageSentencesMap == null) {
             return null;
         }
         return this.languageSentencesMap.get(language);
     }
 
-    public void addLanguage (String language, Vector<String> sentences) {
+    public Vector<String> getSentencesByLanguageIndex(int index) {
+        if (index < 0 || index > this.languages.size() - 1) {
+            return new Vector<>();
+        } else {
+            String languageName = this.languages.get(index);
+            return getSentencesByLanguageName(languageName);
+        }
+    }
+
+    public void addLanguage(String language, Vector<String> sentences) {
         this.languages.add(language);
         this.languageSentencesMap.put(language, sentences);
     }
@@ -79,7 +94,7 @@ public class AppModel {
     }
 
     public String getDestinationLanguage() {
-        return  this.destinationLanguage;
+        return this.destinationLanguage;
     }
 
     public void setOriginalLanguage(String lang) {

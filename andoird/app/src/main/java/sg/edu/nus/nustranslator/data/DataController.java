@@ -66,7 +66,7 @@ public class DataController {
                 String language = languages.get(i);
                 outputStream.write(language);
                 outputStream.newLine();
-                Vector<String> sentences = model.getSentencesOfLanguage(language);
+                Vector<String> sentences = model.getSentencesByLanguageName(language);
                 for (int j = 0; j < noOfPair; j++) {
                     outputStream.write(sentences.get(j));
                     outputStream.newLine();

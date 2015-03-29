@@ -6,6 +6,7 @@
               android:background="@color/violetThemeColor"
               android:orientation="vertical">
 
+    <!--Language selection view-->
     <RelativeLayout
         android:id="@+id/languageSelection"
         android:layout_width="match_parent"
@@ -16,6 +17,7 @@
 
     </RelativeLayout>
 
+    <!--Result view-->
     <RelativeLayout
         android:id="@+id/sessionView"
         android:layout_width="match_parent"
@@ -27,6 +29,7 @@
 
     </RelativeLayout>
 
+    <!--Main button-->
     <RelativeLayout
         android:id="@+id/controlView"
         android:layout_width="match_parent"
