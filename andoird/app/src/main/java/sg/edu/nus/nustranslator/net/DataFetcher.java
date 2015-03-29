@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.data;
+package sg.edu.nus.nustranslator.net;
 
 import android.util.Log;
 
@@ -12,7 +12,7 @@ import sg.edu.nus.nustranslator.models.AppModel;
 /**
  * Created by Storm on 3/11/2015.
  */
-class DataFetcher {
+public class DataFetcher {
     public DataFetcher() {
     }
 

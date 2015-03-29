@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.controllers;
+package sg.edu.nus.nustranslator.recognizers;
 
 import android.content.Context;
 import android.media.AudioRecord;
@@ -10,7 +10,7 @@ import sg.edu.nus.nustranslator.data.DataController;
 /**
  * Created by Storm on 3/10/2015.
  */
-class RemoteSpeechRecognizer implements ISpeechRecognizer {
+public class RemoteSpeechRecognizer implements ISpeechRecognizer {
 
     AudioRecord recorder;
     DataController dataController = new DataController();

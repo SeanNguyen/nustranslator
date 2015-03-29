@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.data;
+package sg.edu.nus.nustranslator.net;
 
 import android.media.AudioRecord;
 

@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.controllers;
+package sg.edu.nus.nustranslator.recognizers;
 
 /**
  * Created by Storm on 3/10/2015.

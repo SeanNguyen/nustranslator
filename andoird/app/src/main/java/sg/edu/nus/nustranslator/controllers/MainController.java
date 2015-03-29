@@ -11,6 +11,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import sg.edu.nus.nustranslator.recognizers.ISpeechRecognizer;
+import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
 import sg.edu.nus.nustranslator.ultis.Configurations;
 import sg.edu.nus.nustranslator.data.DataController;
 import sg.edu.nus.nustranslator.models.AppModel;

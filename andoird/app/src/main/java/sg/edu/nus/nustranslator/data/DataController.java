@@ -11,6 +11,8 @@ import java.io.OutputStreamWriter;
 import java.util.Scanner;
 import java.util.Vector;
 
+import sg.edu.nus.nustranslator.net.AudioStreamer;
+import sg.edu.nus.nustranslator.net.DataFetcher;
 import sg.edu.nus.nustranslator.ultis.Configurations;
 import sg.edu.nus.nustranslator.models.AppModel;
 

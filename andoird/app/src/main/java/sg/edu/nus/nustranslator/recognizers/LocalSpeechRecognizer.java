@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.controllers;
+package sg.edu.nus.nustranslator.recognizers;
 
 import android.content.Context;
 
@@ -8,6 +8,7 @@ import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
+import sg.edu.nus.nustranslator.controllers.MainController;
 import sg.edu.nus.nustranslator.ultis.Configurations;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
@@ -15,7 +16,7 @@ import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 /**
  * Created by Storm on 3/10/2015.
  */
-class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionListener {
+public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionListener {
 
     private SpeechRecognizer recognizer;
     private Context context;
