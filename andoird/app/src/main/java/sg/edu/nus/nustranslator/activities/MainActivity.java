@@ -24,12 +24,14 @@ public class MainActivity extends Activity {
 
     //attributes
     MainController mainController;
+    View loadingView;
 
     //events
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.loadingView = findViewById(R.id.main_loading);
         mainController = new MainController(this);
     }
 
@@ -46,6 +48,7 @@ public class MainActivity extends Activity {
         switch (item.getItemId()) {
             case R.id.action_updateData:
                 mainController.updateData();
+                this.loadingView.setVisibility(View.VISIBLE);
                 return true;
             case R.id.action_viewAllSentences:
                 Intent intent = new Intent(this, HelpActivity.class);
@@ -63,6 +66,10 @@ public class MainActivity extends Activity {
         States currentAppState = mainController.changeState();
         setResultView(currentAppState);
         setSessionButtonText(currentAppState);
+    }
+
+    public void onFinishLoading() {
+        this.loadingView.setVisibility(View.GONE);
     }
 
     public void updateSpeechRecognitionResult(Vector<String> results, String translatedResult) {

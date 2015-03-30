@@ -1,5 +1,6 @@
 package sg.edu.nus.nustranslator.controllers;
 
+import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
@@ -11,13 +12,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import sg.edu.nus.nustranslator.recognizers.ISpeechRecognizer;
-import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
-import sg.edu.nus.nustranslator.ultis.Configurations;
+import sg.edu.nus.nustranslator.activities.MainActivity;
 import sg.edu.nus.nustranslator.data.DataController;
 import sg.edu.nus.nustranslator.models.AppModel;
 import sg.edu.nus.nustranslator.models.States;
-import sg.edu.nus.nustranslator.activities.MainActivity;
+import sg.edu.nus.nustranslator.recognizers.ISpeechRecognizer;
+import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
+import sg.edu.nus.nustranslator.ultis.Configurations;
 
 /**
  * Created by Storm on 3/5/2015.
@@ -42,6 +43,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         this.mainActivity = context;
         this.speechRecognizer = new LocalSpeechRecognizer(context, this);
         this.dataController.deserializeData(appModel, context);
+        mainActivity.onFinishLoading();
         mainActivity.updateLanguageChoices(appModel.getAllLanguages());
 
         this.textToSpeech = new TextToSpeech(this.mainActivity.getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -98,13 +100,19 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
     }
 
     public void updateData() {
-        Thread updateThread = new Thread(new Runnable() {
+        AsyncTask<Void, Void, Void> updateTask = new AsyncTask<Void, Void, Void>() {
             @Override
-            public void run() {
+            protected Void doInBackground(Void... args) {
                 dataController.updateData(appModel, mainActivity);
+                return null;
             }
-        });
-        updateThread.start();
+
+            @Override
+            protected void onPostExecute(Void args) {
+                mainActivity.onFinishLoading();
+            }
+        };
+        updateTask.execute();
     }
 
     //Private Helper Methods
