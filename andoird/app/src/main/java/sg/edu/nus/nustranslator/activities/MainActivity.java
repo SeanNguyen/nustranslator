@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -23,8 +24,10 @@ import sg.edu.nus.nustranslator.ultis.Configurations;
 public class MainActivity extends Activity {
 
     //attributes
-    MainController mainController;
-    View loadingView;
+    private MainController controller;
+    private View loadingView;
+    private Spinner originalLanguageSpinner;
+    private Spinner destinationLanguageSpinner;
 
     //events
     @Override
@@ -32,7 +35,33 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.loadingView = findViewById(R.id.main_loading);
-        mainController = new MainController(this);
+        this.originalLanguageSpinner = (Spinner) findViewById(R.id.originalLanguages_spinner);
+        this.originalLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                controller.setOriginalLanguage(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                controller.setOriginalLanguage(-1);
+            }
+
+        });
+        this.destinationLanguageSpinner = (Spinner) findViewById(R.id.destinationLanguages_spinner);
+        this.destinationLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                controller.setDestinationLanguage(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                controller.setDestinationLanguage(-1);
+            }
+
+        });
+        controller = new MainController(this);
     }
 
     @Override
@@ -47,7 +76,7 @@ public class MainActivity extends Activity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_updateData:
-                mainController.updateData();
+                controller.updateData();
                 this.loadingView.setVisibility(View.VISIBLE);
                 return true;
             case R.id.action_viewAllSentences:
@@ -63,7 +92,7 @@ public class MainActivity extends Activity {
     }
 
     public void onSessionButtonClick(View view) {
-        States currentAppState = mainController.changeState();
+        States currentAppState = controller.changeState();
         setResultView(currentAppState);
         setSessionButtonText(currentAppState);
     }

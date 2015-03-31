@@ -115,6 +115,24 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         updateTask.execute();
     }
 
+    public void setOriginalLanguage(int index) {
+        if (index < 0 || index >= this.appModel.getNumberOfLanguage()) {
+            this.appModel.setOriginalLanguage(Configurations.Empty);
+        } else {
+            String language = this.appModel.getAllLanguages().get(index);
+            this.appModel.setOriginalLanguage(language);
+        }
+    }
+
+    public void setDestinationLanguage(int index) {
+        if (index < 0 || index >= this.appModel.getNumberOfLanguage()) {
+            this.appModel.setDestinationLanguage(Configurations.Empty);
+        } else {
+            String language = this.appModel.getAllLanguages().get(index);
+            this.appModel.setDestinationLanguage(language);
+        }
+    }
+
     //Private Helper Methods
     private boolean isMatch(String sentence) {
         sentence = sentence.toLowerCase();

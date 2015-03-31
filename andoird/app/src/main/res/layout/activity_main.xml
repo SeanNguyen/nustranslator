@@ -73,7 +73,7 @@
             android:layout_centerInParent="true"
             android:textColor="@color/whiteThemeColor"
             android:textSize="20sp"
-            android:text="LOADING"/>
+            android:text="UPDATING DATA..."/>
 
     </RelativeLayout>
 

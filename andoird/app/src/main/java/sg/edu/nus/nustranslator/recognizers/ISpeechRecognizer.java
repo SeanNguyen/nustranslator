@@ -5,6 +5,8 @@ package sg.edu.nus.nustranslator.recognizers;
  */
 public interface ISpeechRecognizer {
 
+    void setInputLanguage(String language);
+
     void startListen();
 
     void stopListen();

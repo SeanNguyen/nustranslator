@@ -33,6 +33,7 @@ public class Configurations {
 
     //String Manipulation
     public static final String Newline = String.format("%n");
+    public static final String Empty = "";
 
     //UX
     public static final long UX_resetTime = 300;

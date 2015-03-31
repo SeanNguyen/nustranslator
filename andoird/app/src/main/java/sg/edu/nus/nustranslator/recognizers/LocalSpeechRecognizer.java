@@ -29,6 +29,11 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     }
 
     @Override
+    public void setInputLanguage(String language) {
+
+    }
+
+    @Override
     public void startListen() {
         this.recognizer.startListening(Configurations.Sphinx_keyword_search);
     }
