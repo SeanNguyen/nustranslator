@@ -11,20 +11,55 @@
     font-size: 60px;
     line-height: 1;
     letter-spacing: -1px;
+    font-family: 'Roboto', sans-serif;
+    font-weight:100;
+    color: #f1f1f1;
 }
 
 .hero-unit {
     position: relative;
     padding: 30px 15px;
-    color: #F5F5F5;
     text-align: center;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
     background: #494da0;
+
 }
 
 .footer {
     text-align: right;
     padding: 30px 0;
-    margin-top: 70px;
-    border-top: 1px solid #E5E5E5;
+    background: #494da0;
+}
+
+.footer p {
+    color: #b1b3d9;
+}
+
+.footer a {
+    color: #f1f1f1;
+}
+
+#formContainer {
+    background: #494da0;
+    padding-bottom: 100px;
+}
+
+#formContainer label {
+    color: #f1f1f1;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+#updateButton {
+    background: #494da0;
+    color: #f1f1f1;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+#updateButton:active {
+    background: #f1f1f1;
+    color: #494da0;
 }
