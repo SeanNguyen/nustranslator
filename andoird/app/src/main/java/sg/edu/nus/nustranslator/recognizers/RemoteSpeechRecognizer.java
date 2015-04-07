@@ -10,7 +10,7 @@ import sg.edu.nus.nustranslator.data.DataController;
 /**
  * Created by Storm on 3/10/2015.
  */
-public class RemoteSpeechRecognizer implements ISpeechRecognizer {
+public class RemoteSpeechRecognizer{
 
     AudioRecord recorder;
     DataController dataController = new DataController();
@@ -20,7 +20,6 @@ public class RemoteSpeechRecognizer implements ISpeechRecognizer {
         this.context = context;
     }
 
-    @Override
     public void startListen() {
         recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION,
                 Configurations.Recorder_sampleRate,
@@ -31,7 +30,6 @@ public class RemoteSpeechRecognizer implements ISpeechRecognizer {
         this.dataController.startAudioStream(recorder, this.context);
     }
 
-    @Override
     public void stopListen() {
         this.recorder.stop();
         this.recorder.release();
