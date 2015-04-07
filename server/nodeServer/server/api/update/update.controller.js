@@ -6,13 +6,37 @@
  * PUT     /things/:id          ->  update
  * DELETE  /things/:id          ->  destroy
  */
-
 'use strict';
 
-var fs = require('fs');  // file system
-
 exports.index = function(req, res) {
-  // logic here to determine what file, etc
-  var rstream = fs.createReadStream('./server/data/data.txt');
-  rstream.pipe(res);
-};
+	//read current data
+	var fs = require('fs');
+	var obj;
+	var versionNumber = 1;
+	fs.readFile('./server/data/data', 'utf8', function (err, data) {
+		if (!err) {
+			obj = JSON.parse(data);
+			console.log(obj);
+			var oldVersion = obj.version;
+			console.log("READ DATA:" + oldVersion);
+			if (!err && oldVersion >= 0) {
+				versionNumber = oldVersion + 1;
+				console.log("READ DATA: " + versionNumber);
+			}
+		}		  
+		//write new data
+		var newData = {};
+		newData["version"] = versionNumber;
+		newData["data"] = req.body;
+		fs.writeFile('./server/data/data', JSON.stringify(newData), function (err) {
+		  if (err) {
+			res.json([{ result : 'fail' }]);
+		  	console.log(err);
+		  }
+		  console.log("success");
+		});
+
+		//return result
+		res.json([{ result : 'success' }]);
+	});
+}
