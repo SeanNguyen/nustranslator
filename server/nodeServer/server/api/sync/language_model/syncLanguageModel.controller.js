@@ -16,6 +16,7 @@ exports.index = function(req, res) {
 		
 		default:
 		console.log("SYNC LANGUAGE MODEL: no language found:" + req.body.language);
+		res.end('File not found');
 		return;
 	}
 	console.log("SYNC LANGUAGE MODEL: querry" + filePath);

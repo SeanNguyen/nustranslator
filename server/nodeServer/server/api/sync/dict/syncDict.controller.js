@@ -16,6 +16,7 @@ exports.index = function(req, res) {
 		
 		default:
 		console.log("SYNC DICT: no language found:" + req.body.language);
+		res.end('File not found');
 		return;
 	}
 	console.log("SYNC DICT: querry" + filePath);
