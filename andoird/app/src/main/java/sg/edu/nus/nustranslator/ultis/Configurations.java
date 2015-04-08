@@ -29,7 +29,9 @@ public class Configurations {
     public static final String Sphinx_keyword_search = "search";
 
     //Data storage
-    public static final String Data_fileName = "data.txt";
+    public static final String Data_fileName_sentences = "data.txt";
+    public static final String Data_fileName_dict_ext = ".dic";
+    public static final String Data_fileName_languageModel_ext = ".lm";
 
     //String Manipulation
     public static final String Newline = String.format("%n");
@@ -37,4 +39,8 @@ public class Configurations {
 
     //UX
     public static final long UX_resetTime = 300;
+
+    //available languages
+    public static final String LANGUAGE_ENGLISH = "english";
+    public static final String LANGUAGE_MANDARIN = "mandarin";
 }

@@ -51,7 +51,7 @@ public class DataController {
         //number of sentence in each language
         //Language name
         //sentences
-        String fileName = Configurations.Data_fileName;
+        String fileName = Configurations.Data_fileName_sentences;
         int noOfLanguage = model.getNumberOfLanguage();
         int noOfPair = model.getNumberOfPair();
         Vector<String> languages = model.getAllLanguages();
@@ -88,7 +88,7 @@ public class DataController {
         //Language name
         //sentences
         model.resetModel();
-        String fileName = Configurations.Data_fileName;
+        String fileName = Configurations.Data_fileName_sentences;
         Vector<String> languages = model.getAllLanguages();
         try {
             Scanner scanner = new Scanner(context.openFileInput(fileName));
@@ -119,5 +119,39 @@ public class DataController {
     public void updateData(AppModel model, Context context) {
         dataFetcher.fetchData(model);
         serializeData(model, context);
+
+        Vector<String> languages = model.getAllLanguages();
+        for (int i = 0; i < languages.size(); i++) {
+            String language = languages.get(i).toLowerCase();
+            String dictContent = dataFetcher.queryDict(language);
+            String languageModelContent = dataFetcher.queryLanguageModel((language));
+            saveDict(language, dictContent, context);
+            saveLanguageModel(language, languageModelContent, context);
+        }
+    }
+
+    //private
+    private void saveDict(String language, String content, Context context) {
+        try {
+            String fileName = language + Configurations.Data_fileName_dict_ext;
+            BufferedWriter outputStream = new BufferedWriter(
+                    new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
+            outputStream.write(content);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveLanguageModel(String language, String content, Context context) {
+        try {
+            String fileName = language + Configurations.Data_fileName_languageModel_ext;
+            BufferedWriter outputStream = new BufferedWriter(
+                    new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
+            outputStream.write(content);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
