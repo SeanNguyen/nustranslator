@@ -25,12 +25,11 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     public LocalSpeechRecognizer(final Context context, MainController parent) {
         this.context = context;
         this.parent = parent;
-        setupRecognizer(context);
     }
 
     @Override
-    public void setInputLanguage(String language) {
-
+    public void setInputLanguage(String language, Context context) {
+        setupRecognizer(context, language);
     }
 
     @Override
@@ -66,21 +65,24 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     }
 
     //Private Helper Methods
-    private void setupRecognizer(Context context) {
+    private void setupRecognizer(Context context, String language) {
         try {
+            language = language.toLowerCase();
+
             Assets assets = new Assets(context);
             File assetDir = assets.syncAssets();
             File modelsDir = new File(assetDir, Configurations.Sphinx_models_dir);
+            File internalPath = context.getFilesDir();
             this.recognizer = defaultSetup()
-                    .setAcousticModel(new File(modelsDir, Configurations.Sphinx_acousticModel_dir))
-                    .setDictionary(new File(modelsDir, Configurations.Sphinx_dictionary_dir))
+                    .setAcousticModel(new File(modelsDir, Configurations.Sphinx_acousticModel_dir + language))
+                    .setDictionary(new File(internalPath, language + Configurations.Data_fileName_dict_ext))
                     .setBoolean("-remove_noise", true)
                     .setKeywordThreshold(Configurations.Sphinx_keywordThreshold)
                     .getRecognizer();
             this.recognizer.addListener(this);
 
             // Create language model search.
-            File languageModel = new File(modelsDir, Configurations.Sphinx_languageModel_dir);
+            File languageModel = new File(internalPath, language + Configurations.Data_fileName_languageModel_ext);
             recognizer.addNgramSearch(Configurations.Sphinx_keyword_search, languageModel);
         } catch (Exception e) {
             e.printStackTrace();

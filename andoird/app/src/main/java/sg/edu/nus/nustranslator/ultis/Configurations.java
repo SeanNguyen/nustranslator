@@ -20,9 +20,7 @@ public class Configurations {
 
     //Sphinx Config
     public static final String Sphinx_models_dir = "models";
-    public static final String Sphinx_languageModel_dir = "lm/languageModel.lm";
-    public static final String Sphinx_acousticModel_dir = "hmm/en-us-semi";
-    public static final String Sphinx_dictionary_dir = "dict/localLib.dic";
+    public static final String Sphinx_acousticModel_dir = "hmm/";
     public static final float Sphinx_keywordThreshold = 1e-20f;
 
     //Sphinx Keywords

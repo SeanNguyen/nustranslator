@@ -122,6 +122,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         } else {
             String language = this.appModel.getAllLanguages().get(index);
             this.appModel.setOriginalLanguage(language);
+            this.speechRecognizer.setInputLanguage(language, this.mainActivity);
         }
     }
 

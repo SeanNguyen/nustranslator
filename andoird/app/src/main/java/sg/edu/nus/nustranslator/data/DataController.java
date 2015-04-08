@@ -89,7 +89,6 @@ public class DataController {
         //sentences
         model.resetModel();
         String fileName = Configurations.Data_fileName_sentences;
-        Vector<String> languages = model.getAllLanguages();
         try {
             Scanner scanner = new Scanner(context.openFileInput(fileName));
             int dataVersion = Integer.parseInt(scanner.nextLine());
