@@ -12,8 +12,9 @@
 var fs = require('fs');  // file system
 
 exports.index = function(req, res) {
-  // logic here to determine what file, etc
-  console.log("SYNC: new sync request");
-  var rstream = fs.createReadStream('./server/data/data');
-  rstream.pipe(res);
+	var filePath = "./server/data/sentences/data.txt";
+ 	// logic here to determine what file, etc
+	console.log("SYNC: new sync request");
+	var rstream = fs.createReadStream(filePath);
+	rstream.pipe(res);
 };

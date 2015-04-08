@@ -10,7 +10,9 @@ module.exports = function(app) {
 
   // Insert routes below
   app.use('/api/update', require('./api/update'));
-  app.use('/api/sync', require('./api/syncData'));
+  app.use('/api/sync/sentences', require('./api/sync/sentences'));
+  app.use('/api/sync/dict', require('./api/sync/dict'));
+  app.use('/api/sync/language_model', require('./api/sync/language_model'));
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')

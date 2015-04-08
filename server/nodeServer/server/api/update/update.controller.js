@@ -9,31 +9,30 @@
 'use strict';
 
 exports.index = function(req, res) {
+	var filePath = "./server/data/sentences/data.txt";
 	//read current data
 	var fs = require('fs');
 	var obj;
 	var versionNumber = 1;
-	fs.readFile('./server/data/data', 'utf8', function (err, data) {
+	fs.readFile(filePath, 'utf8', function (err, data) {
 		if (!err) {
 			obj = JSON.parse(data);
 			console.log(obj);
 			var oldVersion = obj.version;
-			console.log("READ DATA:" + oldVersion);
 			if (!err && oldVersion >= 0) {
 				versionNumber = oldVersion + 1;
-				console.log("READ DATA: " + versionNumber);
 			}
 		}		  
 		//write new data
 		var newData = {};
 		newData["version"] = versionNumber;
 		newData["data"] = req.body;
-		fs.writeFile('./server/data/data', JSON.stringify(newData), function (err) {
+		fs.writeFile(filePath, JSON.stringify(newData), function (err) {
 		  if (err) {
 			res.json([{ result : 'fail' }]);
 		  	console.log(err);
 		  }
-		  console.log("success");
+		  console.log("API UPDATE: data updated");
 		});
 
 		//return result

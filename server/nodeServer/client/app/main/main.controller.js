@@ -5,7 +5,6 @@ angular.module('nodeServerApp')
   	$scope.formData = [];
   	$scope.formData.push({language: "English", sentences: ""});
     $scope.formData.push({language: "Mandarin", sentences: ""});
-    $scope.formData.push({language: "Vietnamese", sentences: ""});
 
     $scope.submit = function() {
       var data = JSON.stringify($scope.formData);
