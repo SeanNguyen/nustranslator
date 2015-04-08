@@ -104,13 +104,13 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
             @Override
             protected Void doInBackground(Void... args) {
                 dataController.updateData(appModel, mainActivity);
-                mainActivity.updateLanguageChoices(appModel.getAllLanguages());
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void args) {
                 mainActivity.onFinishLoading();
+                mainActivity.updateLanguageChoices(appModel.getAllLanguages());
             }
         };
         updateTask.execute();
