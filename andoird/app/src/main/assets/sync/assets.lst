@@ -14,3 +14,4 @@ models/hmm/mandarin/noisedict
 models/hmm/mandarin/sendump
 models/hmm/mandarin/transition_matrices
 models/hmm/mandarin/variances
+models/hmm/mandarin/mixture_weights
