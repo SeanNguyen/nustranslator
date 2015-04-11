@@ -222,6 +222,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
                 HashMap<String, String> text2SpeechParas = new HashMap<>();
                 text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, translatedResult);
                 textToSpeech.speak(translatedResult, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
+
             }
         };
         this.resetTimer = new Timer();
@@ -236,6 +237,45 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         String destinationLanguage = this.appModel.getDestinationLanguage();
         return appModel.getTranslation(inputs.firstElement());
     }
+
+//    private byte[] getAudioFromText(String text) {
+//        String AUDIO_CHINESE= "http://www.translate.google.com/translate_tts?tl=zh&q=";
+//        String AUDIO_ENGLISH = "http://www.translate.google.com/translate_tts?tl=en&q=";
+//
+//        try {
+//            URL url = new URL(AUDIO_ENGLISH + text);
+//            DataInputStream in;
+//            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//            urlConnection.setRequestMethod("GET");
+//            urlConnection.setRequestProperty("Accept-Charset", "UTF-8");
+//
+//            if (urlConnection.getResponseCode() == 200) {
+//                //get byte array in response
+//                in = new DataInputStream(urlConnection.getInputStream());
+//            } else {
+//                in = new DataInputStream(urlConnection.getErrorStream());
+//            }
+//
+//            //convert input stream to byte array
+//            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+//            int nRead;
+//            byte[] data = new byte[16384];
+//
+//            while ((nRead = in.read(data, 0, data.length)) != -1) {
+//                buffer.write(data, 0, nRead);
+//            }
+//            buffer.flush();
+//            byte[] bytes = buffer.toByteArray();
+//
+//            //close connection
+//            in.close();
+//            urlConnection.disconnect();
+//            return bytes;
+//        } catch (Exception e) {
+//
+//        }
+//        return null;
+//    }
 
 //    private void sendAudioData() {
 //        recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION,
