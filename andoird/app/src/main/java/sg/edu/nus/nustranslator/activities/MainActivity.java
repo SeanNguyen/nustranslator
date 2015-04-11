@@ -39,11 +39,13 @@ public class MainActivity extends Activity {
         this.originalLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                loadingView.setVisibility(View.VISIBLE);
                 controller.setOriginalLanguage(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
+                loadingView.setVisibility(View.VISIBLE);
                 controller.setOriginalLanguage(-1);
             }
 

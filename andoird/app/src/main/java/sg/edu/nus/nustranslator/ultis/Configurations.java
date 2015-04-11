@@ -18,6 +18,10 @@ public class Configurations {
     public static final String Server_address = "192.168.41.1";
     public static final int Server_port = 9000;
 
+    //streaming protocol
+    public static final String Stream_dataType_audio = "audio";
+    public static final String Stream_dataType_text = "text";
+
     //Sphinx Config
     public static final String Sphinx_models_dir = "models";
     public static final String Sphinx_acousticModel_dir = "hmm/";

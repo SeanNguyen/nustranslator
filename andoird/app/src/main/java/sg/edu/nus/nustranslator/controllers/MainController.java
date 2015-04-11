@@ -1,5 +1,6 @@
 package sg.edu.nus.nustranslator.controllers;
 
+import android.media.AudioRecord;
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -29,11 +30,16 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
     private AppModel appModel = AppModel.getInstance();
     private ISpeechRecognizer speechRecognizer;
     private DataController dataController = new DataController();
+    //private Streamer audioStreamer = new AudioStreamer();
+    //private Streamer textStreamer = new TextStreamer();
     private MainActivity mainActivity;
+
+    private AudioRecord recorder;
 
     private String lastRecognitionUpdate;
     private Timer resetTimer = new Timer();
     private TimerTask resetTimerTask;
+//    private long startTime = 0;
 
     private TextToSpeech textToSpeech;
     private String translatedResult;
@@ -71,9 +77,16 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         if (state == States.ACTIVE) {
             appModel.setAppState(States.INACTIVE);
             this.speechRecognizer.stopListen();
+            //this.audioStreamer.stopStream();
+            //this.textStreamer.stopStream();
         } else {
             appModel.setAppState(States.ACTIVE);
             speechRecognizer.startListen();
+            //String timeStamp = Utilities.getTimeStamp();
+            //this.audioStreamer.startStream(timeStamp);
+            //this.startTime = System.currentTimeMillis() / 1000;
+            //this.textStreamer.startStream(timeStamp);
+            //sendAudioData();
         }
         return appModel.getAppState();
     }
@@ -94,6 +107,9 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         }
         Vector<String> topResults = getTopResults(input);
         this.translatedResult = getTranslation(topResults);
+
+        //long timeFromStart = (System.currentTimeMillis() - this.startTime) / 1000;
+        //this.textStreamer.sendData(timeFromStart + ": " + input);
 
         //update UI
         mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
@@ -116,14 +132,26 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         updateTask.execute();
     }
 
-    public void setOriginalLanguage(int index) {
-        if (index < 0 || index >= this.appModel.getNumberOfLanguage()) {
-            this.appModel.setOriginalLanguage(Configurations.Empty);
-        } else {
-            String language = this.appModel.getAllLanguages().get(index);
-            this.appModel.setOriginalLanguage(language);
-            this.speechRecognizer.setInputLanguage(language, this.mainActivity);
-        }
+    public void setOriginalLanguage(final int index) {
+        AsyncTask asyncTask = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] params) {
+                if (index < 0 || index >= appModel.getNumberOfLanguage()) {
+                    appModel.setOriginalLanguage(Configurations.Empty);
+                } else {
+                    String language = appModel.getAllLanguages().get(index);
+                    appModel.setOriginalLanguage(language);
+                    speechRecognizer.setInputLanguage(language, mainActivity);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object result) {
+                mainActivity.onFinishLoading();
+            }
+        };
+        asyncTask.execute();
     }
 
     public void setDestinationLanguage(int index) {
@@ -209,4 +237,28 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         return appModel.getTranslation(inputs.firstElement());
     }
 
+//    private void sendAudioData() {
+//        recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION,
+//                Configurations.Recorder_sampleRate,
+//                Configurations.Recorder_channelConfig,
+//                Configurations.Recorder_audioFormat,
+//                Configurations.Recorder_minBuffSize * 10);
+//        recorder.startRecording();
+//
+//        AsyncTask asyncTask = new AsyncTask() {
+//            @Override
+//            protected Object doInBackground(Object[] params) {
+//                byte[] buffer = new byte[Configurations.Recorder_minBuffSize];
+//                while (appModel.getAppState() == States.ACTIVE) {
+//                    recorder.read(buffer, 0, buffer.length);
+//                    System.out.println(buffer);
+//                    //this.audioStreamer.sendData(buffer);
+//                }
+//                recorder.stop();
+//                recorder.release();
+//                return null;
+//            }
+//        };
+//        asyncTask.execute();
+//    }
 }

@@ -1,9 +1,6 @@
 package sg.edu.nus.nustranslator.data;
 
 import android.content.Context;
-import android.media.AudioRecord;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -11,17 +8,15 @@ import java.io.OutputStreamWriter;
 import java.util.Scanner;
 import java.util.Vector;
 
-import sg.edu.nus.nustranslator.net.AudioStreamer;
+import sg.edu.nus.nustranslator.models.AppModel;
 import sg.edu.nus.nustranslator.net.DataFetcher;
 import sg.edu.nus.nustranslator.ultis.Configurations;
-import sg.edu.nus.nustranslator.models.AppModel;
 
 /**
  * Created by Storm on 3/6/2015.
  */
 public class DataController {
     //Attributes
-    AudioStreamer audioStreamer = new AudioStreamer();
     DataFetcher dataFetcher = new DataFetcher();
 
     //Constructor
@@ -29,21 +24,6 @@ public class DataController {
     }
 
     //Public Methods
-    public void startAudioStream(AudioRecord recorder, Context context) {
-        //Check Network Status
-        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            audioStreamer.startStream(recorder);
-        } else {
-            // display error
-        }
-    }
-
-    public void stopStream() {
-        audioStreamer.stopStream();
-    }
-
     public void serializeData(AppModel model, Context context) {
         //the format will be:
         //data version
