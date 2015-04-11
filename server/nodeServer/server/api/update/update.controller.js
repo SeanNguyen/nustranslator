@@ -32,10 +32,40 @@ exports.index = function(req, res) {
 			res.json([{ result : 'fail' }]);
 		  	console.log(err);
 		  }
-		  console.log("API UPDATE: data updated");
+		  console.log("API UPDATE: sentences updated");
 		});
-
-		//return result
-		res.json([{ result : 'success' }]);
 	});
+
+	//update language model by running some command line
+	for (var i = req.body.length - 1; i >= 0; i--) {
+		var language = req.body[i].language;
+		var fileContent = '';
+		var rawContent = req.body[i].sentences;
+		console.log(rawContent);
+		var lines = rawContent.split('\n');
+		for (var i = lines.length - 1; i >= 0; i--) {
+			fileContent += "<s> " + lines[i] + " </s>\n";
+		};
+		fileContent.toLowerCase();
+
+		fs.writeFile(language + '.txt', fileContent, function(err) {
+			if (err) {
+				console.log('API UPDATE: writing language model file fail');
+				res.json([{ result : 'fail' }]);
+			} else {
+				var exec = require('child_process').exec;
+				exec('text2wfreq < ' + language + '.txt | wfreq2vocab > ' + language + '.vocab; text2idngram -vocab ' + language + '.vocab -idngram ' + language + '.idngram < ' + language + '.txt; idngram2lm -vocab_type 0 -idngram ' + language + '.idngram -vocab ' + language + '.vocab -arpa server/data/language_model/' + language + '.lm', 
+				function(error, stdout, stderr) {
+					if(error) {
+						console.log('API UPDATE: convert to lm file fail')
+						res.json([{ result : 'fail' }]);
+					} else {
+						console.log('API UPDATE: converted: ' + language);
+					}
+				});
+			}
+			
+		})
+	};
+	res.json([{result: 'success'}]);
 }

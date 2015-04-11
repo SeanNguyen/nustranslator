@@ -5,8 +5,8 @@
 'use strict';
 
 var errors = require('./components/errors');
-var resultSocket = require('./api/record/result');
-var voiceSocket = require('./api/record/voice');
+// var resultSocket = require('./api/record/result');
+// var voiceSocket = require('./api/record/voice');
 
 module.exports = function(app) {
   var express = require('express');
