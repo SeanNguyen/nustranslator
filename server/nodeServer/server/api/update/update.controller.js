@@ -53,6 +53,16 @@ exports.index = function(req, res) {
 				res.json([{ result : 'fail' }]);
 			} else {
 				var exec = require('child_process').exec;
+				exec('echo abc', 
+				function(error, stdout, stderr) {
+					if(error) {
+						console.log('ECHO fail');
+						console.log(stderr);
+						res.json([{ result : 'fail' }]);
+					} else {
+						console.log(stdout);
+					}
+				});
 				exec('./server/data/cmuclmtk/text2wfreq < ' + language + '.txt | ./server/data/cmuclmtk/wfreq2vocab > ' + language + '.vocab; ./server/data/cmuclmtk/text2idngram -vocab ' + language + '.vocab -idngram ' + language + '.idngram < ' + language + '.txt; ./server/data/cmuclmtk/idngram2lm -vocab_type 0 -idngram ' + language + '.idngram -vocab ' + language + '.vocab -arpa server/data/language_model/' + language.toLowerCase() + '.lm', 
 				function(error, stdout, stderr) {
 					if(error) {
