@@ -41,7 +41,6 @@ exports.index = function(req, res) {
 		var language = req.body[i].language;
 		var fileContent = '';
 		var rawContent = req.body[i].sentences;
-		console.log(rawContent);
 		var lines = rawContent.split('\n');
 		for (var i = lines.length - 1; i >= 0; i--) {
 			fileContent += "<s> " + lines[i] + " </s>\n";
@@ -54,7 +53,7 @@ exports.index = function(req, res) {
 				res.json([{ result : 'fail' }]);
 			} else {
 				var exec = require('child_process').exec;
-				exec('text2wfreq < ' + language + '.txt | wfreq2vocab > ' + language + '.vocab; text2idngram -vocab ' + language + '.vocab -idngram ' + language + '.idngram < ' + language + '.txt; idngram2lm -vocab_type 0 -idngram ' + language + '.idngram -vocab ' + language + '.vocab -arpa server/data/language_model/' + language + '.lm', 
+				exec('./server/data/cmuclmtk/text2wfreq < ' + language + '.txt | ./server/data/cmuclmtk/wfreq2vocab > ' + language + '.vocab; ./server/data/cmuclmtk/text2idngram -vocab ' + language + '.vocab -idngram ' + language + '.idngram < ' + language + '.txt; ./server/data/cmuclmtk/idngram2lm -vocab_type 0 -idngram ' + language + '.idngram -vocab ' + language + '.vocab -arpa server/data/language_model/' + language.toLowerCase() + '.lm', 
 				function(error, stdout, stderr) {
 					if(error) {
 						console.log('API UPDATE: convert to lm file fail')
