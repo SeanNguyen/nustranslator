@@ -1,0 +1,139 @@
+#############################################################################
+## Copyright (c) 1996, Carnegie Mellon University, Cambridge University,
+## Ronald Rosenfeld and Philip Clarkson
+## Version 3, Copyright (c) 2006, Carnegie Mellon University 
+## Contributors includes Wen Xu, Ananlada Chotimongkol, 
+## David Huggins-Daines, Arthur Chan and Alan Black 
+#############################################################################
+=============================================================================
+===============  This file was produced by the CMU-Cambridge  ===============
+===============     Statistical Language Modeling Toolkit     ===============
+=============================================================================
+This is a 3-gram language model, based on a vocabulary of 18 words,
+  which begins "</s>", "<s>", "Anaesthesia"...
+This is a CLOSED-vocabulary model
+  (OOVs eliminated from training data and are forbidden in test data)
+Good-Turing discounting was applied.
+1-gram frequency of frequency : 15 
+2-gram frequency of frequency : 25 0 0 0 0 0 0 
+3-gram frequency of frequency : 34 0 0 0 0 0 0 
+1-gram discounting ratios : 0.94 
+2-gram discounting ratios : 
+3-gram discounting ratios : 
+This file is in the ARPA-standard format introduced by Doug Paul.
+
+p(wd3|wd1,wd2)= if(trigram exists)           p_3(wd1,wd2,wd3)
+                else if(bigram w1,w2 exists) bo_wt_2(w1,w2)*p(wd3|wd2)
+                else                         p(wd3|w2)
+
+p(wd2|wd1)= if(bigram exists) p_2(wd1,wd2)
+            else              bo_wt_1(wd1)*p_1(wd2)
+
+All probs and back-off weights (bo_wt) are given in log10 form.
+
+Data formats:
+
+Beginning of data mark: \data\
+ngram 1=nr            # number of 1-grams
+ngram 2=nr            # number of 2-grams
+ngram 3=nr            # number of 3-grams
+
+\1-grams:
+p_1     wd_1 bo_wt_1
+\2-grams:
+p_2     wd_1 wd_2 bo_wt_2
+\3-grams:
+p_3     wd_1 wd_2 wd_3 
+
+end of data mark: \end\
+
+\data\
+ngram 1=18
+ngram 2=26
+ngram 3=34
+
+\1-grams:
+-0.5772 </s>	-0.8901
+-0.5315 <s>	-1.1821
+-1.5595 Anaesthesia	-0.3436
+-1.5595 Bacteria	-0.3436
+-1.5595 Calculus	-0.3436
+-1.5595 Decay	-0.3436
+-1.5595 Dental	-0.4650
+-1.5595 Disease	-0.3436
+-1.5595 Gum	-0.4650
+-1.5595 Impression	-0.3436
+-1.5595 Inflammation	-0.3436
+-1.5595 Local	-0.4650
+-1.5595 Protrude	-0.4650
+-1.5595 Regular	-0.4650
+-1.5595 Tooth	-0.4650
+-1.5595 check-up	-0.3436
+-1.5595 mandible	0.0000
+-1.5595 plaque	-0.3436
+
+\2-grams:
+-0.0414 </s> <s> -0.1549
+-1.0212 <s> Bacteria 0.1761
+-1.0212 <s> Calculus 0.1761
+-1.0212 <s> Dental 0.1761
+-1.0212 <s> Gum 0.1761
+-1.0212 <s> Impression 0.1761
+-1.0212 <s> Inflammation 0.1761
+-1.0212 <s> Local 0.1761
+-1.0212 <s> Protrude 0.1761
+-1.0212 <s> Regular 0.1761
+-1.0212 <s> Tooth 0.1761
+-0.1761 Anaesthesia </s> 0.7404
+-0.1761 Bacteria </s> 0.7404
+-0.1761 Calculus </s> 0.7404
+-0.1761 Decay </s> 0.7404
+-0.1761 Dental plaque 0.1761
+-0.1761 Disease </s> 0.7404
+-0.1761 Gum Disease 0.1761
+-0.1761 Impression </s> 0.7404
+-0.1761 Inflammation </s> 0.7404
+-0.1761 Local Anaesthesia 0.1761
+-0.1761 Protrude mandible -0.1675
+-0.1761 Regular check-up 0.1761
+-0.1761 Tooth Decay 0.1761
+-0.1761 check-up </s> 0.7404
+-0.1761 plaque </s> 0.7404
+
+\3-grams:
+-1.0000 </s> <s> Bacteria 
+-1.0000 </s> <s> Calculus 
+-1.0000 </s> <s> Gum 
+-1.0000 </s> <s> Impression 
+-1.0000 </s> <s> Inflammation 
+-1.0000 </s> <s> Local 
+-1.0000 </s> <s> Protrude 
+-1.0000 </s> <s> Regular 
+-1.0000 </s> <s> Tooth 
+-0.3010 <s> Bacteria </s> 
+-0.3010 <s> Calculus </s> 
+-0.3010 <s> Dental plaque 
+-0.3010 <s> Gum Disease 
+-0.3010 <s> Impression </s> 
+-0.3010 <s> Inflammation </s> 
+-0.3010 <s> Local Anaesthesia 
+-0.3010 <s> Protrude mandible 
+-0.3010 <s> Regular check-up 
+-0.3010 <s> Tooth Decay 
+-0.3010 Anaesthesia </s> <s> 
+-0.3010 Bacteria </s> <s> 
+-0.3010 Calculus </s> <s> 
+-0.3010 Decay </s> <s> 
+-0.3010 Dental plaque </s> 
+-0.3010 Disease </s> <s> 
+-0.3010 Gum Disease </s> 
+-0.3010 Impression </s> <s> 
+-0.3010 Inflammation </s> <s> 
+-0.3010 Local Anaesthesia </s> 
+-0.3010 Protrude mandible </s> 
+-0.3010 Regular check-up </s> 
+-0.3010 Tooth Decay </s> 
+-0.3010 check-up </s> <s> 
+-0.3010 plaque </s> <s> 
+
+\end\
