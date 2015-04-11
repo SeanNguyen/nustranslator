@@ -56,7 +56,8 @@ exports.index = function(req, res) {
 				exec('./server/data/cmuclmtk/text2wfreq < ' + language + '.txt | ./server/data/cmuclmtk/wfreq2vocab > ' + language + '.vocab; ./server/data/cmuclmtk/text2idngram -vocab ' + language + '.vocab -idngram ' + language + '.idngram < ' + language + '.txt; ./server/data/cmuclmtk/idngram2lm -vocab_type 0 -idngram ' + language + '.idngram -vocab ' + language + '.vocab -arpa server/data/language_model/' + language.toLowerCase() + '.lm', 
 				function(error, stdout, stderr) {
 					if(error) {
-						console.log('API UPDATE: convert to lm file fail')
+						console.log('API UPDATE: convert to lm file fail');
+						console.log(stderr);
 						res.json([{ result : 'fail' }]);
 					} else {
 						console.log('API UPDATE: converted: ' + language);
