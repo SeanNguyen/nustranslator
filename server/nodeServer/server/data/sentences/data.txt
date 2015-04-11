@@ -1,0 +1,1 @@
+{"version":8,"data":[{"language":"English","sentences":"Stand Up\nSit Down"},{"language":"Mandarin","sentences":"您好\n歡迎光臨"}]}
