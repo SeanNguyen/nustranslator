@@ -31,6 +31,7 @@ public class Configurations {
     public static final String Sphinx_keyword_search = "search";
 
     //Data storage
+    public static final String Data_fileName_dir = "data/";
     public static final String Data_fileName_sentences = "data.txt";
     public static final String Data_fileName_dict_ext = ".dic";
     public static final String Data_fileName_languageModel_ext = ".lm";
