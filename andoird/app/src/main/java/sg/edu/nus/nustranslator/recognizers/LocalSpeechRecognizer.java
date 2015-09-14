@@ -72,17 +72,21 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             Assets assets = new Assets(context);
             File assetDir = assets.syncAssets();
             File modelsDir = new File(assetDir, Configurations.Sphinx_models_dir);
-            File internalPath = context.getFilesDir();
+            //File internalPath = context.getFilesDir();
+            File internalDir =  new File(assetDir,"lb");
+            //File dictionaryFile = context.getResources().getAssets().open( language + Configurations.Data_fileName_dict_ext);
+
             this.recognizer = defaultSetup()
                     .setAcousticModel(new File(modelsDir, Configurations.Sphinx_acousticModel_dir + language))
-                    .setDictionary(new File(internalPath, language + Configurations.Data_fileName_dict_ext))
+
+                    .setDictionary(new File(internalDir, language + Configurations.Data_fileName_dict_ext))
                     .setBoolean("-remove_noise", true)
                     .setKeywordThreshold(Configurations.Sphinx_keywordThreshold)
                     .getRecognizer();
             this.recognizer.addListener(this);
 
             // Create language model search.
-            File languageModel = new File(internalPath, language + Configurations.Data_fileName_languageModel_ext);
+            File languageModel = new File(internalDir, language + Configurations.Data_fileName_languageModel_ext);
             recognizer.addNgramSearch(Configurations.Sphinx_keyword_search, languageModel);
         } catch (Exception e) {
             e.printStackTrace();
