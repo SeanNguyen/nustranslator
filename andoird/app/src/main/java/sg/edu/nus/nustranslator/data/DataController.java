@@ -1,16 +1,29 @@
 package sg.edu.nus.nustranslator.data;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Scanner;
 import java.util.Vector;
 
+import edu.cmu.pocketsphinx.Assets;
 import sg.edu.nus.nustranslator.models.AppModel;
 import sg.edu.nus.nustranslator.net.DataFetcher;
 import sg.edu.nus.nustranslator.ultis.Configurations;
+
+
+import java.io.InputStream;
+import org.apache.http.util.EncodingUtils;
+import android.app.Activity;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.widget.TextView;
 
 /**
  * Created by Storm on 3/6/2015.
@@ -60,6 +73,7 @@ public class DataController {
         }
     }
 
+
     public void deserializeData(AppModel model, Context context) {
         //the format will be:
         //data version
@@ -68,9 +82,9 @@ public class DataController {
         //Language name
         //sentences
         model.resetModel();
-        String fileName = Configurations.Data_fileName_sentences;
+
         try {
-            Scanner scanner = new Scanner(context.openFileInput(fileName));
+            Scanner scanner = new Scanner(context.getResources().getAssets().open(Configurations.Data_fileName_dir + Configurations.Data_fileName_sentences));
             int dataVersion = Integer.parseInt(scanner.nextLine());
             model.setDataVersion(dataVersion);
 
@@ -89,8 +103,10 @@ public class DataController {
             }
             scanner.close();
         } catch (IOException e) {
+            System.out.print("didn't find the data.txt");
             e.printStackTrace();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -113,9 +129,13 @@ public class DataController {
     private void saveDict(String language, String content, Context context) {
         try {
             String fileName = language + Configurations.Data_fileName_dict_ext;
+           // BufferedWriter outputStream = new BufferedWriter(
+           //         new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
             BufferedWriter outputStream = new BufferedWriter(
                     new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
-            outputStream.write(content);
+
+
+                    outputStream.write(content);
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
