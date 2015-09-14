@@ -18,4 +18,4 @@ models/hmm/mandarin/mixture_weights
 lb/english.dic
 lb/english.lm
 lb/mandarin.dic
-lb/english.lm
+lb/mandarin.lm
