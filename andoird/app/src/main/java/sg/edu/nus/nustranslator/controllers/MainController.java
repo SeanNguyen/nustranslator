@@ -91,6 +91,19 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         return appModel.getAppState();
     }
 
+    //YM
+    //Update states when using recorded mps for recognition
+    //Public methods
+    public States changeStateRecordedOne() {
+        States state = appModel.getAppState();
+        if (state == States.ACTIVE) {
+            appModel.setAppState(States.INACTIVE);
+        } else {
+            appModel.setAppState(States.ACTIVE);
+        }
+        return appModel.getAppState();
+    }
+
     public void onSpeechRecognitionResultUpdate(String input) {
         if (this.lastRecognitionUpdate != null && this.lastRecognitionUpdate.equals(input)) {
             return;
