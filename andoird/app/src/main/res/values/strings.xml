@@ -9,6 +9,9 @@
     <string name="button_session_inactive">START</string>
     <string name="button_session_active">STOP</string>
 
+    <!--Buttons-->
+    <string name="button_using_record">Using Record</string>
+
     <!--Menu-->
     <string name="menu_updateData">Update Data</string>
     <string name="menu_viewAllSentences">View Phrases</string>
