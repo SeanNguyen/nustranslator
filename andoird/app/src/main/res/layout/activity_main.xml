@@ -21,7 +21,7 @@
 
         </RelativeLayout>
 
-        <!--Result view-->
+        <!--Result view for instant translation-->
         <RelativeLayout
             android:id="@+id/sessionView"
             android:layout_width="match_parent"
@@ -33,25 +33,54 @@
 
         </RelativeLayout>
 
-        <!--Main button-->
+        <!--Result view for recorded one-->
         <RelativeLayout
+            android:id="@+id/sessionViewRecorded"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="100"
+            android:visibility="gone">
+
+            <include layout="@layout/session_active_recorded"/>
+
+        </RelativeLayout>
+        <!--Main button-->
+        <LinearLayout
             android:id="@+id/controlView"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:padding="16dp">
-
+            <Button
+                android:id="@+id/button_using_record"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_session_height"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:text="@string/button_using_record"
+                android:textSize="@dimen/button_textSize"
+                android:background="@drawable/button_session"
+                android:textColor="@color/violetThemeColor"
+                android:textStyle="bold"
+                android:onClick="onSessionButtonUsingRecord"
+                android:layout_weight="1"/>
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="30dp"/>
             <Button
                 android:id="@+id/sessionButton"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/button_session_height"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:text="@string/button_session_inactive"
                 android:textSize="@dimen/button_textSize"
                 android:background="@drawable/button_session"
                 android:textColor="@color/violetThemeColor"
                 android:textStyle="bold"
-                android:onClick="onSessionButtonClick"/>
-        </RelativeLayout>
+                android:onClick="onSessionButtonClick"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
