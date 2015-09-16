@@ -93,12 +93,78 @@ public class MainActivity extends Activity {
         }
     }
 
+    /*
+     * functions for mode: instant translation
+     *
+     */
+
     public void onSessionButtonClick(View view) {
         States currentAppState = controller.changeState();
         setResultView(currentAppState);
         setSessionButtonText(currentAppState);
     }
+    private void setResultView(States appState) {
+        View languageSelection = findViewById(R.id.languageSelection);
+        View session = findViewById(R.id.sessionView);
+        View sessionViewRecorded = findViewById(R.id.sessionViewRecorded);
 
+        if (appState == States.ACTIVE) {
+            TextView topResult = (TextView) findViewById(R.id.firstResult);
+            topResult.setText("");
+            TextView otherResult = (TextView) findViewById(R.id.otherResults);
+            otherResult.setText("");
+            TextView translatedResult = (TextView) findViewById(R.id.resultText);
+            translatedResult.setText("");
+
+            languageSelection.setVisibility(View.GONE);
+            session.setVisibility(View.VISIBLE);
+            sessionViewRecorded.setVisibility(View.GONE);
+        } else {
+            languageSelection.setVisibility(View.VISIBLE);
+            session.setVisibility(View.GONE);
+            sessionViewRecorded.setVisibility(View.GONE);
+        }
+    }
+
+    /*
+     * functions for mode: translation for recorded one
+     * YM
+     * Update the part for the recorded audio
+     *
+     */
+    public void onSessionButtonUsingRecord(View view){
+        States currentAppState = controller.changeStateRecordedOne();
+        setResultViewRecordedOne(currentAppState);
+        setSessionButtonText(currentAppState);
+    }
+
+    private void setResultViewRecordedOne(States appState) {
+        View languageSelection = findViewById(R.id.languageSelection);
+        View session = findViewById(R.id.sessionView);
+        View sessionViewRecorded = findViewById(R.id.sessionViewRecorded);
+
+        if (appState == States.ACTIVE) {
+            TextView topResult = (TextView) findViewById(R.id.firstResult);
+            topResult.setText("");
+            TextView otherResult = (TextView) findViewById(R.id.otherResults);
+            otherResult.setText("");
+            TextView translatedResult = (TextView) findViewById(R.id.resultText);
+            translatedResult.setText("");
+
+            languageSelection.setVisibility(View.GONE);
+            session.setVisibility(View.GONE);
+            sessionViewRecorded.setVisibility(View.VISIBLE);
+        } else {
+            languageSelection.setVisibility(View.VISIBLE);
+            session.setVisibility(View.GONE);
+            sessionViewRecorded.setVisibility(View.GONE);
+        }
+    }
+
+    /*
+     * shared functions for both two modes: translation for recorded one and instant translation
+     *
+     */
     public void onFinishLoading() {
         this.loadingView.setVisibility(View.GONE);
     }
@@ -149,34 +215,23 @@ public class MainActivity extends Activity {
         spinner.setAdapter(adapter);
     }
 
-    private void setResultView(States appState) {
-        View languageSelection = findViewById(R.id.languageSelection);
-        View session = findViewById(R.id.sessionView);
 
-        if (appState == States.ACTIVE) {
-            TextView topResult = (TextView) findViewById(R.id.firstResult);
-            topResult.setText("");
-            TextView otherResult = (TextView) findViewById(R.id.otherResults);
-            otherResult.setText("");
-            TextView translatedResult = (TextView) findViewById(R.id.resultText);
-            translatedResult.setText("");
 
-            languageSelection.setVisibility(View.GONE);
-            session.setVisibility(View.VISIBLE);
-        } else {
-            languageSelection.setVisibility(View.VISIBLE);
-            session.setVisibility(View.GONE);
-        }
-    }
 
     private void setSessionButtonText(States appState) {
         if (appState == States.ACTIVE) {
             Button button = (Button) findViewById(R.id.sessionButton);
             button.setText(R.string.button_session_active);
+            Button button1 = (Button) findViewById(R.id.button_using_record);
+            button1.setVisibility(View.INVISIBLE);
         } else {
             Button button = (Button) findViewById(R.id.sessionButton);
             button.setText(R.string.button_session_inactive);
+            Button button1 = (Button) findViewById(R.id.button_using_record);
+            button1.setVisibility(View.VISIBLE);
         }
     }
+
+
 
 }
