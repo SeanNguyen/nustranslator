@@ -7,6 +7,7 @@ import android.util.Log;
 
 import net.java.frej.fuzzy.Fuzzy;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Timer;
@@ -29,10 +30,11 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
     //attributes
     private AppModel appModel = AppModel.getInstance();
     private ISpeechRecognizer speechRecognizer;
-    private DataController dataController = new DataController();
+    public DataController dataController = new DataController();
     //private Streamer audioStreamer = new AudioStreamer();
     //private Streamer textStreamer = new TextStreamer();
     private MainActivity mainActivity;
+    public ArrayList<String> mandainList = new ArrayList();
 
     private AudioRecord recorder;
 
@@ -48,7 +50,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
     public MainController(MainActivity context) {
         this.mainActivity = context;
         this.speechRecognizer = new LocalSpeechRecognizer(context, this);
-        this.dataController.deserializeData(appModel, context);
+        this.mandainList.addAll(this.dataController.deserializeData(appModel, context));
         mainActivity.onFinishLoading();
         mainActivity.updateLanguageChoices(appModel.getAllLanguages());
 

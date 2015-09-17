@@ -16,7 +16,7 @@ import edu.cmu.pocketsphinx.Assets;
 import sg.edu.nus.nustranslator.models.AppModel;
 import sg.edu.nus.nustranslator.net.DataFetcher;
 import sg.edu.nus.nustranslator.ultis.Configurations;
-
+import sg.edu.nus.nustranslator.activities.MainActivity;
 
 import java.io.InputStream;
 import org.apache.http.util.EncodingUtils;
@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
+import java.util.ArrayList;
 
 /**
  * Created by Storm on 3/6/2015.
@@ -32,6 +33,7 @@ public class DataController {
     //Attributes
     DataFetcher dataFetcher = new DataFetcher();
 
+    public ArrayList<String> mandainList = new ArrayList();
     //Constructor
     public DataController() {
     }
@@ -74,7 +76,7 @@ public class DataController {
     }
 
 
-    public void deserializeData(AppModel model, Context context) {
+    public ArrayList<String> deserializeData(AppModel model, Context context) {
         //the format will be:
         //data version
         //number of language
@@ -98,6 +100,9 @@ public class DataController {
                 for (int j = 0; j < noOfPair; j++) {
                     String sentence = scanner.nextLine();
                     sentences.add(sentence);
+                    if(language.equals("English")){
+                        mandainList.add(sentence);
+                    }
                 }
                 model.addLanguage(language, sentences);
             }
@@ -109,6 +114,7 @@ public class DataController {
         catch (Exception e) {
             e.printStackTrace();
         }
+        return mandainList;
     }
 
     public void updateData(AppModel model, Context context) {

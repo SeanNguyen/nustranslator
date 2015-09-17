@@ -13,7 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.media.MediaPlayer;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
@@ -28,6 +30,8 @@ public class MainActivity extends Activity {
     private View loadingView;
     private Spinner originalLanguageSpinner;
     private Spinner destinationLanguageSpinner;
+    private String bestResult;
+    MediaPlayer mp        = null;
 
     //events
     @Override
@@ -93,6 +97,26 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void playBackVideo(View view) {
+        int index = -1;
+
+        if (bestResult != ""){
+            if(controller.dataController.mandainList.contains(bestResult)){
+                index = controller.mandainList.indexOf(bestResult);
+                if (mp != null) {
+                    mp.reset();
+                    mp.release();
+                }
+                mp = MediaPlayer.create(this, R.raw.test_cbr);
+
+                mp.start();
+            }
+        }
+        if(index >0){
+
+        }
+    }
+
     /*
      * functions for mode: instant translation
      *
@@ -102,7 +126,12 @@ public class MainActivity extends Activity {
         States currentAppState = controller.changeState();
         setResultView(currentAppState);
         setSessionButtonText(currentAppState);
+        if (mp != null) {
+            mp.reset();
+            mp.release();
+        }
     }
+
     private void setResultView(States appState) {
         View languageSelection = findViewById(R.id.languageSelection);
         View session = findViewById(R.id.sessionView);
@@ -144,6 +173,8 @@ public class MainActivity extends Activity {
             return;
         }
         topResult.setText(results.get(0));
+        bestResult = results.get(0);
+
         String similarResultText = "";
         for (int i = 1; i < results.size(); i++) {
             similarResultText += results.get(i) + Configurations.Newline;
