@@ -50,22 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:padding="16dp">
-            <Button
-                android:id="@+id/button_using_record"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/button_session_height"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
-                android:text="@string/button_using_record"
-                android:textSize="@dimen/button_textSize"
-                android:background="@drawable/button_session"
-                android:textColor="@color/violetThemeColor"
-                android:textStyle="bold"
-                android:onClick="onSessionButtonUsingRecord"
-                android:layout_weight="1"/>
-            <Space
-                android:layout_width="15dp"
-                android:layout_height="30dp"/>
+
             <Button
                 android:id="@+id/sessionButton"
                 android:layout_width="match_parent"
