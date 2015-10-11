@@ -1,71 +1,67 @@
 9
 2
-33
+31
 English
-Dental plaque
-Bacteria
-Calculus
-Gum Disease
-Periodontal Disease
-Tooth Decay
-Dental Caries
-Impression
-Local Anaesthesia
-Regular check-up
-Inflammation
-Protrude mandible
-Enamel
-Dentine
-Pulp
-Outer surface
-Inner surface
-Biting surface
 Abscess
-Dental Plaque
+Bacteria
+Biting surface
+Bridge
+Calculus
+Crown
 Dental Calculus
-Halitosis
-Sensitive teeth
-Wisdom Tooth
+Dental Floss
+Dental implants
+Dental plaque
+Dentine
+Enamel
 Filling
-Scaling
+Fluoride
+Gum Disease
+Halitosis
+Impression
+Inflammation
+Inner surface
+Local Anaesthesia
+Mouthrinse
+Outer surface
+Protrude mandible
+Pulp
+Regular check-up
 Root Canal
 Root Canal Treatment
-Bridge
-Dental implants
-Dental Floss
-Mouthrinse
-Fluoride
+Scaling
+Sensitive teeth
+Tooth Decay
+Wisdom Tooth
 Mandarin
-牙垢
-细菌
-牙石
-牙周病
-牙龈病
-蛀牙
-蛀牙
-印模
-麻醉
-定期检查
-发炎
-伸出下巴
-珐琅质
-牙本质
-牙髓
-牙齿的外层
-牙齿的内层
-牙齿的咀嚼表面
 脓肿
-牙菌斑
+细菌
+牙齿的咀嚼表面
+牙桥
 牙石
-口臭
-牙齿敏感
-智慧牙
+牙套
+牙石
+牙线
+种牙
+牙垢
+牙本质
+珐琅质
 补牙
-洗牙齿
+氟化物
+牙周病
+口臭
+印模
+发炎
+牙齿的内层
+麻醉
+漱口水
+牙齿的外层
+伸出下巴
+牙髓
+定期检查
 根管
 根管治疗
-牙桥
-种牙
-牙线
-漱口水
-氟化物
+洗牙齿
+牙齿敏感
+蛀牙
+智慧牙
