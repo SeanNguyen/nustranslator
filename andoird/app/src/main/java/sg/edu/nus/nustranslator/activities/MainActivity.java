@@ -1,7 +1,11 @@
 package sg.edu.nus.nustranslator.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -15,7 +19,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.media.MediaPlayer;
 
+import junit.framework.Assert;
+
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
@@ -31,7 +42,10 @@ public class MainActivity extends Activity {
     private Spinner originalLanguageSpinner;
     private Spinner destinationLanguageSpinner;
     private String bestResult;
-    MediaPlayer mp        = null;
+    MediaPlayer mp = null;
+    String currentOriginalLanguage="english";
+    String currentDestinationLanguage="english";
+    public ArrayList<String> mandainListCurrent = new ArrayList();
 
     //events
     @Override
@@ -40,17 +54,64 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         this.loadingView = findViewById(R.id.main_loading);
         this.originalLanguageSpinner = (Spinner) findViewById(R.id.originalLanguages_spinner);
+
+
+
+
+        mandainListCurrent.add("Abscess");
+        mandainListCurrent.add("Bacteria");
+        mandainListCurrent.add("Biting surface");
+        mandainListCurrent.add("Bridge");
+        mandainListCurrent.add("Calculus");
+        mandainListCurrent.add("Crown");
+        mandainListCurrent.add("Dental Calculus");
+        mandainListCurrent.add("Dental Floss");
+        mandainListCurrent.add("Dental implants");
+        mandainListCurrent.add("Dental plaque");
+        mandainListCurrent.add("Dentine");
+        mandainListCurrent.add("Enamel");
+        mandainListCurrent.add("Filling");
+        mandainListCurrent.add("Fluoride");
+        mandainListCurrent.add("Gum Disease");
+        mandainListCurrent.add("Halitosis");
+        mandainListCurrent.add("Impression");
+        mandainListCurrent.add("Inflammation");
+        mandainListCurrent.add("Inner surface");
+        mandainListCurrent.add("Local Anaesthesia");
+        mandainListCurrent.add("Mouthrinse");
+        mandainListCurrent.add("Outer surface");
+        mandainListCurrent.add("Protrude mandible");
+        mandainListCurrent.add("Pulp");
+        mandainListCurrent.add("Regular check-up");
+        mandainListCurrent.add("Root Canal");
+        mandainListCurrent.add("Root Canal Treatment");
+        mandainListCurrent.add("Scaling");
+        mandainListCurrent.add("Sensitive teeth");
+        mandainListCurrent.add("Tooth Decay");
+        mandainListCurrent.add("Wisdom Tooth");
+
+
+
+
+
+
         this.originalLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 loadingView.setVisibility(View.VISIBLE);
                 controller.setOriginalLanguage(position);
+//                if(position == -1){
+//                    currentOriginalLanguage="english";
+//                }else{
+//                    currentOriginalLanguage="mandarin";
+//                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 loadingView.setVisibility(View.VISIBLE);
                 controller.setOriginalLanguage(-1);
+//                currentOriginalLanguage="english";
             }
 
         });
@@ -59,11 +120,18 @@ public class MainActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 controller.setDestinationLanguage(position);
+//                if(position == -1){
+//                    currentDestinationLanguage="english";
+//                }else{
+//                    currentDestinationLanguage="mandarin";
+//                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 controller.setDestinationLanguage(-1);
+//                currentDestinationLanguage="english";
+
             }
 
         });
@@ -98,21 +166,309 @@ public class MainActivity extends Activity {
     }
 
     public void playBackVideo(View view) {
-        int index = -1;
+//        playMp3(currentDestinationLanguage);
+        playMp3("mandarin");
 
+    }
+
+    public void playBackVideo1(View view) {
+//        playMp3(currentOriginalLanguage);
+        playMp3("english");
+
+    }
+
+    public void playMp3(String language)  {
+        int index = -1;
         if (bestResult != ""){
-            if(controller.dataController.mandainList.contains(bestResult)){
+
+            if(mandainListCurrent.contains(bestResult)){
+//            if(controller.dataController.mandainList.contains(bestResult)){
+//                Uri mp3 = Uri.parse("android.resource://"
+//                        +  "sg.edu.nus.nustranslator/raw/"
+//                        + datas.get(position).word);
+//                /Users/yumengyin/Desktop/nustranslator/andoird/app/src/main/res/raw/bacteria.mp3
                 index = controller.mandainList.indexOf(bestResult);
                 if (mp != null) {
                     mp.reset();
                     mp.release();
                 }
-                mp = MediaPlayer.create(this, R.raw.test_cbr);
+//                System.out.print("test mp3 path is" + R.raw.test_cbr);
+//
+//
+//                try {
+//                    AssetFileDescriptor descriptor = getAssets().openFd("test_cbr.mp3");
+//                    long start = descriptor.getStartOffset();
+//                    long end = descriptor.getLength();
+//
+//                    mp.setDataSource(descriptor.getFileDescriptor(), start, end);
+//                    mp.prepare();
+//
+//                    mp.setVolume(1.0f, 1.0f);
+//                    mp.start();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
 
+
+
+
+                if(language.equals("mandarin")){
+                    playMandarin(bestResult);
+                }else{
+                    playEnglish(bestResult);
+                }
                 mp.start();
+//                try {
+//                    Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.test_cbr);
+////                    //mp.setDataSource("file:///android_asset/"+"mp3/" + "test_cbr.mp3");
+//                    String url= uri.toString();
+//                    String[] urlList = url.split("test_cbr.mp3");
+//                    Uri uriFinal = Uri.parse(urlList[0]+ "m"+bestResult.toLowerCase().replaceAll(" ", "")+".mp3");
+//
+//                    mp = MediaPlayer.create(this,uriFinal);
+////                    mp.setDataSource(this.getResources().getAssets().open("mp3/" + "test_cbr.mp3"));
+////                    mp.prepare();
+////                    mp.start();
+////                    mp = MediaPlayer.create(this.getResources().getAssets().open("MyFolder/" + "MyFile.db3"));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                mp = MediaPlayer.create(this,R.raw.test_cbr );
+
             }
         }
         if(index >0){
+
+        }
+
+
+    }
+    public static String[] getAllFilesInAssetByExtension(Context context, String path, String extension){
+        Assert.assertNotNull(context);
+
+        try {
+            String[] files = context.getAssets().list(path);
+
+
+
+            List<String> filesWithExtension = new ArrayList<String>();
+
+            for(String file : files){
+                if(file.endsWith(extension)){
+                    filesWithExtension.add(file);
+                }
+            }
+
+            return filesWithExtension.toArray(new String[filesWithExtension.size()]);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    void playMandarin(String bestResult){
+        switch (bestResult){
+            case "Wisdom Tooth":
+                mp = MediaPlayer.create(this, R.raw.mwisdomtooth);
+                break;
+            case "Tooth Decay":
+                mp = MediaPlayer.create(this, R.raw.mtoothdecay);
+                break;
+            case "Sensitive teeth":
+                mp = MediaPlayer.create(this, R.raw.msensitiveteeth);
+                break;
+            case "Scaling":
+                mp = MediaPlayer.create(this, R.raw.mscaling);
+                break;
+            case "Root Canal Treatment":
+                mp = MediaPlayer.create(this, R.raw.mrootcanaltreatment);
+                break;
+            case "Root Canal":
+                mp = MediaPlayer.create(this, R.raw.mrootcanal);
+                break;
+            case "Local Anaesthesia":
+                mp = MediaPlayer.create(this, R.raw.mlocalanaesthesia);
+                break;
+            case "Regular check-up":
+                mp = MediaPlayer.create(this, R.raw.mregularcheckup);
+                break;
+            case "Pulp":
+                mp = MediaPlayer.create(this, R.raw.mpulp);
+                break;
+            case "Protrude mandible":
+                mp = MediaPlayer.create(this, R.raw.mprotrudemandible);
+                break;
+            case "Outer surface":
+                mp = MediaPlayer.create(this, R.raw.moutersurface);
+                break;
+            case "Mouthrinse":
+                mp = MediaPlayer.create(this, R.raw.mmouthrinse);
+                break;
+            case "Inner surface":
+                mp = MediaPlayer.create(this, R.raw.minnersurface);
+                break;
+            case "Impression":
+                mp = MediaPlayer.create(this, R.raw.mimpression);
+                break;
+            case "Halitosis":
+                mp = MediaPlayer.create(this, R.raw.mhalitosis);
+                break;
+            case "Gum Disease":
+                mp = MediaPlayer.create(this, R.raw.mgumdisease);
+                break;
+            case "Fluoride":
+                mp = MediaPlayer.create(this, R.raw.mfluoride);
+                break;
+            case "Filling":
+                mp = MediaPlayer.create(this, R.raw.mfilling);
+                break;
+            case "Enamel":
+                mp = MediaPlayer.create(this, R.raw.menamel);
+                break;
+            case "Dentine":
+                mp = MediaPlayer.create(this, R.raw.mdentine);
+                break;
+            case "Dental plaque":
+                mp = MediaPlayer.create(this, R.raw.mdentalplaque);
+                break;
+            case "Dental implants":
+                mp = MediaPlayer.create(this, R.raw.mdentalimplants);
+                break;
+            case "Dental Floss":
+                mp = MediaPlayer.create(this, R.raw.mdentalfloss);
+                break;
+            case "Dental Calculus":
+                mp = MediaPlayer.create(this, R.raw.mdentalcalculus);
+                break;
+            case "Crown":
+                mp = MediaPlayer.create(this, R.raw.mcrown);
+                break;
+            case "Calculus":
+                mp = MediaPlayer.create(this, R.raw.mcalculus);
+                break;
+            case "Bridge":
+                mp = MediaPlayer.create(this, R.raw.mbridge);
+                break;
+            case "Biting surface":
+                mp = MediaPlayer.create(this, R.raw.mbitingsurface);
+                break;
+            case "Bacteria":
+                mp = MediaPlayer.create(this, R.raw.mbacteria);
+                break;
+            case "Abscess":
+                mp = MediaPlayer.create(this, R.raw.mabscess);
+                break;
+            case "Inflammation":
+                mp = MediaPlayer.create(this, R.raw.minflammation);
+                break;
+
+
+
+            default:
+                break;
+
+        }
+    }
+    void playEnglish(String bestResult){
+        switch (bestResult){
+            case "Wisdom Tooth":
+                mp = MediaPlayer.create(this, R.raw.wisdomtooth);
+                break;
+            case "Tooth Decay":
+                mp = MediaPlayer.create(this, R.raw.toothdecay);
+                break;
+            case "Sensitive teeth":
+                mp = MediaPlayer.create(this, R.raw.sensitiveteeth);
+                break;
+            case "Scaling":
+                mp = MediaPlayer.create(this, R.raw.scaling);
+                break;
+            case "Root Canal Treatment":
+                mp = MediaPlayer.create(this, R.raw.rootcanaltreatment);
+                break;
+            case "Root Canal":
+                mp = MediaPlayer.create(this, R.raw.rootcanal);
+                break;
+            case "Local Anaesthesia":
+                mp = MediaPlayer.create(this, R.raw.localanaesthesia);
+                break;
+            case "Regular check-up":
+                mp = MediaPlayer.create(this, R.raw.regularcheckup);
+                break;
+            case "Pulp":
+                mp = MediaPlayer.create(this, R.raw.pulp);
+                break;
+            case "Protrude mandible":
+                mp = MediaPlayer.create(this, R.raw.protrudemandible);
+                break;
+            case "Outer surface":
+                mp = MediaPlayer.create(this, R.raw.outersurface);
+                break;
+            case "Mouthrinse":
+                mp = MediaPlayer.create(this, R.raw.mouthrinse);
+                break;
+            case "Inner surface":
+                mp = MediaPlayer.create(this, R.raw.innersurface);
+                break;
+            case "Impression":
+                mp = MediaPlayer.create(this, R.raw.impression);
+                break;
+            case "Halitosis":
+                mp = MediaPlayer.create(this, R.raw.halitosis);
+                break;
+            case "Gum Disease":
+                mp = MediaPlayer.create(this, R.raw.gumdisease);
+                break;
+            case "Fluoride":
+                mp = MediaPlayer.create(this, R.raw.fluoride);
+                break;
+            case "Filling":
+                mp = MediaPlayer.create(this, R.raw.filling);
+                break;
+            case "Enamel":
+                mp = MediaPlayer.create(this, R.raw.enamel);
+                break;
+            case "Dentine":
+                mp = MediaPlayer.create(this, R.raw.dentine);
+                break;
+            case "Dental plaque":
+                mp = MediaPlayer.create(this, R.raw.dentalplaque);
+                break;
+            case "Dental implants":
+                mp = MediaPlayer.create(this, R.raw.dentalimplants);
+                break;
+            case "Dental Floss":
+                mp = MediaPlayer.create(this, R.raw.dentalfloss);
+                break;
+            case "Dental Calculus":
+                mp = MediaPlayer.create(this, R.raw.dentalcalculus);
+                break;
+            case "Crown":
+                mp = MediaPlayer.create(this, R.raw.crown);
+                break;
+            case "Calculus":
+                mp = MediaPlayer.create(this, R.raw.calculus);
+                break;
+            case "Bridge":
+                mp = MediaPlayer.create(this, R.raw.bridge);
+                break;
+            case "Biting surface":
+                mp = MediaPlayer.create(this, R.raw.bitingsurface);
+                break;
+            case "Bacteria":
+                mp = MediaPlayer.create(this, R.raw.bacteria);
+                break;
+            case "Abscess":
+                mp = MediaPlayer.create(this, R.raw.abscess);
+                break;
+            case "Inflammation":
+                mp = MediaPlayer.create(this, R.raw.inflammation);
+                break;
+
+            default:
+
+                break;
 
         }
     }
@@ -123,13 +479,14 @@ public class MainActivity extends Activity {
      */
 
     public void onSessionButtonClick(View view) {
+//        if (mp != null) {
+//            mp.reset();
+//            mp.release();
+//        }
         States currentAppState = controller.changeState();
         setResultView(currentAppState);
         setSessionButtonText(currentAppState);
-        if (mp != null) {
-            mp.reset();
-            mp.release();
-        }
+
     }
 
     private void setResultView(States appState) {
