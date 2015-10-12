@@ -28,7 +28,7 @@ import sg.edu.nus.nustranslator.ultis.Configurations;
 public class MainController implements TextToSpeech.OnUtteranceCompletedListener {
 
     //attributes
-    private AppModel appModel = AppModel.getInstance();
+    public AppModel appModel = AppModel.getInstance();
     private ISpeechRecognizer speechRecognizer;
     public DataController dataController = new DataController();
     //private Streamer audioStreamer = new AudioStreamer();
@@ -99,6 +99,9 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         if (this.lastRecognitionUpdate != null && this.lastRecognitionUpdate.equals(input)) {
             return;
         }
+//        if (this.lastRecognitionUpdate != null ) {
+//            return;
+//        }
         Log.e("Speech Partial Result", input);
 
         //reset timer
@@ -187,7 +190,11 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         }
         for (int i = 0; i < sentences.size(); i++) {
             if (topResult.size() == 0) {
-                topResult.add(sentences.get(i));
+                String lowerCasedSentence = sentences.get(i).toLowerCase();
+                double similarity = Fuzzy.similarity(input, lowerCasedSentence);
+                if(similarity<=0.8) {
+                    topResult.add(sentences.get(i));
+                }
             } else {
                 input = input.toLowerCase();
                 String lowerCasedSentence = sentences.get(i).toLowerCase();
@@ -197,10 +204,17 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
                     double topResultSimilarity = Fuzzy.similarity(input, topResult.get(j));
                     boolean isMoreSimilar = similarity < topResultSimilarity;
                     if (isMoreSimilar && j == 0) {
-                        topResult.insertElementAt(sentences.get(i), j);
+                        if(similarity<0.8) {
+                            topResult.insertElementAt(sentences.get(i), j);
+
+                        }
                         break;
                     } else if (!isMoreSimilar && j < 4) {
-                        topResult.insertElementAt(sentences.get(i), j + 1);
+                        if(similarity<0.8) {
+                            topResult.insertElementAt(sentences.get(i), j + 1);
+
+                        }
+
                         break;
                     }
                 }

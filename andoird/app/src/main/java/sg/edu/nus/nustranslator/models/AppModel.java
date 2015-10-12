@@ -16,8 +16,8 @@ public class AppModel {
     private Vector<String> languages = new Vector<String>();
     private HashMap<String, Vector<String>> languageSentencesMap = new HashMap<String, Vector<String>>();
 
-    private String originalLanguage;
-    private String destinationLanguage;
+    public String originalLanguage;
+    public String destinationLanguage;
 
     //constructor
     private AppModel() {

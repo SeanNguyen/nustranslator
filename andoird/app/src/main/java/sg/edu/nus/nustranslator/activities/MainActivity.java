@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -18,23 +19,34 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.media.MediaPlayer;
+import android.widget.Toast;
 
 import junit.framework.Assert;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import edu.cmu.pocketsphinx.Assets;
+import edu.cmu.pocketsphinx.Hypothesis;
+import edu.cmu.pocketsphinx.RecognitionListener;
+import edu.cmu.pocketsphinx.SpeechRecognizer;
 import sg.edu.nus.nustranslator.R;
 import sg.edu.nus.nustranslator.controllers.MainController;
 import sg.edu.nus.nustranslator.models.States;
 import sg.edu.nus.nustranslator.ultis.Configurations;
 
-public class MainActivity extends Activity {
+import static android.widget.Toast.makeText;
+import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
+
+public class MainActivity extends Activity implements
+        RecognitionListener {
 
     //attributes
     private MainController controller;
@@ -43,9 +55,24 @@ public class MainActivity extends Activity {
     private Spinner destinationLanguageSpinner;
     private String bestResult;
     MediaPlayer mp = null;
-    String currentOriginalLanguage="english";
-    String currentDestinationLanguage="english";
+
     public ArrayList<String> mandainListCurrent = new ArrayList();
+    boolean trigger = false;
+
+
+    private static final String START_TRANSLATION_PHRASE = "start translation";
+    private static final String END_TRANSLATION_PHRASE = "end translation";
+
+    private static final String MENU_SEARCH = "menu";
+
+    private SpeechRecognizer recognizer;
+    private HashMap<String, Integer> captions;
+    private static final String KWS_SEARCH = "wakeup";
+
+    /* Keyword we are looking for to activate menu */
+    private static final String KEYPHRASE = "start";
+    private static final String KEYPHRASE1 = "stop";
+
 
     //events
     @Override
@@ -55,6 +82,27 @@ public class MainActivity extends Activity {
         this.loadingView = findViewById(R.id.main_loading);
         this.originalLanguageSpinner = (Spinner) findViewById(R.id.originalLanguages_spinner);
 
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+                try {
+                    Assets assets = new Assets(MainActivity.this);
+                    File assetDir = assets.syncAssets();
+                    setupRecognizer(assetDir);
+                } catch (IOException e) {
+                    return e;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Exception result) {
+                if (result != null) {
+                } else {
+                    switchSearch(KWS_SEARCH);
+                }
+            }
+        }.execute();
 
 
 
@@ -532,6 +580,12 @@ public class MainActivity extends Activity {
         topResult.setText(results.get(0));
         bestResult = results.get(0);
 
+
+        if (controller.appModel.destinationLanguage.equals("Mandarin")) {
+            playMp3("mandarin");
+        }
+
+
         String similarResultText = "";
         for (int i = 1; i < results.size(); i++) {
             similarResultText += results.get(i) + Configurations.Newline;
@@ -577,9 +631,117 @@ public class MainActivity extends Activity {
         } else {
             Button button = (Button) findViewById(R.id.sessionButton);
             button.setText(R.string.button_session_inactive);
+            recognizer.startListening(KWS_SEARCH);
+            trigger = false;
             //Button button1 = (Button) findViewById(R.id.button_using_record);
             //button1.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        recognizer.cancel();
+//        recognizer.shutdown();
+    }
+
+    /**
+     * In partial result we get quick updates about current hypothesis. In
+     * keyword spotting mode we can react here, in other modes we need to wait
+     * for final result in onResult.
+     */
+    @Override
+    public void onPartialResult(Hypothesis hypothesis) {
+        if (hypothesis == null)
+            return;
+
+        String text = hypothesis.getHypstr();
+        if (text.equals(KEYPHRASE)) {
+//            ((TextView) findViewById(R.id.result_text)).setText(text);
+            if(trigger!=true) {
+                Spinner spinner = (Spinner) findViewById(R.id.originalLanguages_spinner);
+                spinner.setSelection(0);
+                Spinner spinner1 = (Spinner) findViewById(R.id.destinationLanguages_spinner);
+                spinner1.setSelection(1);
+                recognizer.cancel();
+                recognizer.stop();
+                Button button1 = (Button) findViewById(R.id.sessionButton);
+                trigger = true;
+//                controller = new MainController(this);
+                button1.performClick();
+
+
+            }
+
+        }
+
+    }
+
+    /**
+     * This callback is called when we stop the recognizer.
+     */
+    @Override
+    public void onResult(Hypothesis hypothesis) {
+//        ((TextView) findViewById(R.id.result_text)).setText("");
+        if (hypothesis != null) {
+            String text = hypothesis.getHypstr();
+            makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onBeginningOfSpeech() {
+    }
+
+    /**
+     * We stop recognizer here to get a final result
+     */
+    @Override
+    public void onEndOfSpeech() {
+        if (!recognizer.getSearchName().equals(KWS_SEARCH))
+            switchSearch(KWS_SEARCH);
+    }
+
+    private void switchSearch(String searchName) {
+        recognizer.stop();
+
+        // If we are not spotting, start listening with timeout (10000 ms or 10 seconds).
+        if (searchName.equals(KWS_SEARCH))
+            recognizer.startListening(searchName);
+        else
+            recognizer.startListening(searchName);
+
+    }
+
+    private void setupRecognizer(File assetsDir) throws IOException {
+        // The recognizer can be configured to perform multiple searches
+        // of different kind and switch between them
+
+        recognizer = defaultSetup()
+                .setAcousticModel(new File(assetsDir, "en-us-ptm"))
+                .setDictionary(new File(assetsDir, "cmudict-en-us.dict"))
+
+                        // To disable logging of raw audio comment out this call (takes a lot of space on the device)
+                .setRawLogDir(assetsDir)
+
+                        // Threshold to tune for keyphrase to balance between false alarms and misses
+                .setKeywordThreshold(1e-45f)
+
+                        // Use context-independent phonetic search, context-dependent is too slow for mobile
+                .setBoolean("-allphone_ci", true)
+
+                .getRecognizer();
+        recognizer.addListener(this);
+
+        /** In your application you might not need to add all those searches.
+         * They are added here for demonstration. You can leave just one.
+         */
+
+        // Create keyword-activation search.
+        recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
+//        recognizer.addKeyphraseSearch(KWS_SEARCH, "stop");
+
+
     }
 
 
