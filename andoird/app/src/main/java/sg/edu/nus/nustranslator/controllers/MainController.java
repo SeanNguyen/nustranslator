@@ -29,7 +29,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 
     //attributes
     public AppModel appModel = AppModel.getInstance();
-    private ISpeechRecognizer speechRecognizer;
+    public ISpeechRecognizer speechRecognizer;
     public DataController dataController = new DataController();
     //private Streamer audioStreamer = new AudioStreamer();
     //private Streamer textStreamer = new TextStreamer();
