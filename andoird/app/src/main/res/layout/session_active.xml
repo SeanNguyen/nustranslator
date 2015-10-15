@@ -15,10 +15,17 @@
         android:layout_weight="70"
         android:orientation="horizontal">
 
-        <ImageView
+<!--        <ImageView
             android:layout_width="28dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/mic_icon"/>
+            android:src="@drawable/mic_icon"/>-->
+        <Button
+            android:id="@+id/playBackVideoButton1"
+            android:layout_width="28dp"
+            android:layout_height="25dp"
+            android:background="@drawable/speaker_icon"
+            android:onClick="playBackVideo1"
+            android:layout_marginTop="100dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
