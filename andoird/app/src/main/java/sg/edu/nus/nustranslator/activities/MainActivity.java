@@ -43,9 +43,6 @@ public class MainActivity extends Activity {
     private Spinner destinationLanguageSpinner;
     private String bestResult;
     MediaPlayer mp = null;
-    String currentOriginalLanguage="english";
-    String currentDestinationLanguage="english";
-    public ArrayList<String> mandainListCurrent = new ArrayList();
 
     //events
     @Override
@@ -57,38 +54,6 @@ public class MainActivity extends Activity {
 
 
 
-
-        mandainListCurrent.add("Abscess");
-        mandainListCurrent.add("Bacteria");
-        mandainListCurrent.add("Biting surface");
-        mandainListCurrent.add("Bridge");
-        mandainListCurrent.add("Calculus");
-        mandainListCurrent.add("Crown");
-        mandainListCurrent.add("Dental Calculus");
-        mandainListCurrent.add("Dental Floss");
-        mandainListCurrent.add("Dental implants");
-        mandainListCurrent.add("Dental plaque");
-        mandainListCurrent.add("Dentine");
-        mandainListCurrent.add("Enamel");
-        mandainListCurrent.add("Filling");
-        mandainListCurrent.add("Fluoride");
-        mandainListCurrent.add("Gum Disease");
-        mandainListCurrent.add("Halitosis");
-        mandainListCurrent.add("Impression");
-        mandainListCurrent.add("Inflammation");
-        mandainListCurrent.add("Inner surface");
-        mandainListCurrent.add("Local Anaesthesia");
-        mandainListCurrent.add("Mouthrinse");
-        mandainListCurrent.add("Outer surface");
-        mandainListCurrent.add("Protrude mandible");
-        mandainListCurrent.add("Pulp");
-        mandainListCurrent.add("Regular check-up");
-        mandainListCurrent.add("Root Canal");
-        mandainListCurrent.add("Root Canal Treatment");
-        mandainListCurrent.add("Scaling");
-        mandainListCurrent.add("Sensitive teeth");
-        mandainListCurrent.add("Tooth Decay");
-        mandainListCurrent.add("Wisdom Tooth");
 
 
 
@@ -180,13 +145,7 @@ public class MainActivity extends Activity {
     public void playMp3(String language)  {
         int index = -1;
         if (bestResult != ""){
-
-            if(mandainListCurrent.contains(bestResult)){
-//            if(controller.dataController.mandainList.contains(bestResult)){
-//                Uri mp3 = Uri.parse("android.resource://"
-//                        +  "sg.edu.nus.nustranslator/raw/"
-//                        + datas.get(position).word);
-//                /Users/yumengyin/Desktop/nustranslator/andoird/app/src/main/res/raw/bacteria.mp3
+            if(controller.mandainList.contains(bestResult)){
                 index = controller.mandainList.indexOf(bestResult);
                 if (mp != null) {
                     mp.reset();
@@ -207,7 +166,7 @@ public class MainActivity extends Activity {
                     descriptor.close();
 
                     mp.prepare();
-                    mp.setVolume(1f, 1f);
+//                    mp.setVolume(1f, 1f);
                     mp.setLooping(false);
                     mp.start();
                 } catch (Exception e) {
@@ -223,31 +182,6 @@ public class MainActivity extends Activity {
 
 
     }
-    public static String[] getAllFilesInAssetByExtension(Context context, String path, String extension){
-        Assert.assertNotNull(context);
-
-        try {
-            String[] files = context.getAssets().list(path);
-
-
-
-            List<String> filesWithExtension = new ArrayList<String>();
-
-            for(String file : files){
-                if(file.endsWith(extension)){
-                    filesWithExtension.add(file);
-                }
-            }
-
-            return filesWithExtension.toArray(new String[filesWithExtension.size()]);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
 
     /*
      * functions for mode: instant translation
@@ -309,7 +243,13 @@ public class MainActivity extends Activity {
         bestResult = results.get(0);
 
         if (controller.appModel.destinationLanguage.equals("Mandarin")) {
+            if(bestResult.equals("Translation Start")){
+                controller.speechRecognizer.startListen();
+            }else if (bestResult.equals("Translation End")){
+                controller.speechRecognizer.stopListen();
+            }
             playMp3("mandarin");
+
         }
 
         String similarResultText = "";
