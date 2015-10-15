@@ -1,6 +1,6 @@
 9
 2
-31
+33
 English
 Abscess
 Bacteria
@@ -33,6 +33,8 @@ Scaling
 Sensitive teeth
 Tooth Decay
 Wisdom Tooth
+Translation Start
+Translation End
 Mandarin
 脓肿
 细菌
@@ -65,3 +67,5 @@ Mandarin
 牙齿敏感
 蛀牙
 智慧牙
+翻译开始
+翻译结束
