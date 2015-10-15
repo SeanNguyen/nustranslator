@@ -73,7 +73,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             File assetDir = assets.syncAssets();
             File modelsDir = new File(assetDir, Configurations.Sphinx_models_dir);
             //File internalPath = context.getFilesDir();
-            File internalDir =  new File(assetDir,"lb");
+            File internalDir =  new File(assetDir,"lb_with_trigger");
             //File dictionaryFile = context.getResources().getAssets().open( language + Configurations.Data_fileName_dict_ext);
 
             this.recognizer = defaultSetup()
