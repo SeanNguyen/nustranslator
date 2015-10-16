@@ -3,6 +3,7 @@ package sg.edu.nus.nustranslator.controllers;
 import android.media.AudioRecord;
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.Log;
 
 import net.java.frej.fuzzy.Fuzzy;
@@ -40,11 +41,17 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 
     private String lastRecognitionUpdate;
     private Timer resetTimer = new Timer();
+    private Timer resetTimer1 = new Timer();
     private TimerTask resetTimerTask;
+    private TimerTask resetTimerTask1;
 //    private long startTime = 0;
 
     private TextToSpeech textToSpeech;
     private String translatedResult;
+
+    private String bestResultCurrent;
+
+    private boolean translateState = false;
 
     //constructor
     public MainController(MainActivity context) {
@@ -68,8 +75,8 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
     //Public interface methods
     @Override
     public void onUtteranceCompleted(String utteranceId) {
-        if (utteranceId.equals(this.translatedResult)) {
-            this.resetSpeechRecognizer();
+        if (utteranceId.equals(this.translatedResult)||appModel.destinationLanguage.toLowerCase().equals("mandarin")) {
+//            this.resetSpeechRecognizer();
         }
     }
 
@@ -105,22 +112,45 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         Log.e("Speech Partial Result", input);
 
         //reset timer
-        resetTimer();
+//        resetTimer();
         this.lastRecognitionUpdate = input;
 
         //get results
         if (!isMatch(input)) {
-            //return;
+//            return;
         }
         Vector<String> topResults = getTopResults(input);
         this.translatedResult = getTranslation(topResults);
 
+        bestResultCurrent = topResults.get(0);
+        resetTimer();
+        resetMandarin();
+        if(topResults.get(0).equals("Translation Start"))
+        {
+//            HashMap<String, String> text2SpeechParas = new HashMap<>();
+//            text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "Translation Start");
+//            textToSpeech.speak("Translation Start", TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
+            translateState = true;
+//            mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
+        } else if (topResults.get(0).equals("Translation End"))
+        {
+//            HashMap<String, String> text2SpeechParas = new HashMap<>();
+//            text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "Translation End");
+//            textToSpeech.speak("Translation End", TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
+            translateState = false;
+
+        }
+        mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
+
+
+//        speechRecognizer.startListen();
         //long timeFromStart = (System.currentTimeMillis() - this.startTime) / 1000;
         //this.textStreamer.sendData(timeFromStart + ": " + input);
 
         //update UI
-        mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
+
     }
+
 
     public void updateData() {
         AsyncTask<Void, Void, Void> updateTask = new AsyncTask<Void, Void, Void>() {
@@ -231,15 +261,54 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         speechRecognizer.startListen();
     }
 
-    private void resetTimer() {
+    private void resetMandarin( ) {
+        this.resetTimer1.cancel();
+        this.resetTimerTask1 = new TimerTask() {
+            @Override
+            public void run() {
+
+                if(count >= 1) {
+                    count = 0;
+                    speechRecognizer.startListen();
+                }
+            }
+        };
+        this.resetTimer1 = new Timer();
+        this.resetTimer.schedule(resetTimerTask1, 400);
+    }
+
+    private int count = 0;
+    private void resetTimer( ) {
         this.resetTimer.cancel();
         this.resetTimerTask = new TimerTask() {
             @Override
             public void run() {
+
                 speechRecognizer.stopListen();
-                HashMap<String, String> text2SpeechParas = new HashMap<>();
-                text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, translatedResult);
-                textToSpeech.speak(translatedResult, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
+                count =count+1;
+
+                String currentString = "";
+                if(bestResultCurrent.equals("Translation Start")){
+
+                    currentString = "Translation Start";
+                }else if (bestResultCurrent.equals("Translation End")){
+                    currentString = "Translation End";
+                }else{
+                    currentString = translatedResult;
+
+                }
+
+
+
+//                if(appModel.destinationLanguage.toLowerCase().equals("mandarin")&&(!trigger)){
+//                    textToSpeech.playSilence(300, TextToSpeech.QUEUE_FLUSH, null);
+//                }else{
+                if(appModel.destinationLanguage.toLowerCase().equals("english")) {
+                    HashMap<String, String> text2SpeechParas = new HashMap<>();
+                    text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, currentString);
+                    textToSpeech.speak(currentString, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
+//                }
+                }
 
             }
         };
@@ -247,6 +316,11 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         this.resetTimer.schedule(resetTimerTask, Configurations.UX_resetTime);
     }
 
+    public void textTospeechTemp(String text){
+        HashMap<String, String> text2SpeechParas = new HashMap<>();
+        text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, text);
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
+    }
     private String getTranslation(Vector<String> inputs) {
         if (inputs == null || inputs.size() == 0) {
             return "";

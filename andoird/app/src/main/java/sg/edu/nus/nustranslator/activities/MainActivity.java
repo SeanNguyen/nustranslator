@@ -42,7 +42,10 @@ public class MainActivity extends Activity {
     private Spinner originalLanguageSpinner;
     private Spinner destinationLanguageSpinner;
     private String bestResult;
+    private String similarResultText;
+    private String translatedResult;
     MediaPlayer mp = null;
+    private boolean translateState = false;
 
     //events
     @Override
@@ -52,13 +55,20 @@ public class MainActivity extends Activity {
         this.loadingView = findViewById(R.id.main_loading);
         this.originalLanguageSpinner = (Spinner) findViewById(R.id.originalLanguages_spinner);
 
+        translateState = false;
+        bestResult = "";
+        similarResultText = "";
+        translatedResult = "";
 
-
-
-
-
-
-
+        mp = new MediaPlayer();
+//        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//
+//            @Override
+//            public void onPrepared(MediaPlayer player) {
+//                player.start();
+//            }
+//
+//        });
 
         this.originalLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -144,13 +154,14 @@ public class MainActivity extends Activity {
 
     public void playMp3(String language)  {
         int index = -1;
-        if (bestResult != ""){
+        if (mp != null) {
+            mp.reset();
+            mp.release();
+        }
+        if (bestResult != ""&&language.equals("mandarin")){
             if(controller.mandainList.contains(bestResult)){
                 index = controller.mandainList.indexOf(bestResult);
-                if (mp != null) {
-                    mp.reset();
-                    mp.release();
-                }
+
                 String musicname = "";
                 if(language.equals("mandarin")){
 //                    playMandarin(bestResult);
@@ -161,17 +172,27 @@ public class MainActivity extends Activity {
                 }
                 mp = new MediaPlayer();
                 try {
+
                     AssetFileDescriptor descriptor = this.getAssets().openFd(musicname);
                     mp.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
                     descriptor.close();
 
                     mp.prepare();
-//                    mp.setVolume(1f, 1f);
+
+//                    mp.prepareAsync();
+                    mp.setVolume(10f, 10f);
                     mp.setLooping(false);
                     mp.start();
-                } catch (Exception e) {
+                } catch (IllegalStateException e) {
+
                     e.printStackTrace();
+
+                } catch (IOException e) {
+
+                    e.printStackTrace();
+
                 }
+
 
 
             }
@@ -227,40 +248,84 @@ public class MainActivity extends Activity {
         this.loadingView.setVisibility(View.GONE);
     }
 
-    public void updateSpeechRecognitionResult(Vector<String> results, String translatedResult) {
+    public void updateSpeechRecognitionResult(Vector<String> results, String translatedResultTemp) {
+        TextView topResult = (TextView) findViewById(R.id.firstResult);
+        TextView similarResults = (TextView) findViewById(R.id.otherResults);
+        TextView translationTextView = (TextView) findViewById(R.id.resultText);
+
         if (results == null) {
+            topResult.setText(bestResult);
+            similarResults.setText(similarResultText);
+            translationTextView.setText(translatedResult);
             return;
         }
         //Set speech recognition result
-        TextView topResult = (TextView) findViewById(R.id.firstResult);
-        TextView similarResults = (TextView) findViewById(R.id.otherResults);
+
         if (results.size() == 0) {
-            topResult.setText("");
-            similarResults.setText("");
+//            topResult.setText("");
+//            similarResults.setText("");
             return;
         }
-        topResult.setText(results.get(0));
-        bestResult = results.get(0);
+        String topResultTemp = results.get(0);
 
-        if (controller.appModel.destinationLanguage.equals("Mandarin")) {
-            if(bestResult.equals("Translation Start")){
-                controller.speechRecognizer.startListen();
-            }else if (bestResult.equals("Translation End")){
-                controller.speechRecognizer.stopListen();
+        String similarResultTextTemp = "";
+        if(results.size()>1) {
+            for (int i = 1; i < results.size(); i++) {
+                similarResultTextTemp += results.get(i) + Configurations.Newline;
             }
-            playMp3("mandarin");
-
         }
 
-        String similarResultText = "";
-        for (int i = 1; i < results.size(); i++) {
-            similarResultText += results.get(i) + Configurations.Newline;
-        }
-        similarResults.setText(similarResultText);
 
-        //set translation result
-        TextView translationTextView = (TextView) findViewById(R.id.resultText);
-        translationTextView.setText(translatedResult);
+        if (topResultTemp.equals("Translation Start")) {
+//                controller.speechRecognizer.startListen();
+            translateState = true;
+            bestResult = topResultTemp;
+            similarResultText = similarResultTextTemp;
+            translatedResult = translatedResultTemp;
+
+            topResult.setText(bestResult);
+            similarResults.setText(similarResultText);
+            translationTextView.setText(translatedResult);
+            controller.textTospeechTemp("Translation Start");
+            return;
+        } else if (topResultTemp.equals("Translation End")) {
+//                controller.speechRecognizer.stopListen();
+            translateState = false;
+            bestResult = topResultTemp;
+            similarResultText = similarResultTextTemp;
+            translatedResult = translatedResultTemp;
+
+            topResult.setText(bestResult);
+            similarResults.setText(similarResultText);
+            translationTextView.setText(translatedResult);
+            controller.textTospeechTemp("Translation End");
+            return;
+        }
+        if (translateState) {
+
+            bestResult = topResultTemp;
+            similarResultText = similarResultTextTemp;
+            translatedResult = translatedResultTemp;
+
+            playMp3(controller.appModel.destinationLanguage.toLowerCase());
+
+
+            topResult.setText(bestResult);
+            similarResults.setText(similarResultText);
+
+
+            translationTextView.setText(translatedResult);
+
+        }else{
+            if(!bestResult.equals(null)) {
+
+                topResult.setText(bestResult);
+                similarResults.setText(similarResultText);
+                translationTextView.setText(translatedResult);
+            }
+        }
+
+
     }
 
     public void updateLanguageChoices(Vector<String> languages) {
