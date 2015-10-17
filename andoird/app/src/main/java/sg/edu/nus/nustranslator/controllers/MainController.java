@@ -76,7 +76,8 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
     @Override
     public void onUtteranceCompleted(String utteranceId) {
         if (utteranceId.equals(this.translatedResult)||appModel.destinationLanguage.toLowerCase().equals("mandarin")) {
-//            this.resetSpeechRecognizer();
+            this.resetSpeechRecognizer();
+            trigger = false;
         }
     }
 
@@ -116,29 +117,40 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         this.lastRecognitionUpdate = input;
 
         //get results
-        if (!isMatch(input)) {
-//            return;
+        String result = isMatch(input);
+        if (result =="") {
+            return;
         }
-        Vector<String> topResults = getTopResults(input);
+//        Vector<String> topResults = getTopResults(input);
+//        this.translatedResult = getTranslation(topResults);
+        Vector<String> topResults = new Vector<>();
+        topResults.add(result);
         this.translatedResult = getTranslation(topResults);
 
+//        bestResultCurrent = topResults.get(0);
         bestResultCurrent = topResults.get(0);
-        resetTimer();
-        resetMandarin();
-        if(topResults.get(0).equals("Translation Start"))
+
+
+        if(topResults.get(0).toLowerCase().equals("translation start"))
         {
 //            HashMap<String, String> text2SpeechParas = new HashMap<>();
 //            text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "Translation Start");
 //            textToSpeech.speak("Translation Start", TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
             translateState = true;
+            resetTimer();
 //            mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
-        } else if (topResults.get(0).equals("Translation End"))
+        } else if (topResults.get(0).toLowerCase().equals("translation end"))
         {
 //            HashMap<String, String> text2SpeechParas = new HashMap<>();
 //            text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "Translation End");
 //            textToSpeech.speak("Translation End", TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
             translateState = false;
+            resetTimer();
 
+        }else if (appModel.destinationLanguage.toLowerCase().equals("mandarin")){
+            resetMandarin();
+        }else{
+            resetTimer();
         }
         mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
 
@@ -201,14 +213,19 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
     }
 
     //Private Helper Methods
-    private boolean isMatch(String sentence) {
+    private String isMatch(String sentence) {
         sentence = sentence.toLowerCase();
         String originalLanguage = appModel.getOriginalLanguage();
         Vector<String> sentences = appModel.getSentencesByLanguageName(originalLanguage);
-        if (sentences.indexOf(sentence) > -1) {
-            return true;
+        for(int i =0;i<sentences.size();i++) {
+//            if (sentences.indexOf(sentence) > -1) {
+//                return true;
+//            }
+            if (sentence.toLowerCase().contains(sentences.elementAt(i).toLowerCase())) {
+                return sentences.elementAt(i);
+            }
         }
-        return false;
+        return "";
     }
 
     private Vector<String> getTopResults(String input) {
@@ -266,15 +283,11 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         this.resetTimerTask1 = new TimerTask() {
             @Override
             public void run() {
-
-                if(count >= 1) {
-                    count = 0;
-                    speechRecognizer.startListen();
-                }
+                    resetSpeechRecognizer();
             }
         };
         this.resetTimer1 = new Timer();
-        this.resetTimer.schedule(resetTimerTask1, 400);
+        this.resetTimer.schedule(resetTimerTask1, 300);
     }
 
     private int count = 0;
@@ -284,18 +297,21 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
             @Override
             public void run() {
 
+
                 speechRecognizer.stopListen();
-                count =count+1;
+
 
                 String currentString = "";
-                if(bestResultCurrent.equals("Translation Start")){
-
+                if(bestResultCurrent.toLowerCase().equals("translation start")){
                     currentString = "Translation Start";
-                }else if (bestResultCurrent.equals("Translation End")){
+                }else if (bestResultCurrent.toLowerCase().equals("translation end")){
                     currentString = "Translation End";
                 }else{
                     currentString = translatedResult;
-
+                    if(appModel.destinationLanguage.toLowerCase().equals("mandarin")){
+                        trigger = false;
+                        count =count+1;
+                    }
                 }
 
 
@@ -304,9 +320,11 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 //                    textToSpeech.playSilence(300, TextToSpeech.QUEUE_FLUSH, null);
 //                }else{
                 if(appModel.destinationLanguage.toLowerCase().equals("english")) {
+
                     HashMap<String, String> text2SpeechParas = new HashMap<>();
                     text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, currentString);
                     textToSpeech.speak(currentString, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
+                    trigger = true;
 //                }
                 }
 
@@ -316,10 +334,13 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         this.resetTimer.schedule(resetTimerTask, Configurations.UX_resetTime);
     }
 
+    public boolean trigger = false;
+
     public void textTospeechTemp(String text){
         HashMap<String, String> text2SpeechParas = new HashMap<>();
         text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, text);
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
+        trigger = true;
     }
     private String getTranslation(Vector<String> inputs) {
         if (inputs == null || inputs.size() == 0) {

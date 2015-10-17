@@ -276,7 +276,7 @@ public class MainActivity extends Activity {
         }
 
 
-        if (topResultTemp.equals("Translation Start")) {
+        if (topResultTemp.toLowerCase().equals("translation start")) {
 //                controller.speechRecognizer.startListen();
             translateState = true;
             bestResult = topResultTemp;
@@ -288,7 +288,7 @@ public class MainActivity extends Activity {
             translationTextView.setText(translatedResult);
             controller.textTospeechTemp("Translation Start");
             return;
-        } else if (topResultTemp.equals("Translation End")) {
+        } else if (topResultTemp.toLowerCase().equals("translation end")) {
 //                controller.speechRecognizer.stopListen();
             translateState = false;
             bestResult = topResultTemp;

@@ -25,7 +25,8 @@ public class Configurations {
     //Sphinx Config
     public static final String Sphinx_models_dir = "models";
     public static final String Sphinx_acousticModel_dir = "hmm/";
-    public static final float Sphinx_keywordThreshold = 1e-20f;
+//    public static final float Sphinx_keywordThreshold = 1e-20f;
+    public static final float Sphinx_keywordThreshold = 1e-1f;
 
     //Sphinx Keywords
     public static final String Sphinx_keyword_search = "search";
