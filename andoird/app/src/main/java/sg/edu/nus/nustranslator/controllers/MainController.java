@@ -228,50 +228,50 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         return "";
     }
 
-    private Vector<String> getTopResults(String input) {
-        String originalLanguage = appModel.getOriginalLanguage();
-        Vector<String> sentences = appModel.getSentencesByLanguageName(originalLanguage);
-        Vector<String> topResult = new Vector<String>();
-        if (sentences == null) {
-            return topResult;
-        }
-        for (int i = 0; i < sentences.size(); i++) {
-            if (topResult.size() == 0) {
-                String lowerCasedSentence = sentences.get(i).toLowerCase();
-                double similarity = Fuzzy.similarity(input, lowerCasedSentence);
-                if(similarity<=0.8) {
-                    topResult.add(sentences.get(i));
-                }
-            } else {
-                input = input.toLowerCase();
-                String lowerCasedSentence = sentences.get(i).toLowerCase();
-                double similarity = Fuzzy.similarity(input, lowerCasedSentence);
-                for (int j = topResult.size() - 1; j > -1; j--) {
-                    //note: the closer to 0, the more similar
-                    double topResultSimilarity = Fuzzy.similarity(input, topResult.get(j));
-                    boolean isMoreSimilar = similarity < topResultSimilarity;
-                    if (isMoreSimilar && j == 0) {
-                        if(similarity<0.8) {
-                            topResult.insertElementAt(sentences.get(i), j);
-
-                        }
-                        break;
-                    } else if (!isMoreSimilar && j < 4) {
-                        if(similarity<0.8) {
-                            topResult.insertElementAt(sentences.get(i), j + 1);
-
-                        }
-
-                        break;
-                    }
-                }
-            }
-            if (topResult.size() > 5) {
-                topResult.removeElementAt(4);
-            }
-        }
-        return topResult;
-    }
+//    private Vector<String> getTopResults(String input) {
+//        String originalLanguage = appModel.getOriginalLanguage();
+//        Vector<String> sentences = appModel.getSentencesByLanguageName(originalLanguage);
+//        Vector<String> topResult = new Vector<String>();
+//        if (sentences == null) {
+//            return topResult;
+//        }
+//        for (int i = 0; i < sentences.size(); i++) {
+//            if (topResult.size() == 0) {
+//                String lowerCasedSentence = sentences.get(i).toLowerCase();
+//                double similarity = Fuzzy.similarity(input, lowerCasedSentence);
+//                if(similarity<=0.8) {
+//                    topResult.add(sentences.get(i));
+//                }
+//            } else {
+//                input = input.toLowerCase();
+//                String lowerCasedSentence = sentences.get(i).toLowerCase();
+//                double similarity = Fuzzy.similarity(input, lowerCasedSentence);
+//                for (int j = topResult.size() - 1; j > -1; j--) {
+//                    //note: the closer to 0, the more similar
+//                    double topResultSimilarity = Fuzzy.similarity(input, topResult.get(j));
+//                    boolean isMoreSimilar = similarity < topResultSimilarity;
+//                    if (isMoreSimilar && j == 0) {
+//                        if(similarity<0.8) {
+//                            topResult.insertElementAt(sentences.get(i), j);
+//
+//                        }
+//                        break;
+//                    } else if (!isMoreSimilar && j < 4) {
+//                        if(similarity<0.8) {
+//                            topResult.insertElementAt(sentences.get(i), j + 1);
+//
+//                        }
+//
+//                        break;
+//                    }
+//                }
+//            }
+//            if (topResult.size() > 5) {
+//                topResult.removeElementAt(4);
+//            }
+//        }
+//        return topResult;
+//    }
 
     private void resetSpeechRecognizer() {
         speechRecognizer.stopListen();
