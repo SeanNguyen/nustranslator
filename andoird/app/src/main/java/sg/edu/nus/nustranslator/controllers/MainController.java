@@ -308,18 +308,15 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
                     currentString = "Translation End";
                 }else{
                     currentString = translatedResult;
-                    if(appModel.destinationLanguage.toLowerCase().equals("mandarin")){
-                        trigger = false;
-                        count =count+1;
+                    if(appModel.destinationLanguage.toLowerCase().equals("english")){
+                        currentString = translatedResult;
                     }
                 }
-
-
 
 //                if(appModel.destinationLanguage.toLowerCase().equals("mandarin")&&(!trigger)){
 //                    textToSpeech.playSilence(300, TextToSpeech.QUEUE_FLUSH, null);
 //                }else{
-                if(appModel.destinationLanguage.toLowerCase().equals("english")) {
+                if(!currentString.equals("")) {
 
                     HashMap<String, String> text2SpeechParas = new HashMap<>();
                     text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, currentString);
@@ -336,12 +333,12 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 
     public boolean trigger = false;
 
-    public void textTospeechTemp(String text){
-        HashMap<String, String> text2SpeechParas = new HashMap<>();
-        text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, text);
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
-        trigger = true;
-    }
+//    public void textTospeechTemp(String text){
+//        HashMap<String, String> text2SpeechParas = new HashMap<>();
+//        text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, text);
+//        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
+//        trigger = true;
+//    }
     private String getTranslation(Vector<String> inputs) {
         if (inputs == null || inputs.size() == 0) {
             return "";
