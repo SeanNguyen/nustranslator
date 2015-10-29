@@ -21,10 +21,13 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     private SpeechRecognizer recognizer;
     private Context context;
     private MainController parent;
+    private static long preTime;
+
 
     public LocalSpeechRecognizer(final Context context, MainController parent) {
         this.context = context;
         this.parent = parent;
+        preTime = System.currentTimeMillis();
     }
 
     @Override
@@ -40,6 +43,10 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     @Override
     public void stopListen() {
         this.recognizer.stop();
+    }
+    @Override
+    public void cancelListen() {
+        this.recognizer.cancel();
     }
 
     @Override
@@ -59,9 +66,21 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             this.parent.onSpeechRecognitionResultUpdate(text);
         }
     }
+//    if ((System.currentTimeMillis()-preTime) >500) {
+//        preTime = System.currentTimeMillis();
+//        if (hypothesis != null) {
+//            String text = hypothesis.getHypstr();
+//            this.parent.onSpeechRecognitionResultUpdate(text);
+//
+//        }
+//    }
 
     @Override
     public void onResult(Hypothesis hypothesis) {
+//        if (hypothesis != null) {
+//            String text = hypothesis.getHypstr();
+//            this.parent.onSpeechRecognitionResultUpdate(text);
+//        }
     }
 
     //Private Helper Methods

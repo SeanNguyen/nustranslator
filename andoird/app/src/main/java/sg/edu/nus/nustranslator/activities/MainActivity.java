@@ -153,6 +153,7 @@ public class MainActivity extends Activity {
     }
 
     public void playMp3(String language)  {
+        controller.speechRecognizer.stopListen();
         int index = -1;
         if (mp != null) {
             mp.reset();
@@ -178,7 +179,11 @@ public class MainActivity extends Activity {
                     descriptor.close();
 
                     mp.prepare();
-
+                    mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        public void onCompletion(MediaPlayer mp) {
+                            controller.resetSpeechRecognizer();
+                        }
+                    });
 //                    mp.prepareAsync();
                     mp.setVolume(10f, 10f);
                     mp.setLooping(false);
@@ -277,7 +282,7 @@ public class MainActivity extends Activity {
 
 
         if (topResultTemp.toLowerCase().equals("translation start")) {
-//                controller.speechRecognizer.startListen();
+                controller.speechRecognizer.startListen();
             translateState = true;
             bestResult = topResultTemp;
             similarResultText = similarResultTextTemp;
@@ -287,19 +292,18 @@ public class MainActivity extends Activity {
             similarResults.setText(similarResultText);
             translationTextView.setText(translatedResult);
 //            controller.textTospeechTemp("Translation Start");
-            return;
         } else if (topResultTemp.toLowerCase().equals("translation end")) {
-//                controller.speechRecognizer.stopListen();
+                controller.speechRecognizer.startListen();
             translateState = false;
             bestResult = topResultTemp;
             similarResultText = similarResultTextTemp;
             translatedResult = translatedResultTemp;
 
+            playMp3(controller.appModel.destinationLanguage.toLowerCase());
             topResult.setText(bestResult);
             similarResults.setText(similarResultText);
             translationTextView.setText(translatedResult);
 //            controller.textTospeechTemp("Translation End");
-            return;
         }
         if (translateState) {
 

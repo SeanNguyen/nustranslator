@@ -13,4 +13,6 @@ public interface ISpeechRecognizer {
 
     void stopListen();
 
+    void cancelListen();
+
 }

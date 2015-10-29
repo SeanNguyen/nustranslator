@@ -119,8 +119,12 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         //get results
         String result = isMatch(input);
         if (result =="") {
+            if(input.split(" ").length>7){
+                resetSpeechRecognizer();
+            }
             return;
         }
+
 //        Vector<String> topResults = getTopResults(input);
 //        this.translatedResult = getTranslation(topResults);
         Vector<String> topResults = new Vector<>();
@@ -131,27 +135,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         bestResultCurrent = topResults.get(0);
 
 
-        if(topResults.get(0).toLowerCase().equals("translation start"))
-        {
-//            HashMap<String, String> text2SpeechParas = new HashMap<>();
-//            text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "Translation Start");
-//            textToSpeech.speak("Translation Start", TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
-            translateState = true;
-            resetTimer();
-//            mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
-        } else if (topResults.get(0).toLowerCase().equals("translation end"))
-        {
-//            HashMap<String, String> text2SpeechParas = new HashMap<>();
-//            text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "Translation End");
-//            textToSpeech.speak("Translation End", TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
-            translateState = false;
-            resetTimer();
 
-        }else if (appModel.destinationLanguage.toLowerCase().equals("mandarin")){
-            resetMandarin();
-        }else{
-            resetTimer();
-        }
         mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
 
 
@@ -221,8 +205,71 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 //            if (sentences.indexOf(sentence) > -1) {
 //                return true;
 //            }
-            if (sentence.toLowerCase().contains(sentences.elementAt(i).toLowerCase())) {
+            if (sentence.toLowerCase().contains("translation start")){
+                return "Translation Start";
+            }else if (sentence.toLowerCase().contains("translation end")){
+                    return "Translation End";
+            }else if (sentence.toLowerCase().contains(sentences.elementAt(i).toLowerCase())) {
                 return sentences.elementAt(i);
+            }else if(sentence.toLowerCase().contains("biting")){
+                return "Biting surface";
+            }else if (sentence.toLowerCase().contains("great")){
+                return "Bridge";
+            }else if (sentence.toLowerCase().contains("implants")){
+                return "Dental implants";
+            }else if (sentence.toLowerCase().contains("outer")){
+                return "Outer surface";
+            }else if (sentence.toLowerCase().contains("inner")){
+                return "Inner surface";
+            }else if (sentence.toLowerCase().contains("mandible")){
+                return "Protrude mandible";
+            }else if (sentence.toLowerCase().contains("don't")){
+                return "Root Canal";
+            }else if (sentence.toLowerCase().contains("wife them")){
+                return "Wisdom Tooth";
+            }else if (sentence.toLowerCase().contains("had eight horse")){
+                return "Halitosis";
+            }else if (sentence.toLowerCase().contains("team fat men")){
+                return "Inflammation";
+            }else if (sentence.toLowerCase().contains("team men")){
+                return "Inflammation";
+            }else if (sentence.toLowerCase().contains("enough")&&(sentence.toLowerCase().contains("suffix")
+                    ||sentence.toLowerCase().contains("sentence"))){
+                return "Inner surface";
+            }else if (sentence.toLowerCase().contains("OUT HAS")){
+                return "Outer surface";
+            }else if (sentence.toLowerCase().contains("canal") && sentence.toLowerCase().contains(("treatment"))) {
+                return "Root Canal Treatment";
+            }else if (sentence.toLowerCase().contains("back area")){
+                return "Bacteria";
+            }else if (sentence.toLowerCase().contains("back carry")){
+                return "Bacteria";
+            }else if (sentence.toLowerCase().contains("bat hear")){
+                return "Bacteria";
+            }else if (sentence.toLowerCase().contains("feed eat")){
+                return "Filling";
+            }else if (sentence.toLowerCase().contains("feed mean")){
+                return "Filling";
+            }else if (sentence.toLowerCase().contains("fear")){
+                return "Filling";
+            }else if (sentence.toLowerCase().contains("noun")&&(sentence.toLowerCase().contains("base"))){
+                return "Filling";
+            }else if (sentence.toLowerCase().contains("fear")){
+                return "Gum Disease";
+            }else if (sentence.toLowerCase().contains("high")&&sentence.toLowerCase().contains("cause")){
+                return "Halitosis";
+            }else if (sentence.toLowerCase().contains("decay")){
+                return "Tooth Decay";
+            }else if (sentence.toLowerCase().contains("how")){
+                return "Pulp";
+            }else if(sentence.toLowerCase().contains("pound")&&sentence.toLowerCase().contains("these")){
+                return "Gum Disease";
+            }else if (sentence.toLowerCase().contains("tall")&&sentence.toLowerCase().contains("sense")){
+                return "Halitosis";
+            }else if (sentence.toLowerCase().contains("suffix")&&sentence.toLowerCase().contains("eye")){
+                return "Biting surface";
+            }else if (sentence.toLowerCase().contains("sat")&&sentence.toLowerCase().contains("eye")){
+                return "Biting surface";
             }
         }
         return "";
@@ -273,7 +320,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 //        return topResult;
 //    }
 
-    private void resetSpeechRecognizer() {
+    public void resetSpeechRecognizer() {
         speechRecognizer.stopListen();
         speechRecognizer.startListen();
     }
