@@ -119,7 +119,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         //get results
         String result = isMatch(input);
         if (result =="") {
-            if(input.split(" ").length>7){
+            if(input.split(" ").length>14){
                 resetSpeechRecognizer();
             }
             return;
@@ -201,76 +201,108 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         sentence = sentence.toLowerCase();
         String originalLanguage = appModel.getOriginalLanguage();
         Vector<String> sentences = appModel.getSentencesByLanguageName(originalLanguage);
+        if (sentence.toLowerCase().contains("translation start")){
+            return "Translation Start";
+        }else if (sentence.toLowerCase().contains("translation end")){
+            return "Translation End";
+        }
         for(int i =0;i<sentences.size();i++) {
 //            if (sentences.indexOf(sentence) > -1) {
 //                return true;
 //            }
-            if (sentence.toLowerCase().contains("translation start")){
-                return "Translation Start";
-            }else if (sentence.toLowerCase().contains("translation end")){
-                    return "Translation End";
-            }else if (sentence.toLowerCase().contains(sentences.elementAt(i).toLowerCase())) {
+            if (sentence.toLowerCase().contains(sentences.elementAt(i).toLowerCase())) {
                 return sentences.elementAt(i);
-            }else if(sentence.toLowerCase().contains("biting")){
-                return "Biting surface";
-            }else if (sentence.toLowerCase().contains("great")){
-                return "Bridge";
-            }else if (sentence.toLowerCase().contains("implants")){
-                return "Dental implants";
-            }else if (sentence.toLowerCase().contains("outer")){
-                return "Outer surface";
-            }else if (sentence.toLowerCase().contains("inner")){
-                return "Inner surface";
-            }else if (sentence.toLowerCase().contains("mandible")){
-                return "Protrude mandible";
-            }else if (sentence.toLowerCase().contains("don't")){
-                return "Root Canal";
-            }else if (sentence.toLowerCase().contains("wife them")){
-                return "Wisdom Tooth";
-            }else if (sentence.toLowerCase().contains("had eight horse")){
-                return "Halitosis";
-            }else if (sentence.toLowerCase().contains("team fat men")){
-                return "Inflammation";
-            }else if (sentence.toLowerCase().contains("team men")){
-                return "Inflammation";
-            }else if (sentence.toLowerCase().contains("enough")&&(sentence.toLowerCase().contains("suffix")
-                    ||sentence.toLowerCase().contains("sentence"))){
-                return "Inner surface";
-            }else if (sentence.toLowerCase().contains("OUT HAS")){
-                return "Outer surface";
-            }else if (sentence.toLowerCase().contains("canal") && sentence.toLowerCase().contains(("treatment"))) {
-                return "Root Canal Treatment";
-            }else if (sentence.toLowerCase().contains("back area")){
-                return "Bacteria";
-            }else if (sentence.toLowerCase().contains("back carry")){
-                return "Bacteria";
-            }else if (sentence.toLowerCase().contains("bat hear")){
-                return "Bacteria";
-            }else if (sentence.toLowerCase().contains("feed eat")){
-                return "Filling";
-            }else if (sentence.toLowerCase().contains("feed mean")){
-                return "Filling";
-            }else if (sentence.toLowerCase().contains("fear")){
-                return "Filling";
-            }else if (sentence.toLowerCase().contains("noun")&&(sentence.toLowerCase().contains("base"))){
-                return "Filling";
-            }else if (sentence.toLowerCase().contains("fear")){
-                return "Gum Disease";
-            }else if (sentence.toLowerCase().contains("high")&&sentence.toLowerCase().contains("cause")){
-                return "Halitosis";
-            }else if (sentence.toLowerCase().contains("decay")){
-                return "Tooth Decay";
-            }else if (sentence.toLowerCase().contains("how")){
-                return "Pulp";
-            }else if(sentence.toLowerCase().contains("pound")&&sentence.toLowerCase().contains("these")){
-                return "Gum Disease";
-            }else if (sentence.toLowerCase().contains("tall")&&sentence.toLowerCase().contains("sense")){
-                return "Halitosis";
-            }else if (sentence.toLowerCase().contains("suffix")&&sentence.toLowerCase().contains("eye")){
-                return "Biting surface";
-            }else if (sentence.toLowerCase().contains("sat")&&sentence.toLowerCase().contains("eye")){
-                return "Biting surface";
             }
+        }
+        if(sentence.toLowerCase().contains("biting")){
+            return "Biting surface";
+        }else if (sentence.toLowerCase().contains("great")){
+            return "Bridge";
+        }else if (sentence.toLowerCase().contains("implants")){
+            return "Dental implants";
+        }else if (sentence.toLowerCase().contains("outer")){
+            return "Outer surface";
+        }else if (sentence.toLowerCase().contains("inner")){
+            return "Inner surface";
+        }else if (sentence.toLowerCase().contains("mandible")){
+            return "Protrude mandible";
+        }else if (sentence.toLowerCase().contains("canal")||sentence.toLowerCase().contains("rail")){
+            return "Root Canal";
+        }else if (sentence.toLowerCase().contains("wife them")){
+            return "Wisdom Tooth";
+        }else if (sentence.toLowerCase().contains("life them")){
+            return "Wisdom Tooth";
+        }else if (sentence.toLowerCase().contains("life gum")){
+            return "Wisdom Tooth";
+        }else if (sentence.toLowerCase().contains("had eight horse")){
+            return "Halitosis";
+        }else if (sentence.toLowerCase().contains("team fat men")){
+            return "Inflammation";
+        }else if (sentence.toLowerCase().contains("team men")){
+            return "Inflammation";
+        }else if (sentence.toLowerCase().contains("enough")&&(sentence.toLowerCase().contains("suffix")
+                ||sentence.toLowerCase().contains("sentence"))){
+            return "Inner surface";
+        }else if (sentence.toLowerCase().contains("OUT HAS")){
+            return "Outer surface";
+        }else if (sentence.toLowerCase().contains("canal") && sentence.toLowerCase().contains(("treatment"))) {
+            return "Root Canal Treatment";
+        }else if (sentence.toLowerCase().contains("back area")){
+            return "Bacteria";
+        }else if (sentence.toLowerCase().contains("back carry")){
+            return "Bacteria";
+        }else if (sentence.toLowerCase().contains("bat hear")){
+            return "Bacteria";
+        }else if (sentence.toLowerCase().contains("feed eat")){
+            return "Filling";
+        }else if (sentence.toLowerCase().contains("feed mean")){
+            return "Filling";
+        }else if (sentence.toLowerCase().contains("fear")){
+            return "Filling";
+        }else if (sentence.toLowerCase().contains("noun")&&(sentence.toLowerCase().contains("base"))){
+            return "Filling";
+        }else if (sentence.toLowerCase().contains("fear")){
+            return "Gum Disease";
+        }else if (sentence.toLowerCase().contains("high")&&sentence.toLowerCase().contains("cause")){
+            return "Halitosis";
+        }else if (sentence.toLowerCase().contains("decay")){
+            return "Tooth Decay";
+        }else if (sentence.toLowerCase().contains("how")){
+            return "Pulp";
+        }else if(sentence.toLowerCase().contains("pound")&&sentence.toLowerCase().contains("these")){
+            return "Gum Disease";
+        }else if (sentence.toLowerCase().contains("tall")&&sentence.toLowerCase().contains("sense")){
+            return "Halitosis";
+        }else if (sentence.toLowerCase().contains("suffix")&&sentence.toLowerCase().contains("eye")){
+            return "Biting surface";
+        }else if (sentence.toLowerCase().contains("sat")&&sentence.toLowerCase().contains("eye")){
+            return "Biting surface";
+        }else if (sentence.toLowerCase().contains("sat")&&sentence.toLowerCase().contains("eye")){
+            return "Biting surface";
+        }else if (sentence.toLowerCase().contains("sat")&&sentence.toLowerCase().contains("eye")){
+            return "Biting surface";
+        }else if (sentence.toLowerCase().contains("start")){
+            return "Translation Start";
+        }else if (sentence.toLowerCase().contains("chance")&&
+                sentence.toLowerCase().contains("sense")&&
+                sentence.toLowerCase().contains("bat")){
+            return "Translation Start";
+        }else if (sentence.toLowerCase().contains("chance")&&
+                sentence.toLowerCase().contains("sense")&&
+                sentence.toLowerCase().contains("act")){
+            return "Translation Start";
+        }else if (sentence.toLowerCase().contains("chance")&&
+                sentence.toLowerCase().contains("sense")&&
+                sentence.toLowerCase().contains("bad")){
+            return "Translation Start";
+        }else if (sentence.toLowerCase().contains("chance")&&
+                sentence.toLowerCase().contains("sense")&&
+                sentence.toLowerCase().contains("dad")){
+            return "Translation Start";
+        }else if (sentence.toLowerCase().contains("test")&&
+                sentence.toLowerCase().contains("lay")&&
+                sentence.toLowerCase().contains("sand")){
+            return "Translation Start";
         }
         return "";
     }

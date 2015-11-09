@@ -124,10 +124,10 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_updateData:
-                controller.updateData();
-                this.loadingView.setVisibility(View.VISIBLE);
-                return true;
+//            case R.id.action_updateData:
+//                controller.updateData();
+//                this.loadingView.setVisibility(View.VISIBLE);
+//                return true;
             case R.id.action_viewAllSentences:
                 Intent intent = new Intent(this, HelpActivity.class);
                 startActivity(intent);
