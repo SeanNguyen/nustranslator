@@ -23,6 +23,9 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     private MainController parent;
     private static long preTime;
 
+    private static final String KEYPHRASE = "Translation Start";
+    private static final String KEYPHRASEEND = "Translation End";
+    private static String CurrentState = Configurations.Sphinx_keyword_trigger_start;
 
     public LocalSpeechRecognizer(final Context context, MainController parent) {
         this.context = context;
@@ -35,9 +38,13 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
         setupRecognizer(context, language);
     }
 
+    public void initListen(){
+        CurrentState = Configurations.Sphinx_keyword_trigger_start;
+    }
+
     @Override
     public void startListen() {
-        this.recognizer.startListening(Configurations.Sphinx_keyword_search);
+        this.recognizer.startListening(CurrentState);
     }
 
     @Override
@@ -62,9 +69,27 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     @Override
     public void onPartialResult(Hypothesis hypothesis) {
         if (hypothesis != null) {
-            String text = hypothesis.getHypstr();
+            String text =  hypothesis.getHypstr();
+            if (CurrentState.equals(Configurations.Sphinx_keyword_trigger_start) && text.toLowerCase().equals(KEYPHRASE.toLowerCase())) {
+                switchSearch(Configurations.Sphinx_keyword_search);
+//                CurrentState = Configurations.Sphinx_keyword_search;
+                text = KEYPHRASE;
+            }
+            else if (!CurrentState.equals(Configurations.Sphinx_keyword_trigger_start) && text.toLowerCase().contains(KEYPHRASEEND.toLowerCase())) {
+                switchSearch(Configurations.Sphinx_keyword_trigger_start);
+//                CurrentState = Configurations.Sphinx_keyword_trigger_start;
+                text = KEYPHRASEEND;
+            }
             this.parent.onSpeechRecognitionResultUpdate(text);
         }
+    }
+
+    private void switchSearch(String searchName) {
+        recognizer.stop();
+
+        // If we are not spotting, start listening with timeout (10000 ms or 10 seconds).
+        CurrentState =  searchName;
+        recognizer.startListening(searchName);
     }
 //    if ((System.currentTimeMillis()-preTime) >500) {
 //        preTime = System.currentTimeMillis();
@@ -74,7 +99,6 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 //
 //        }
 //    }
-
     @Override
     public void onResult(Hypothesis hypothesis) {
 //        if (hypothesis != null) {
@@ -82,6 +106,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 //            this.parent.onSpeechRecognitionResultUpdate(text);
 //        }
     }
+
 
     //Private Helper Methods
     private void setupRecognizer(Context context, String language) {
@@ -92,18 +117,24 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             File assetDir = assets.syncAssets();
             File modelsDir = new File(assetDir, Configurations.Sphinx_models_dir);
             //File internalPath = context.getFilesDir();
-            File internalDir =  new File(assetDir,"lb_with_trigger");
+            File internalDir =  new File(assetDir,"lb_with_200");
             //File dictionaryFile = context.getResources().getAssets().open( language + Configurations.Data_fileName_dict_ext);
 
             this.recognizer = defaultSetup()
                     .setAcousticModel(new File(modelsDir, Configurations.Sphinx_acousticModel_dir + language))
 
                     .setDictionary(new File(internalDir, language + Configurations.Data_fileName_dict_ext))
+//                    .setDictionary(new File(assetDir, "cmudict-en-us.dict"))
                     .setBoolean("-remove_noise", true)
                     .setKeywordThreshold(Configurations.Sphinx_keywordThreshold)
                     .getRecognizer();
             this.recognizer.addListener(this);
 
+
+            File languageModel1 = new File(internalDir, "triggerCommand.lm");
+
+//            recognizer.addKeyphraseSearch(Configurations.Sphinx_keyword_trigger_start, KEYPHRASE);
+            recognizer.addNgramSearch(Configurations.Sphinx_keyword_trigger_start, languageModel1);
             // Create language model search.
             File languageModel = new File(internalDir, language + Configurations.Data_fileName_languageModel_ext);
             recognizer.addNgramSearch(Configurations.Sphinx_keyword_search, languageModel);

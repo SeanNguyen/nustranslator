@@ -91,7 +91,9 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
             //this.textStreamer.stopStream();
         } else {
             appModel.setAppState(States.ACTIVE);
+            speechRecognizer.initListen();
             speechRecognizer.startListen();
+            mainActivity.resetResult();
             //String timeStamp = Utilities.getTimeStamp();
             //this.audioStreamer.startStream(timeStamp);
             //this.startTime = System.currentTimeMillis() / 1000;
@@ -107,43 +109,34 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
         if (this.lastRecognitionUpdate != null && this.lastRecognitionUpdate.equals(input)) {
             return;
         }
-//        if (this.lastRecognitionUpdate != null ) {
-//            return;
-//        }
+
         Log.e("Speech Partial Result", input);
 
-        //reset timer
-//        resetTimer();
+
         this.lastRecognitionUpdate = input;
 
         //get results
         String result = isMatch(input);
+        Vector<String> topResults = new Vector<>();
+        topResults.add(result);
+        topResults.add(input);
         if (result =="") {
             if(input.split(" ").length>14){
                 resetSpeechRecognizer();
             }
-            return;
+//            return;
+            this.translatedResult = "";
+        }else{
+            this.translatedResult = getTranslation(topResults);
         }
 
-//        Vector<String> topResults = getTopResults(input);
-//        this.translatedResult = getTranslation(topResults);
-        Vector<String> topResults = new Vector<>();
-        topResults.add(result);
-        this.translatedResult = getTranslation(topResults);
 
-//        bestResultCurrent = topResults.get(0);
         bestResultCurrent = topResults.get(0);
 
 
 
         mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
 
-
-//        speechRecognizer.startListen();
-        //long timeFromStart = (System.currentTimeMillis() - this.startTime) / 1000;
-        //this.textStreamer.sendData(timeFromStart + ": " + input);
-
-        //update UI
 
     }
 
@@ -207,9 +200,6 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
             return "Translation End";
         }
         for(int i =0;i<sentences.size();i++) {
-//            if (sentences.indexOf(sentence) > -1) {
-//                return true;
-//            }
             if (sentence.toLowerCase().contains(sentences.elementAt(i).toLowerCase())) {
                 return sentences.elementAt(i);
             }
@@ -281,28 +271,6 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
             return "Biting surface";
         }else if (sentence.toLowerCase().contains("sat")&&sentence.toLowerCase().contains("eye")){
             return "Biting surface";
-        }else if (sentence.toLowerCase().contains("start")){
-            return "Translation Start";
-        }else if (sentence.toLowerCase().contains("chance")&&
-                sentence.toLowerCase().contains("sense")&&
-                sentence.toLowerCase().contains("bat")){
-            return "Translation Start";
-        }else if (sentence.toLowerCase().contains("chance")&&
-                sentence.toLowerCase().contains("sense")&&
-                sentence.toLowerCase().contains("act")){
-            return "Translation Start";
-        }else if (sentence.toLowerCase().contains("chance")&&
-                sentence.toLowerCase().contains("sense")&&
-                sentence.toLowerCase().contains("bad")){
-            return "Translation Start";
-        }else if (sentence.toLowerCase().contains("chance")&&
-                sentence.toLowerCase().contains("sense")&&
-                sentence.toLowerCase().contains("dad")){
-            return "Translation Start";
-        }else if (sentence.toLowerCase().contains("test")&&
-                sentence.toLowerCase().contains("lay")&&
-                sentence.toLowerCase().contains("sand")){
-            return "Translation Start";
         }
         return "";
     }
@@ -392,9 +360,6 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
                     }
                 }
 
-//                if(appModel.destinationLanguage.toLowerCase().equals("mandarin")&&(!trigger)){
-//                    textToSpeech.playSilence(300, TextToSpeech.QUEUE_FLUSH, null);
-//                }else{
                 if(!currentString.equals("")) {
 
                     HashMap<String, String> text2SpeechParas = new HashMap<>();
@@ -412,12 +377,6 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 
     public boolean trigger = false;
 
-//    public void textTospeechTemp(String text){
-//        HashMap<String, String> text2SpeechParas = new HashMap<>();
-//        text2SpeechParas.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, text);
-//        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, text2SpeechParas);
-//        trigger = true;
-//    }
     private String getTranslation(Vector<String> inputs) {
         if (inputs == null || inputs.size() == 0) {
             return "";

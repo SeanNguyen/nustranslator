@@ -47,6 +47,12 @@ public class MainActivity extends Activity {
     MediaPlayer mp = null;
     private boolean translateState = false;
 
+    public void resetResult(){
+        bestResult = "";
+        similarResultText = "";
+        translatedResult = "";
+    }
+
     //events
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,32 +67,18 @@ public class MainActivity extends Activity {
         translatedResult = "";
 
         mp = new MediaPlayer();
-//        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//
-//            @Override
-//            public void onPrepared(MediaPlayer player) {
-//                player.start();
-//            }
-//
-//        });
 
         this.originalLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 loadingView.setVisibility(View.VISIBLE);
                 controller.setOriginalLanguage(position);
-//                if(position == -1){
-//                    currentOriginalLanguage="english";
-//                }else{
-//                    currentOriginalLanguage="mandarin";
-//                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 loadingView.setVisibility(View.VISIBLE);
                 controller.setOriginalLanguage(-1);
-//                currentOriginalLanguage="english";
             }
 
         });
@@ -95,11 +87,6 @@ public class MainActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 controller.setDestinationLanguage(position);
-//                if(position == -1){
-//                    currentDestinationLanguage="english";
-//                }else{
-//                    currentDestinationLanguage="mandarin";
-//                }
             }
 
             @Override
@@ -124,10 +111,6 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-//            case R.id.action_updateData:
-//                controller.updateData();
-//                this.loadingView.setVisibility(View.VISIBLE);
-//                return true;
             case R.id.action_viewAllSentences:
                 Intent intent = new Intent(this, HelpActivity.class);
                 startActivity(intent);
@@ -141,13 +124,11 @@ public class MainActivity extends Activity {
     }
 
     public void playBackVideo(View view) {
-//        playMp3(currentDestinationLanguage);
         playMp3("mandarin");
 
     }
 
     public void playBackVideo1(View view) {
-//        playMp3(currentOriginalLanguage);
         playMp3("english");
 
     }
@@ -258,77 +239,24 @@ public class MainActivity extends Activity {
         TextView similarResults = (TextView) findViewById(R.id.otherResults);
         TextView translationTextView = (TextView) findViewById(R.id.resultText);
 
-        if (results == null) {
+        if (results.get(0).equals("")) {
             topResult.setText(bestResult);
-            similarResults.setText(similarResultText);
+            similarResults.setText("items in word list not detected"+"\n"+results.get(1));
             translationTextView.setText(translatedResult);
-            return;
+            similarResultText = results.get(1);
         }
         //Set speech recognition result
-
-        if (results.size() == 0) {
-//            topResult.setText("");
-//            similarResults.setText("");
-            return;
-        }
-        String topResultTemp = results.get(0);
-
-        String similarResultTextTemp = "";
-        if(results.size()>1) {
-            for (int i = 1; i < results.size(); i++) {
-                similarResultTextTemp += results.get(i) + Configurations.Newline;
-            }
-        }
-
-
-        if (topResultTemp.toLowerCase().equals("translation start")) {
-                controller.speechRecognizer.startListen();
-            translateState = true;
-            bestResult = topResultTemp;
-            similarResultText = similarResultTextTemp;
-            translatedResult = translatedResultTemp;
-
-            topResult.setText(bestResult);
-            similarResults.setText(similarResultText);
-            translationTextView.setText(translatedResult);
-//            controller.textTospeechTemp("Translation Start");
-        } else if (topResultTemp.toLowerCase().equals("translation end")) {
-                controller.speechRecognizer.startListen();
-            translateState = false;
-            bestResult = topResultTemp;
-            similarResultText = similarResultTextTemp;
-            translatedResult = translatedResultTemp;
-
-            playMp3(controller.appModel.destinationLanguage.toLowerCase());
-            topResult.setText(bestResult);
-            similarResults.setText(similarResultText);
-            translationTextView.setText(translatedResult);
-//            controller.textTospeechTemp("Translation End");
-        }
-        if (translateState) {
-
-            bestResult = topResultTemp;
-            similarResultText = similarResultTextTemp;
+        else {
+            bestResult = results.get(0);
+            similarResultText = results.get(1);
             translatedResult = translatedResultTemp;
 
             playMp3(controller.appModel.destinationLanguage.toLowerCase());
 
-
             topResult.setText(bestResult);
-            similarResults.setText(similarResultText);
-
-
+            similarResults.setText("phrase detected: "+ bestResult+"\n"+similarResultText);
             translationTextView.setText(translatedResult);
-
-        }else{
-            if(!bestResult.equals(null)) {
-
-                topResult.setText(bestResult);
-                similarResults.setText(similarResultText);
-                translationTextView.setText(translatedResult);
-            }
         }
-
 
     }
 

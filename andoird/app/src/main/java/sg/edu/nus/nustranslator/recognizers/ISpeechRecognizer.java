@@ -10,6 +10,7 @@ public interface ISpeechRecognizer {
     void setInputLanguage(String language, Context context);
 
     void startListen();
+    void initListen();
 
     void stopListen();
 

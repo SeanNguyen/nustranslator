@@ -30,6 +30,8 @@ public class Configurations {
 
     //Sphinx Keywords
     public static final String Sphinx_keyword_search = "search";
+    public static final String Sphinx_keyword_trigger_start = "triggerstart";
+    public static final String Sphinx_keyword_trigger_end = "triggerend";
 
     //Data storage
     public static final String Data_fileName_dir = "data/";
