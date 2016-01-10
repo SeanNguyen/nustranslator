@@ -23,6 +23,11 @@ lb_with_trigger/english.dic
 lb_with_trigger/english.lm
 lb_with_trigger/mandarin.dic
 lb_with_trigger/mandarin.lm
+lb_with_200/english.dic
+lb_with_200/english.lm
+lb_with_200/mandarin.dic
+lb_with_200/mandarin.lm
+lb_with_200/triggerCommand.lm
 cmudict-en-us.dict
 en-us-ptm/README
 en-us-ptm/feat.params
