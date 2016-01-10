@@ -25,7 +25,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 
     private static final String KEYPHRASE = "Translation Start";
     private static final String KEYPHRASEEND = "Translation End";
-    private static String CurrentState = Configurations.Sphinx_keyword_trigger_start;
+    public static String CurrentState = Configurations.Sphinx_keyword_trigger_start;
 
     public LocalSpeechRecognizer(final Context context, MainController parent) {
         this.context = context;
@@ -40,6 +40,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 
     public void initListen(){
         CurrentState = Configurations.Sphinx_keyword_trigger_start;
+        this.parent.onSpeechRecognitionResultUpdate("",CurrentState);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 //                CurrentState = Configurations.Sphinx_keyword_trigger_start;
                 text = KEYPHRASEEND;
             }
-            this.parent.onSpeechRecognitionResultUpdate(text);
+            this.parent.onSpeechRecognitionResultUpdate(text,CurrentState);
         }
     }
 
@@ -138,6 +139,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             // Create language model search.
             File languageModel = new File(internalDir, language + Configurations.Data_fileName_languageModel_ext);
             recognizer.addNgramSearch(Configurations.Sphinx_keyword_search, languageModel);
+            this.parent.onSpeechRecognitionResultUpdate("",CurrentState);
         } catch (Exception e) {
             e.printStackTrace();
         }

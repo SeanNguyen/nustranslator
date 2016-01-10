@@ -234,14 +234,19 @@ public class MainActivity extends Activity {
         this.loadingView.setVisibility(View.GONE);
     }
 
-    public void updateSpeechRecognitionResult(Vector<String> results, String translatedResultTemp) {
+    public void updateSpeechRecognitionResult(Vector<String> results, String translatedResultTemp,String State) {
         TextView topResult = (TextView) findViewById(R.id.firstResult);
         TextView similarResults = (TextView) findViewById(R.id.otherResults);
         TextView translationTextView = (TextView) findViewById(R.id.resultText);
 
+        String Mode="\nspeak 'translation start' to trigger app\n\n";
+        if(State.equals("search")){
+            Mode = "\nSpeak words from word list that you want to translate\n\n";
+        }
         if (results.get(0).equals("")) {
             topResult.setText(bestResult);
-            similarResults.setText("items in word list not detected"+"\n"+results.get(1));
+//            similarResults.setText(Mode+"items in word list not detected"+"\n"+results.get(1));
+            similarResults.setText(Mode+"Words detected: "+results.get(1));
             translationTextView.setText(translatedResult);
             similarResultText = results.get(1);
         }
@@ -254,7 +259,8 @@ public class MainActivity extends Activity {
             playMp3(controller.appModel.destinationLanguage.toLowerCase());
 
             topResult.setText(bestResult);
-            similarResults.setText("phrase detected: "+ bestResult+"\n"+similarResultText);
+//            similarResults.setText("phrase detected: "+ bestResult+"\n"+similarResultText);
+            similarResults.setText(Mode+"Words detected: "+bestResult+similarResultText);
             translationTextView.setText(translatedResult);
         }
 

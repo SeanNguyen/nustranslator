@@ -105,7 +105,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 
 
 
-    public void onSpeechRecognitionResultUpdate(String input) {
+    public void onSpeechRecognitionResultUpdate(String input, String state) {
         if (this.lastRecognitionUpdate != null && this.lastRecognitionUpdate.equals(input)) {
             return;
         }
@@ -135,7 +135,7 @@ public class MainController implements TextToSpeech.OnUtteranceCompletedListener
 
 
 
-        mainActivity.updateSpeechRecognitionResult(topResults, translatedResult);
+        mainActivity.updateSpeechRecognitionResult(topResults, translatedResult, state);
 
 
     }
