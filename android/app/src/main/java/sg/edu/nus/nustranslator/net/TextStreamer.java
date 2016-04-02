@@ -6,9 +6,7 @@ import com.github.nkzawa.socketio.client.Socket;
 
 import sg.edu.nus.nustranslator.utils.Configurations;
 
-/**
- * Created by Storm on 3/6/2015.
- */
+
 public class TextStreamer implements Streamer {
 
     //Attributes

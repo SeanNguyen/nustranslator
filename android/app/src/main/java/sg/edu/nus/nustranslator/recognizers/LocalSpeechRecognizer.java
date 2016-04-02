@@ -13,9 +13,7 @@ import sg.edu.nus.nustranslator.utils.Configurations;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
-/**
- * Created by Storm on 3/10/2015.
- */
+
 public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionListener {
 
     private SpeechRecognizer recognizer;

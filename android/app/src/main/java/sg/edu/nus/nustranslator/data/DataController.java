@@ -14,9 +14,7 @@ import sg.edu.nus.nustranslator.utils.Configurations;
 
 import java.util.ArrayList;
 
-/**
- * Created by Storm on 3/6/2015.
- */
+
 public class DataController {
     //Attributes
     DataFetcher dataFetcher = new DataFetcher();

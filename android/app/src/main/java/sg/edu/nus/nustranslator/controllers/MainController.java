@@ -20,9 +20,7 @@ import sg.edu.nus.nustranslator.recognizers.ISpeechRecognizer;
 import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
 import sg.edu.nus.nustranslator.utils.Configurations;
 
-/**
- * Created by Storm on 3/5/2015.
- */
+
 public class MainController implements TextToSpeech.OnUtteranceCompletedListener {
 
     //attributes

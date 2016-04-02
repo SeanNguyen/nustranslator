@@ -3,9 +3,7 @@ package sg.edu.nus.nustranslator.models;
 import java.util.HashMap;
 import java.util.Vector;
 
-/**
- * Created by Storm on 3/5/2015.
- */
+
 public class AppModel {
 
     private static AppModel instance = new AppModel();

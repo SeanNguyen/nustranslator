@@ -2,9 +2,7 @@ package sg.edu.nus.nustranslator.utils;
 
 import android.media.AudioFormat;
 
-/**
- * Created by Storm on 3/5/2015.
- */
+
 public class Configurations {
     //recorder info
     public static final int Recorder_sampleRate = 8000;

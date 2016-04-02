@@ -5,9 +5,7 @@ import java.util.Vector;
 import sg.edu.nus.nustranslator.activities.HelpActivity;
 import sg.edu.nus.nustranslator.models.AppModel;
 
-/**
- * Created by Storm on 3/30/2015.
- */
+
 public class HelpController {
 
     private AppModel appModel = AppModel.getInstance();
