@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.models.AppModel;
-import sg.edu.nus.nustranslator.ultis.Configurations;
+import sg.edu.nus.nustranslator.utils.Configurations;
 
 /**
  * Created by Storm on 3/11/2015.

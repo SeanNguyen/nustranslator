@@ -1,29 +1,17 @@
 package sg.edu.nus.nustranslator.data;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Scanner;
 import java.util.Vector;
 
-import edu.cmu.pocketsphinx.Assets;
 import sg.edu.nus.nustranslator.models.AppModel;
 import sg.edu.nus.nustranslator.net.DataFetcher;
-import sg.edu.nus.nustranslator.ultis.Configurations;
-import sg.edu.nus.nustranslator.activities.MainActivity;
+import sg.edu.nus.nustranslator.utils.Configurations;
 
-import java.io.InputStream;
-import org.apache.http.util.EncodingUtils;
-import android.app.Activity;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.widget.TextView;
 import java.util.ArrayList;
 
 /**

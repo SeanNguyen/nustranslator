@@ -1,11 +1,8 @@
 package sg.edu.nus.nustranslator.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -19,20 +16,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.media.MediaPlayer;
 
-import junit.framework.Assert;
-
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
 import sg.edu.nus.nustranslator.controllers.MainController;
 import sg.edu.nus.nustranslator.models.States;
-import sg.edu.nus.nustranslator.ultis.Configurations;
 
 public class MainActivity extends Activity {
 

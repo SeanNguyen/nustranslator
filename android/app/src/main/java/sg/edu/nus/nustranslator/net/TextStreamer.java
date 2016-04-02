@@ -4,7 +4,7 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import sg.edu.nus.nustranslator.ultis.Configurations;
+import sg.edu.nus.nustranslator.utils.Configurations;
 
 /**
  * Created by Storm on 3/6/2015.

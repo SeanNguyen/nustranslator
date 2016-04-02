@@ -3,10 +3,7 @@ package sg.edu.nus.nustranslator.controllers;
 import android.media.AudioRecord;
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import android.util.Log;
-
-import net.java.frej.fuzzy.Fuzzy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +18,7 @@ import sg.edu.nus.nustranslator.models.AppModel;
 import sg.edu.nus.nustranslator.models.States;
 import sg.edu.nus.nustranslator.recognizers.ISpeechRecognizer;
 import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
-import sg.edu.nus.nustranslator.ultis.Configurations;
+import sg.edu.nus.nustranslator.utils.Configurations;
 
 /**
  * Created by Storm on 3/5/2015.

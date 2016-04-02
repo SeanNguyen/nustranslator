@@ -9,7 +9,7 @@ import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import sg.edu.nus.nustranslator.controllers.MainController;
-import sg.edu.nus.nustranslator.ultis.Configurations;
+import sg.edu.nus.nustranslator.utils.Configurations;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 

@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.ultis;
+package sg.edu.nus.nustranslator.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
