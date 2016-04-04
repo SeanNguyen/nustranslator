@@ -2,7 +2,7 @@ package sg.edu.nus.nustranslator.controllers;
 
 import java.util.Vector;
 
-import sg.edu.nus.nustranslator.activities.HelpActivity;
+import sg.edu.nus.nustranslator.ui.HelpActivity;
 import sg.edu.nus.nustranslator.models.AppModel;
 
 

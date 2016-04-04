@@ -8,7 +8,7 @@ import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
-import sg.edu.nus.nustranslator.controllers.MainController;
+import sg.edu.nus.nustranslator.ui.TranslationFragment;
 import sg.edu.nus.nustranslator.utils.Configurations;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
@@ -17,16 +17,14 @@ import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionListener {
 
     private SpeechRecognizer recognizer;
-    private Context context;
-    private MainController parent;
+    private TranslationFragment parent;
     private static long preTime;
 
     private static final String KEYPHRASE = "Translation Start";
     private static final String KEYPHRASEEND = "Translation End";
     public static String CurrentState = Configurations.Sphinx_keyword_trigger_start;
 
-    public LocalSpeechRecognizer(final Context context, MainController parent) {
-        this.context = context;
+    public LocalSpeechRecognizer(TranslationFragment parent) {
         this.parent = parent;
         preTime = System.currentTimeMillis();
     }
@@ -71,12 +69,10 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             String text =  hypothesis.getHypstr();
             if (CurrentState.equals(Configurations.Sphinx_keyword_trigger_start) && text.toLowerCase().equals(KEYPHRASE.toLowerCase())) {
                 switchSearch(Configurations.Sphinx_keyword_search);
-//                CurrentState = Configurations.Sphinx_keyword_search;
                 text = KEYPHRASE;
             }
             else if (!CurrentState.equals(Configurations.Sphinx_keyword_trigger_start) && text.toLowerCase().contains(KEYPHRASEEND.toLowerCase())) {
                 switchSearch(Configurations.Sphinx_keyword_trigger_start);
-//                CurrentState = Configurations.Sphinx_keyword_trigger_start;
                 text = KEYPHRASEEND;
             }
             this.parent.onSpeechRecognitionResultUpdate(text,CurrentState);

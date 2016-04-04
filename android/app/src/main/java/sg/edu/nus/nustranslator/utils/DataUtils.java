@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.data;
+package sg.edu.nus.nustranslator.utils;
 
 import android.content.Context;
 
@@ -15,17 +15,8 @@ import sg.edu.nus.nustranslator.utils.Configurations;
 import java.util.ArrayList;
 
 
-public class DataController {
-    //Attributes
-    DataFetcher dataFetcher = new DataFetcher();
-
-    public ArrayList<String> mandainList = new ArrayList();
-    //Constructor
-    public DataController() {
-    }
-
-    //Public Methods
-    public void serializeData(AppModel model, Context context) {
+public class DataUtils {
+    public static void serializeData(AppModel model, Context context) {
         //the format will be:
         //data version
         //number of language
@@ -61,8 +52,7 @@ public class DataController {
         }
     }
 
-
-    public ArrayList<String> deserializeData(AppModel model, Context context) {
+    public static void deserializeData(AppModel model, Context context) {
         //the format will be:
         //data version
         //number of language
@@ -72,7 +62,8 @@ public class DataController {
         model.resetModel();
 
         try {
-            Scanner scanner = new Scanner(context.getResources().getAssets().open(Configurations.Data_fileName_dir + Configurations.Data_fileName_sentences));
+            Scanner scanner = new Scanner(
+                    context.getResources().getAssets().open(Configurations.Data_fileName_dir + Configurations.Data_fileName_sentences));
             int dataVersion = Integer.parseInt(scanner.nextLine());
             model.setDataVersion(dataVersion);
 
@@ -86,24 +77,22 @@ public class DataController {
                 for (int j = 0; j < noOfPair; j++) {
                     String sentence = scanner.nextLine();
                     sentences.add(sentence);
-                    if(language.equals("English")){
-                        mandainList.add(sentence);
-                    }
+
                 }
                 model.addLanguage(language, sentences);
             }
             scanner.close();
         } catch (IOException e) {
-            System.out.print("didn't find the data.txt");
+            System.out.print("couldn't find the data.txt");
             e.printStackTrace();
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        return mandainList;
     }
 
-    public void updateData(AppModel model, Context context) {
+    public static void updateData(AppModel model, Context context) {
+        DataFetcher dataFetcher = new DataFetcher();
         dataFetcher.fetchData(model);
         serializeData(model, context);
 
@@ -117,24 +106,21 @@ public class DataController {
         }
     }
 
-    //private
-    private void saveDict(String language, String content, Context context) {
+    private static void saveDict(String language, String content, Context context) {
         try {
             String fileName = language + Configurations.Data_fileName_dict_ext;
            // BufferedWriter outputStream = new BufferedWriter(
            //         new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
             BufferedWriter outputStream = new BufferedWriter(
                     new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
-
-
-                    outputStream.write(content);
+            outputStream.write(content);
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void saveLanguageModel(String language, String content, Context context) {
+    private static void saveLanguageModel(String language, String content, Context context) {
         try {
             String fileName = language + Configurations.Data_fileName_languageModel_ext;
             BufferedWriter outputStream = new BufferedWriter(

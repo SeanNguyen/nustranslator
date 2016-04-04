@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.activities;
+package sg.edu.nus.nustranslator.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
