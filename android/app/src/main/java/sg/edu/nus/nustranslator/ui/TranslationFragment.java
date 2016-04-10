@@ -18,10 +18,10 @@ import java.util.Locale;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
-import sg.edu.nus.nustranslator.models.AppModel;
+import sg.edu.nus.nustranslator.AppModel;
 import sg.edu.nus.nustranslator.recognizers.ISpeechRecognizer;
 import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
-import sg.edu.nus.nustranslator.utils.Configurations;
+import sg.edu.nus.nustranslator.Configurations;
 
 
 public class TranslationFragment extends Fragment implements TextToSpeech.OnUtteranceCompletedListener{
@@ -90,6 +90,7 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mSpeechRecognizer.stopListen();
                 getFragmentManager().popBackStack();
             }
         });
@@ -137,12 +138,12 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
         lastRecognitionResult = recognitionResult;
 
         //find the best match from the list of words we know (if one exists)
-        String result = matchWithKnownWords(recognitionResult);
+        String bestResult = matchWithKnownWords(recognitionResult);
         ArrayList<String> displayResults = new ArrayList<>();
-        displayResults.add(result);
+        displayResults.add(bestResult);
         displayResults.add(recognitionResult);
 
-        mTranslatedResult = getTranslation(displayResults.get(0));
+        mTranslatedResult = getTranslation(bestResult);
         updateSpeechRecognitionResult(displayResults, mTranslatedResult, state);
 
         if(recognitionResult.split(" ").length >= 5){
@@ -202,6 +203,7 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
                 mMediaPlayer.setLooping(false);
                 mMediaPlayer.start();
                 descriptor.close();
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {

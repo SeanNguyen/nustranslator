@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.net;
+package sg.edu.nus.nustranslator.network;
 
 
 public interface Streamer {

@@ -5,18 +5,15 @@ import android.content.Context;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Collections;
 import java.util.Scanner;
 import java.util.Vector;
 
-import sg.edu.nus.nustranslator.models.AppModel;
-import sg.edu.nus.nustranslator.net.DataFetcher;
-import sg.edu.nus.nustranslator.utils.Configurations;
-
-import java.util.ArrayList;
+import sg.edu.nus.nustranslator.AppModel;
+import sg.edu.nus.nustranslator.Configurations;
+import sg.edu.nus.nustranslator.network.DataFetcher;
 
 
-public class DataUtils {
+public class DataManager {
     public static void serializeData(AppModel model, Context context) {
         //the format will be:
         //data version
@@ -26,12 +23,12 @@ public class DataUtils {
         //sentences
         String fileName = Configurations.Data_fileName_sentences;
         int noOfLanguage = model.getNumberOfLanguage();
-        int noOfPair = model.getNumberOfPair();
+        int noOfPair = model.getmNumPairs();
         Vector<String> languages = model.getAllLanguages();
         try {
             BufferedWriter outputStream = new BufferedWriter(
                     new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
-            outputStream.write(String.valueOf(model.getDataVersion()));
+            outputStream.write(String.valueOf(model.getmDataVersion()));
             outputStream.newLine();
             outputStream.write(String.valueOf(noOfLanguage));
             outputStream.newLine();
@@ -66,11 +63,11 @@ public class DataUtils {
             Scanner scanner = new Scanner(
                     context.getResources().getAssets().open(Configurations.Data_fileName_dir + Configurations.Data_fileName_sentences));
             int dataVersion = Integer.parseInt(scanner.nextLine());
-            model.setDataVersion(dataVersion);
+            model.setmDataVersion(dataVersion);
 
             int noOfLanguage = Integer.parseInt(scanner.nextLine());
             int noOfPair = Integer.parseInt(scanner.nextLine());
-            model.setNumberOfPair(noOfPair);
+            model.setmNumPairs(noOfPair);
 
             for (int i = 0; i <noOfLanguage; i++) {
                 String language = scanner.nextLine();
@@ -79,7 +76,13 @@ public class DataUtils {
                     String sentence = scanner.nextLine();
                     sentences.add(sentence.toLowerCase());
                 }
-                model.addLanguage(language, sentences);
+
+                if(i == 0) {
+                    // TODO: note that first language is set to be main language for now
+                    model.addMainLanguage(language, sentences);
+                } else {
+                    model.addLanguage(language, sentences);
+                }
             }
             scanner.close();
         } catch (IOException e) {

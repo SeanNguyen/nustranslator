@@ -11,7 +11,7 @@ import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import sg.edu.nus.nustranslator.ui.TranslationFragment;
-import sg.edu.nus.nustranslator.utils.Configurations;
+import sg.edu.nus.nustranslator.Configurations;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
@@ -22,7 +22,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 
     private SpeechRecognizer recognizer;
     private TranslationFragment parent;
-    private String state = Configurations.SPHINX_NOT_ACTIVATED;;
+    private String state = Configurations.SPHINX_NOT_ACTIVATED;
 
     public LocalSpeechRecognizer(TranslationFragment parent) {
         this.parent = parent;

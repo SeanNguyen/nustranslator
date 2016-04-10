@@ -1,10 +1,10 @@
-package sg.edu.nus.nustranslator.net;
+package sg.edu.nus.nustranslator.network;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import sg.edu.nus.nustranslator.utils.Configurations;
+import sg.edu.nus.nustranslator.Configurations;
 
 
 public class TextStreamer implements Streamer {

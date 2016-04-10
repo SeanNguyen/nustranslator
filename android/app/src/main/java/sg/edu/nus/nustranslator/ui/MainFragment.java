@@ -17,70 +17,72 @@ import android.widget.TextView;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
-import sg.edu.nus.nustranslator.models.AppModel;
+import sg.edu.nus.nustranslator.AppModel;
 
 public class MainFragment extends Fragment {
 
     private Spinner mOriginalLanguageSpinner;
     private Spinner mTranslationLanguageSpinner;
-
+    private AppModel mModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
+        mModel = AppModel.getInstance(getActivity().getApplicationContext());
 
-        Vector<String> languages = AppModel.getInstance(getActivity().getApplicationContext()).getAllLanguages();
-        if(languages.size() == 0) {
+        final Vector<String> allLanguages = mModel.getAllLanguages();
+        final Vector<String> mainLangauges = mModel.getMainLanguages();
+
+        if(allLanguages.size() == 0) {
             Log.e(this.getClass().getSimpleName(), "no languages loaded yet!");
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_layout, languages) {
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View v = super.getView(position, convertView, parent);
-                ((TextView) v).setTextSize(16);
-                return v;
-            }
+        final String firstRemovedLanguage = mainLangauges.firstElement();
+        allLanguages.remove(firstRemovedLanguage);
 
+
+        final ArrayAdapter<String> originalLanguageAdapter =
+                new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_layout, mainLangauges) {
+                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                        TextView v = (TextView) super.getDropDownView(position, convertView, parent);
+                        v.setGravity(Gravity.CENTER);
+                        return v;
+                    }
+                };
+        final ArrayAdapter<String> translationLanguageAdapter =
+                new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_layout, allLanguages) {
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View v = super.getDropDownView(position, convertView, parent);
-                ((TextView) v).setGravity(Gravity.CENTER);
+                TextView v = (TextView) super.getDropDownView(position, convertView, parent);
+                v.setGravity(Gravity.CENTER);
                 return v;
             }
         };
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+
+        translationLanguageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        originalLanguageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mOriginalLanguageSpinner = (Spinner) v.findViewById(R.id.originalLanguages_spinner);
-        mOriginalLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                //controller.setOriginalLanguage(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                //controller.setOriginalLanguage(-1);
-            }
-
-        });
         mTranslationLanguageSpinner = (Spinner) v.findViewById(R.id.destination_languages_spinner);
-        mTranslationLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mOriginalLanguageSpinner.setAdapter(originalLanguageAdapter);
+        mTranslationLanguageSpinner.setAdapter(translationLanguageAdapter);
+        mOriginalLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            private String removedLanguage = firstRemovedLanguage;
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                //controller.setDestinationLanguage(position);
+                allLanguages.add(removedLanguage);
+                removedLanguage = originalLanguageAdapter.getItem(position);
+                allLanguages.remove(removedLanguage);
+                mTranslationLanguageSpinner.invalidate();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                //controller.setDestinationLanguage(-1);
-//                currentDestinationLanguage="english";
-
             }
 
         });
-        mOriginalLanguageSpinner.setAdapter(adapter);
-        mTranslationLanguageSpinner.setAdapter(adapter);
-
 
         Button startTranslationButton = (Button) v.findViewById(R.id.translation_button);
         startTranslationButton.setOnClickListener(new View.OnClickListener() {

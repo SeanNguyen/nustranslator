@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
-import sg.edu.nus.nustranslator.controllers.HelpController;
+import sg.edu.nus.nustranslator.HelpController;
 
 public class HelpActivity extends Activity {
 

@@ -1,25 +1,15 @@
-package sg.edu.nus.nustranslator.controllers;
+package sg.edu.nus.nustranslator;
 
 import android.content.Context;
-import android.media.AudioRecord;
 import android.os.AsyncTask;
-import android.speech.tts.TextToSpeech;
-import android.util.Log;
 
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
-
-import sg.edu.nus.nustranslator.ui.MainActivity;
-import sg.edu.nus.nustranslator.models.AppModel;
-import sg.edu.nus.nustranslator.recognizers.ISpeechRecognizer;
-import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
-import sg.edu.nus.nustranslator.utils.Configurations;
 
 
 public class MainController {
+    // TODO: get rid of this controller after we have sorted out net files.
+
     //private Streamer audioStreamer = new AudioStreamer();
     //private Streamer textStreamer = new TextStreamer();
     //private AudioRecord recorder;

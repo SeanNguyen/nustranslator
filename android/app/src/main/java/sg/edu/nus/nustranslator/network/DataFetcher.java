@@ -1,4 +1,4 @@
-package sg.edu.nus.nustranslator.net;
+package sg.edu.nus.nustranslator.network;
 
 import android.util.Log;
 
@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-import sg.edu.nus.nustranslator.models.AppModel;
-import sg.edu.nus.nustranslator.utils.Configurations;
+import sg.edu.nus.nustranslator.AppModel;
+import sg.edu.nus.nustranslator.Configurations;
 
 
 public class DataFetcher {
@@ -91,7 +91,7 @@ public class DataFetcher {
         JSONObject jsonObject = new JSONObject(input);
         String version = jsonObject.getString("version");
         int dataVersion = Integer.parseInt(version);
-        if (model.getDataVersion() >= dataVersion) {
+        if (model.getmDataVersion() >= dataVersion) {
             Log.e("FETCH DATA", "Data is up to date");
                 return true;
         }
@@ -105,8 +105,8 @@ public class DataFetcher {
             model.addLanguage(language, sentenceList);
             numberOfPair = sentenceList.size();
         }
-        model.setNumberOfPair(numberOfPair);
-        model.setDataVersion(dataVersion);
+        model.setmNumPairs(numberOfPair);
+        model.setmDataVersion(dataVersion);
         return true;
     }
 

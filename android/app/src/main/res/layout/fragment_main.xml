@@ -35,7 +35,7 @@
             android:paddingBottom="20dp">
 
             <TextView
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="From"
                 android:textSize="@dimen/textSize"
@@ -58,7 +58,7 @@
             android:paddingBottom="20dp">
 
             <TextView
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="To"
                 android:textSize="@dimen/textSize"

@@ -1,6 +1,6 @@
 <resources>
     <!--global default-->
-    <dimen name="textSize">18sp</dimen>
+    <dimen name="textSize">20sp</dimen>
     <dimen name="padding">16dp</dimen>
 
     <!--Buttons-->
