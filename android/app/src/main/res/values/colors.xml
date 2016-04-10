@@ -1,6 +1,6 @@
 <resources>
     <!--Colors-->
-    <color name="violetThemeColor">#494da0</color>
+    <color name="violet_theme_color">#494da0</color>
     <color name="whiteThemeColor">#f1f1f1</color>
     <color name="grayThemeColor">#808080</color>
     <color name="blackAlpha80">#CC000000</color>

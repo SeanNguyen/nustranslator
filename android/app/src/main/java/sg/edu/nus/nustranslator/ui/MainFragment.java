@@ -17,7 +17,6 @@ import android.widget.TextView;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
-import sg.edu.nus.nustranslator.utils.DataUtils;
 import sg.edu.nus.nustranslator.models.AppModel;
 
 public class MainFragment extends Fragment {
@@ -31,9 +30,7 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
 
-        DataUtils.deserializeData(AppModel.getInstance(), getActivity());
-
-        Vector<String> languages = AppModel.getInstance().getAllLanguages();
+        Vector<String> languages = AppModel.getInstance(getActivity().getApplicationContext()).getAllLanguages();
         if(languages.size() == 0) {
             Log.e(this.getClass().getSimpleName(), "no languages loaded yet!");
         }
@@ -66,7 +63,7 @@ public class MainFragment extends Fragment {
             }
 
         });
-        mTranslationLanguageSpinner = (Spinner) v.findViewById(R.id.destinationLanguages_spinner);
+        mTranslationLanguageSpinner = (Spinner) v.findViewById(R.id.destination_languages_spinner);
         mTranslationLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -85,7 +82,7 @@ public class MainFragment extends Fragment {
         mTranslationLanguageSpinner.setAdapter(adapter);
 
 
-        Button startTranslationButton = (Button) v.findViewById(R.id.startTranslationButton);
+        Button startTranslationButton = (Button) v.findViewById(R.id.translation_button);
         startTranslationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

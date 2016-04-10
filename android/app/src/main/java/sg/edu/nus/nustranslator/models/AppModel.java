@@ -1,25 +1,30 @@
 package sg.edu.nus.nustranslator.models;
 
+import android.content.Context;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
+
+import sg.edu.nus.nustranslator.utils.DataUtils;
 
 
 public class AppModel {
 
     private static AppModel sAppModel;
-
     private int numberOfPair = 0;
     private int dataVersion = 0;
     private Vector<String> languages = new Vector<String>();
-    private HashMap<String, Vector<String>> languageSentencesMap = new HashMap<String, Vector<String>>();
+    private HashMap<String, Vector<String>> languageAndSortedSentencesTable = new HashMap<String, Vector<String>>();
 
     //constructor
     private AppModel() {
     }
 
-    public static AppModel getInstance() {
+    public static AppModel getInstance(Context appContext) {
         if(sAppModel == null) {
             sAppModel = new AppModel();
+            DataUtils.deserializeData(sAppModel, appContext);
         }
         return sAppModel;
     }
@@ -29,22 +34,28 @@ public class AppModel {
         this.numberOfPair = 0;
         this.dataVersion = 0;
         this.languages = new Vector<>();
-        this.languageSentencesMap = new HashMap<>();
+        this.languageAndSortedSentencesTable = new HashMap<>();
     }
 
     public String getTranslation(String input, String originalLanguage, String translationLanguage) {
-        Vector<String> originalSentences = this.languageSentencesMap.get(originalLanguage);
-        Vector<String> destinationSentences = this.languageSentencesMap.get(translationLanguage);
-        int index = originalSentences.indexOf(input);
-        String result = destinationSentences.get(index);
-        return result;
+        input = input.toLowerCase();
+        Vector<String> originalSentences = this.languageAndSortedSentencesTable.get(originalLanguage);
+        Vector<String> destinationSentences = this.languageAndSortedSentencesTable.get(translationLanguage);
+
+        Collections.sort(originalSentences);
+        int index = Collections.binarySearch(originalSentences, input);
+        if(index <= -1) {
+            return "";
+        } else {
+            return destinationSentences.get(index);
+        }
     }
 
     public Vector<String> getSentencesByLanguageName(String language) {
-        if (this.languageSentencesMap == null) {
+        if (this.languageAndSortedSentencesTable == null) {
             return null;
         }
-        return this.languageSentencesMap.get(language);
+        return this.languageAndSortedSentencesTable.get(language);
     }
 
     public Vector<String> getSentencesByLanguageIndex(int index) {
@@ -58,7 +69,7 @@ public class AppModel {
 
     public void addLanguage(String language, Vector<String> sentences) {
         this.languages.add(language);
-        this.languageSentencesMap.put(language, sentences);
+        this.languageAndSortedSentencesTable.put(language, sentences);
     }
 
     public Vector<String> getAllLanguages() {

@@ -27,8 +27,8 @@ public class Configurations {
     public static final float Sphinx_keywordThreshold = 1e-1f;
 
     //Sphinx Keywords
-    public static final String Sphinx_keyword_search = "search";
-    public static final String Sphinx_keyword_trigger_start = "triggerstart";
+    public static final String SPHINX_ACTIVATED = "search";
+    public static final String SPHINX_NOT_ACTIVATED = "triggerstart";
     public static final String Sphinx_keyword_trigger_end = "triggerend";
 
     //Data storage

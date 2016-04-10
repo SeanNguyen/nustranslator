@@ -1,8 +1,10 @@
 package sg.edu.nus.nustranslator.recognizers;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
 
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
@@ -15,18 +17,15 @@ import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
 
 public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionListener {
+    public static final String ACTIVATE_PHRASE = "Translation Start";
+    public static final String DEACTIVATE_PHRASE = "Translation End";
 
     private SpeechRecognizer recognizer;
     private TranslationFragment parent;
-    private static long preTime;
-
-    private static final String KEYPHRASE = "Translation Start";
-    private static final String KEYPHRASEEND = "Translation End";
-    public static String CurrentState = Configurations.Sphinx_keyword_trigger_start;
+    private String state = Configurations.SPHINX_NOT_ACTIVATED;;
 
     public LocalSpeechRecognizer(TranslationFragment parent) {
         this.parent = parent;
-        preTime = System.currentTimeMillis();
     }
 
     @Override
@@ -35,13 +34,13 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     }
 
     public void initListen(){
-        CurrentState = Configurations.Sphinx_keyword_trigger_start;
-        this.parent.onSpeechRecognitionResultUpdate("",CurrentState);
+        state = Configurations.SPHINX_NOT_ACTIVATED;
+        this.parent.onSpeechRecognitionResultUpdate("", state);
     }
 
     @Override
     public void startListen() {
-        this.recognizer.startListening(CurrentState);
+        this.recognizer.startListening(state);
     }
 
     @Override
@@ -66,25 +65,25 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     @Override
     public void onPartialResult(Hypothesis hypothesis) {
         if (hypothesis != null) {
-            String text =  hypothesis.getHypstr();
-            if (CurrentState.equals(Configurations.Sphinx_keyword_trigger_start) && text.toLowerCase().equals(KEYPHRASE.toLowerCase())) {
-                switchSearch(Configurations.Sphinx_keyword_search);
-                text = KEYPHRASE;
+            String text =  hypothesis.getHypstr().toLowerCase();
+
+            //if not yet activatereceivedeved activate command
+            if (state.equals(Configurations.SPHINX_NOT_ACTIVATED) && text.contains(ACTIVATE_PHRASE.toLowerCase())) {
+                changeState(Configurations.SPHINX_ACTIVATED);
+                text = ACTIVATE_PHRASE;
             }
-            else if (!CurrentState.equals(Configurations.Sphinx_keyword_trigger_start) && text.toLowerCase().contains(KEYPHRASEEND.toLowerCase())) {
-                switchSearch(Configurations.Sphinx_keyword_trigger_start);
-                text = KEYPHRASEEND;
+            else if (state.equals(Configurations.SPHINX_ACTIVATED) && text.contains(DEACTIVATE_PHRASE.toLowerCase())) {
+                changeState(Configurations.SPHINX_NOT_ACTIVATED);
+                text = DEACTIVATE_PHRASE;
             }
-            this.parent.onSpeechRecognitionResultUpdate(text,CurrentState);
+            this.parent.onSpeechRecognitionResultUpdate(text, state);
         }
     }
 
-    private void switchSearch(String searchName) {
+    private void changeState(String stateName) {
         recognizer.stop();
-
-        // If we are not spotting, start listening with timeout (10000 ms or 10 seconds).
-        CurrentState =  searchName;
-        recognizer.startListening(searchName);
+        state =  stateName;
+        recognizer.startListening(stateName);
     }
 //    if ((System.currentTimeMillis()-preTime) >500) {
 //        preTime = System.currentTimeMillis();
@@ -94,6 +93,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 //
 //        }
 //    }
+
     @Override
     public void onResult(Hypothesis hypothesis) {
 //        if (hypothesis != null) {
@@ -111,31 +111,27 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             Assets assets = new Assets(context);
             File assetDir = assets.syncAssets();
             File modelsDir = new File(assetDir, Configurations.Sphinx_models_dir);
-            //File internalPath = context.getFilesDir();
             File internalDir =  new File(assetDir,"lb_with_200");
             //File dictionaryFile = context.getResources().getAssets().open( language + Configurations.Data_fileName_dict_ext);
 
             this.recognizer = defaultSetup()
                     .setAcousticModel(new File(modelsDir, Configurations.Sphinx_acousticModel_dir + language))
-
                     .setDictionary(new File(internalDir, language + Configurations.Data_fileName_dict_ext))
-//                    .setDictionary(new File(assetDir, "cmudict-en-us.dict"))
                     .setBoolean("-remove_noise", true)
                     .setKeywordThreshold(Configurations.Sphinx_keywordThreshold)
                     .getRecognizer();
             this.recognizer.addListener(this);
 
+//            recognizer.addKeyphraseSearch(Configurations.SPHINX_NOT_ACTIVATED, ACTIVATE_PHRASE);
 
-            File languageModel1 = new File(internalDir, "triggerCommand.lm");
-
-//            recognizer.addKeyphraseSearch(Configurations.Sphinx_keyword_trigger_start, KEYPHRASE);
-            recognizer.addNgramSearch(Configurations.Sphinx_keyword_trigger_start, languageModel1);
+            File triggerModel = new File(internalDir, "triggerCommand.lm");
+            recognizer.addNgramSearch(Configurations.SPHINX_NOT_ACTIVATED, triggerModel);
             // Create language model search.
             File languageModel = new File(internalDir, language + Configurations.Data_fileName_languageModel_ext);
-            recognizer.addNgramSearch(Configurations.Sphinx_keyword_search, languageModel);
-            this.parent.onSpeechRecognitionResultUpdate("",CurrentState);
-        } catch (Exception e) {
-            e.printStackTrace();
+            recognizer.addNgramSearch(Configurations.SPHINX_ACTIVATED, languageModel);
+
+        } catch (IOException e) {
+            Log.e(LocalSpeechRecognizer.class.getSimpleName(), e.getMessage());
         }
     }
 

@@ -8,11 +8,12 @@ import sg.edu.nus.nustranslator.models.AppModel;
 
 public class HelpController {
 
-    private AppModel appModel = AppModel.getInstance();
+    private AppModel appModel;
     private HelpActivity view;
 
     public HelpController(HelpActivity view) {
         this.view = view;
+        appModel = AppModel.getInstance(view.getApplicationContext());
         Vector<String> languages = appModel.getAllLanguages();
         view.updateLanguageList(languages);
     }

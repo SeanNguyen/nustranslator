@@ -3,113 +3,85 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="sg.edu.nus.nustranslator.ui.MainFragment"
-    android:background="@color/violetThemeColor">
+    android:background="@color/violet_theme_color">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/violet_theme_color">
 
-        <!--Language selection view-->
+        <!--Big Icon-->
         <RelativeLayout
-            android:id="@+id/languageSelection"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="100">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/resultView_inactive"
-                android:orientation="vertical"
-                android:gravity="bottom"
-                android:background="@color/violetThemeColor">
-
-                <!--Big Icon-->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="100">
-
-                    <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="190dp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/big_mic_icon"/>
-
-                </RelativeLayout>
-
-                <!--Original Language-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="50dp"
-                    android:paddingRight="50dp"
-                    android:paddingBottom="20dp">
-
-                    <TextView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:text="From"
-                        android:textSize="@dimen/textSize"
-                        android:textColor="@color/whiteThemeColor"/>
-
-                    <Spinner
-                        android:id="@+id/originalLanguages_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-                <!--Destination Language-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="50dp"
-                    android:paddingRight="50dp"
-                    android:paddingBottom="20dp">
-
-                    <TextView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:text="To"
-                        android:textSize="@dimen/textSize"
-                        android:textColor="@color/whiteThemeColor"/>
-
-                    <Spinner
-                        android:id="@+id/destinationLanguages_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="190dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/big_mic_icon"/>
 
         </RelativeLayout>
 
-        <!--Result view for instant translation-->
-
-        <!--Main button-->
+        <!--Original Language-->
         <LinearLayout
-            android:id="@+id/controlView"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:padding="16dp">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingBottom="20dp">
 
-            <Button
-                android:id="@+id/startTranslationButton"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/button_session_height"
-                android:text="@string/button_session_inactive"
-                android:textSize="@dimen/button_textSize"
-                android:background="@drawable/button_session"
-                android:textColor="@color/violetThemeColor"
-                android:textStyle="bold"
-                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="From"
+                android:textSize="@dimen/textSize"
+                android:textColor="@color/whiteThemeColor"/>
+
+            <Spinner
+                android:id="@+id/originalLanguages_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
+
+        <!--Destination Language-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="To"
+                android:textSize="@dimen/textSize"
+                android:textColor="@color/whiteThemeColor"/>
+
+            <Spinner
+                android:id="@+id/destination_languages_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/translation_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_translator"
+            android:textSize="@dimen/button_textSize"
+            android:background="@drawable/start_stop_button"
+            android:textColor="@color/violet_theme_color"
+            android:textStyle="bold"
+            android:layout_margin="12dp" />
 
     </LinearLayout>
 

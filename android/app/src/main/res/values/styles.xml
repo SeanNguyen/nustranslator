@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!--actionBar-->
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:actionOverflowButtonStyle">@style/OverFlowIcon</item>
@@ -21,18 +21,18 @@
     </style>
 
     <style name="ActionBarTitleText" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/violetThemeColor</item>
+        <item name="android:textColor">@color/violet_theme_color</item>
     </style>
 
     <style name="PopupMenuListView" parent="@android:style/Widget.Holo.ListView.DropDown">
-        <item name="android:background">@drawable/button_session</item>
+        <item name="android:background">@drawable/start_stop_button</item>
         <item name="android:divider">@color/grayThemeColor</item>
         <item name="android:dividerHeight">1dp</item>
     </style>
 
     <style name="MenuTextAppearance">
-        <item name="android:textColor">@color/violetThemeColor</item>
-        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/violet_theme_color</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="OverFlowIcon" parent="android:Widget.Holo.ActionButton.Overflow">
@@ -40,7 +40,7 @@
     </style>
 
     <style name="popupMenuStyle" parent="@android:style/Widget.PopupMenu">
-        <item name="android:popupBackground">@drawable/button_session</item>
+        <item name="android:popupBackground">@drawable/start_stop_button</item>
     </style>
 
     <style name="defaultText" parent="android:Widget.TextView">
@@ -51,8 +51,8 @@
 
     <style name="spinnerDropDownItemStyle">
         <item name="android:textSize">@dimen/textSize</item>
-        <item name="android:textColor">@color/violetThemeColor</item>
-        <item name="android:background">@drawable/button_session</item>
+        <item name="android:textColor">@color/violet_theme_color</item>
+        <item name="android:background">@drawable/start_stop_button</item>
     </style>
 
 </resources>

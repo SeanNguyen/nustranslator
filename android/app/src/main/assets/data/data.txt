@@ -4,14 +4,14 @@
 English
 Abscess
 Bacteria
-Biting surface
+Biting Surface
 Bridge
 Calculus
 Crown
 Dental Calculus
 Dental Floss
-Dental implants
-Dental plaque
+Dental Implants
+Dental Plaque
 Dentine
 Enamel
 Filling
@@ -20,21 +20,21 @@ Gum Disease
 Halitosis
 Impression
 Inflammation
-Inner surface
+Inner Surface
 Local Anaesthesia
 Mouth Rinse
-Outer surface
-Protrude mandible
+Outer Surface
+Protrude Mandible
 Pulp
-Regular check-up
+Regular Check-up
 Root Canal
 Root Canal Treatment
 Scaling
-Sensitive teeth
+Sensitive Teeth
 Tooth Decay
-Wisdom Tooth
-Translation Start
 Translation End
+Translation Start
+Wisdom Tooth
 Mandarin
 脓肿
 细菌
@@ -66,6 +66,6 @@ Mandarin
 洗牙齿
 牙齿敏感
 蛀牙
-智慧牙
-翻译开始
 翻译结束
+翻译开始
+智慧牙

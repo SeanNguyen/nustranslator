@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Collections;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -76,8 +77,7 @@ public class DataUtils {
                 Vector<String> sentences = new Vector<String>();
                 for (int j = 0; j < noOfPair; j++) {
                     String sentence = scanner.nextLine();
-                    sentences.add(sentence);
-
+                    sentences.add(sentence.toLowerCase());
                 }
                 model.addLanguage(language, sentences);
             }

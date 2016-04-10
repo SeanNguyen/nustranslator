@@ -2,10 +2,10 @@ package sg.edu.nus.nustranslator.ui;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -20,6 +21,7 @@ import sg.edu.nus.nustranslator.R;
 import sg.edu.nus.nustranslator.models.AppModel;
 import sg.edu.nus.nustranslator.recognizers.ISpeechRecognizer;
 import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
+import sg.edu.nus.nustranslator.utils.Configurations;
 
 
 public class TranslationFragment extends Fragment implements TextToSpeech.OnUtteranceCompletedListener{
@@ -27,22 +29,21 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
     private static final String TRANSLATION_LANGUAGE = "TranslationFragment.TranslationLanguage";
 
     private AppModel mAppModel;
-    private Vector<String> mEnglishWordsWithTranslations;
     private String mBestResult = "";
-    private String mSimilarResultText = "";
     private String mTranslatedResult = "";
     private String mOriginalLanguage;
     private String mTranslationLanguage;
     private MediaPlayer mMediaPlayer;
 
     public ISpeechRecognizer mSpeechRecognizer;
-    private String lastRecognitionUpdate;
+    private String lastRecognitionResult;
     private TextToSpeech mTextToSpeech;
 
     private View mLoadingView;
-    private TextView mTopResult;
-    private TextView mSimilarResults;
+    private TextView mTopResultView;
+    private TextView mSimilarResultsView;
     private TextView mTranslationTextView;
+    private TextView mTranslationPrompt;
 
 
     public static TranslationFragment newInstance(String param1, String param2) {
@@ -61,52 +62,65 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
             mOriginalLanguage = getArguments().getString(ORIGINAL_LANGUAGE);
             mTranslationLanguage = getArguments().getString(TRANSLATION_LANGUAGE);
         }
-        mMediaPlayer = new MediaPlayer();
-        mAppModel = AppModel.getInstance();
-        mEnglishWordsWithTranslations = mAppModel.getSentencesByLanguageName("English");
+        mAppModel = AppModel.getInstance(getContext().getApplicationContext());
+    }
 
-        mSpeechRecognizer = new LocalSpeechRecognizer(this);
-        mSpeechRecognizer.setInputLanguage(mOriginalLanguage, getActivity().getApplicationContext());
-        this.mTextToSpeech = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status != TextToSpeech.ERROR) {
-                    mTextToSpeech.setLanguage(Locale.US);
-                }
-            }
-        });
-        this.mTextToSpeech.setOnUtteranceCompletedListener(this);
-        mSpeechRecognizer.initListen();
-        mSpeechRecognizer.startListen();
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if(mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_translation, container, false);
+        mLoadingView = v.findViewById(R.id.loading_view);
         Button translationPlaybackButton = (Button)v.findViewById(R.id.translationPlaybackButton);
         Button originalPlaybackButton = (Button) v.findViewById(R.id.originalLanguagePlaybackButton);
-        mTopResult = (TextView) v.findViewById(R.id.firstResult);
-        mSimilarResults = (TextView) v.findViewById(R.id.otherResults);
-        mTranslationTextView = (TextView) v.findViewById(R.id.resultText);
-        mSimilarResults.setText("\n" + "speak 'translation start' to trigger app\n" + "\n");
+        mTranslationPrompt = (TextView) v.findViewById(R.id.translation_prompt);
+        mTopResultView = (TextView) v.findViewById(R.id.first_result);
+        mSimilarResultsView = (TextView) v.findViewById(R.id.other_results);
+        mTranslationTextView = (TextView) v.findViewById(R.id.translation);
+        Button stopButton = (Button) v.findViewById(R.id.translation_button);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStack();
+            }
+        });
 
         translationPlaybackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playMp3(mTranslationLanguage);
+                playMp3(mTranslationLanguage, mBestResult);
             }
         });
         originalPlaybackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playMp3(mOriginalLanguage);
+                playMp3(mOriginalLanguage, mBestResult);
             }
         });
 
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMediaPlayer = new MediaPlayer();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        new LoaderAsyncTask().execute(this);
+    }
 
     @Override
     public void onUtteranceCompleted(String utteranceId) {
@@ -115,52 +129,48 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
         }
     }
 
-    public void onSpeechRecognitionResultUpdate(String input, String state) {
-        if (this.lastRecognitionUpdate != null && this.lastRecognitionUpdate.equals(input)) {
+    public void onSpeechRecognitionResultUpdate(String recognitionResult, String state) {
+        if (this.lastRecognitionResult != null && this.lastRecognitionResult.equals(recognitionResult)) {
             return;
         }
 
-        Log.d(this.getClass().getSimpleName(), input);
+        lastRecognitionResult = recognitionResult;
 
-        this.lastRecognitionUpdate = input;
+        //find the best match from the list of words we know (if one exists)
+        String result = matchWithKnownWords(recognitionResult);
+        ArrayList<String> displayResults = new ArrayList<>();
+        displayResults.add(result);
+        displayResults.add(recognitionResult);
 
-        //get results
-        String result = isMatch(input);
-        Vector<String> topResults = new Vector<>();
-        topResults.add(result);
-        topResults.add(input);
-        if (result.equals("")) {
-            if(input.split(" ").length > 14){
-                resetSpeechRecognizer();
-            }
-            mTranslatedResult = "";
-        }else{
-            mTranslatedResult = getTranslation(topResults);
+        mTranslatedResult = getTranslation(displayResults.get(0));
+        updateSpeechRecognitionResult(displayResults, mTranslatedResult, state);
+
+        if(recognitionResult.split(" ").length >= 5){
+            resetSpeechRecognizer();
         }
-
-        updateSpeechRecognitionResult(topResults, mTranslatedResult, state);
     }
 
-    private void updateSpeechRecognitionResult(Vector<String> results, String translatedResultTemp,String State) {
-        String Mode="\nspeak 'translation start' to trigger app\n\n";
-        if(State.equals("search")){
-            Mode = "\nSpeak words from word list that you want to translate\n\n";
-        }
-        if (results.get(0).equals("")) {
-            mTopResult.setText(mBestResult);
-            mSimilarResults.setText(Mode+"Words detected: "+results.get(1));
+    private void updateSpeechRecognitionResult(ArrayList<String> results, String translatedResultTemp, String state) {
+        // TODO: remove hardcoded strings
+
+        if(state.equals(Configurations.SPHINX_ACTIVATED)){
+            mTranslationPrompt.setText(R.string.translator_activated_prompt);
+        } else {
+            mTranslationPrompt.setText(R.string.translator_not_activated_prompt);
         }
 
-        else {
+        if (results.get(0).equals("")) {
+            mTopResultView.setText(mBestResult);
+            mSimilarResultsView.setText("Words detected: " + results.get(1));
+        } else {
             mBestResult = results.get(0);
 
-            playMp3(mTranslationLanguage);
+            playMp3(mTranslationLanguage, mBestResult);
 
-            mTopResult.setText(mBestResult);
-            mSimilarResults.setText(Mode+"Words detected: "+mBestResult+results.get(1));
+            mTopResultView.setText(mBestResult);
+            mSimilarResultsView.setText("Words detected: " + mBestResult+ " " + results.get(1));
             mTranslationTextView.setText(translatedResultTemp);
         }
-
     }
 
     private void resetSpeechRecognizer() {
@@ -168,136 +178,159 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
         mSpeechRecognizer.startListen();
     }
 
-    private void playMp3(String translateTo)  {
-        mSpeechRecognizer.stopListen();
-        if (mMediaPlayer != null) {
-            mMediaPlayer.reset();
-            mMediaPlayer.release();
-        }
-        if (!mBestResult.equals("") && translateTo.toLowerCase().equals("mandarin")){
-            if(mEnglishWordsWithTranslations.contains(mBestResult)){
+    private void playMp3(String translateTo, String text) {
+        if(text != null && !text.equals("") && translateTo.toLowerCase().equals("mandarin")
+                && mSpeechRecognizer != null) {
+            mSpeechRecognizer.stopListen();
 
-                String musicName = "m"+ mBestResult.toLowerCase().replaceAll(" ", "")+".mp3";
-
+            if(mMediaPlayer == null) {
                 mMediaPlayer = new MediaPlayer();
-                try {
+            }
 
-                    AssetFileDescriptor descriptor = getActivity().getAssets().openFd(musicName);
-                    mMediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
-                    descriptor.close();
-
-                    mMediaPlayer.prepare();
-                    mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        public void onCompletion(MediaPlayer mp) {
-                            resetSpeechRecognizer();
-                        }
-                    });
-//                    mMediaPlayer.prepareAsync();
-                    mMediaPlayer.setVolume(10f, 10f);
-                    mMediaPlayer.setLooping(false);
-                    mMediaPlayer.start();
-                } catch (IllegalStateException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                String musicName = "m" + text.toLowerCase().replaceAll(" ", "") + ".mp3";
+                AssetFileDescriptor descriptor = getActivity().getAssets().openFd(musicName);
+                mMediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+                mMediaPlayer.prepare();
+                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    public void onCompletion(MediaPlayer mp) {
+                        resetSpeechRecognizer();
+                        mMediaPlayer.reset();
+                    }
+                });
+                mMediaPlayer.setVolume(10f, 10f);
+                mMediaPlayer.setLooping(false);
+                mMediaPlayer.start();
+                descriptor.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                mSpeechRecognizer.startListen();
             }
         }
     }
 
-    private String isMatch(String sentence) {
-
-        Log.d(this.getClass().getSimpleName(), sentence);
+    private String matchWithKnownWords(String sentence) {
         sentence = sentence.toLowerCase();
-        Vector<String> sentences = mAppModel.getSentencesByLanguageName(mOriginalLanguage);
-        if (sentence.toLowerCase().contains("translation start")){
-            return "Translation Start";
-        }else if (sentence.toLowerCase().contains("translation end")){
-            return "Translation End";
+        Vector<String> knownSentences = mAppModel.getSentencesByLanguageName(mOriginalLanguage);
+        if (sentence.contains(LocalSpeechRecognizer.ACTIVATE_PHRASE.toLowerCase())){
+            return LocalSpeechRecognizer.ACTIVATE_PHRASE;
+        }else if (sentence.contains(LocalSpeechRecognizer.DEACTIVATE_PHRASE.toLowerCase())){
+            return LocalSpeechRecognizer.DEACTIVATE_PHRASE.toLowerCase();
         }
-        for(int i =0;i<sentences.size();i++) {
-            if (sentence.toLowerCase().contains(sentences.elementAt(i).toLowerCase())) {
-                return sentences.elementAt(i);
+
+        for(int i = 0; i < knownSentences.size(); i++) {
+            if (sentence.contains(knownSentences.elementAt(i).toLowerCase())) {
+                return knownSentences.elementAt(i);
             }
         }
-        if(sentence.toLowerCase().contains("biting")){
-            return "Biting surface";
-        }else if (sentence.toLowerCase().contains("great")){
-            return "Bridge";
-        }else if (sentence.toLowerCase().contains("implants")){
-            return "Dental implants";
-        }else if (sentence.toLowerCase().contains("outer")){
-            return "Outer surface";
-        }else if (sentence.toLowerCase().contains("inner")){
-            return "Inner surface";
-        }else if (sentence.toLowerCase().contains("mandible")){
-            return "Protrude mandible";
-        }else if (sentence.toLowerCase().contains("canal")||sentence.toLowerCase().contains("rail")){
-            return "Root Canal";
-        }else if (sentence.toLowerCase().contains("wife them")){
-            return "Wisdom Tooth";
-        }else if (sentence.toLowerCase().contains("life them")){
-            return "Wisdom Tooth";
-        }else if (sentence.toLowerCase().contains("life gum")){
-            return "Wisdom Tooth";
-        }else if (sentence.toLowerCase().contains("had eight horse")){
-            return "Halitosis";
-        }else if (sentence.toLowerCase().contains("team fat men")){
-            return "Inflammation";
-        }else if (sentence.toLowerCase().contains("team men")){
-            return "Inflammation";
-        }else if (sentence.toLowerCase().contains("enough")&&(sentence.toLowerCase().contains("suffix")
-                ||sentence.toLowerCase().contains("sentence"))){
-            return "Inner surface";
-        }else if (sentence.toLowerCase().contains("OUT HAS")){
-            return "Outer surface";
-        }else if (sentence.toLowerCase().contains("canal") && sentence.toLowerCase().contains(("treatment"))) {
-            return "Root Canal Treatment";
-        }else if (sentence.toLowerCase().contains("back area")){
-            return "Bacteria";
-        }else if (sentence.toLowerCase().contains("back carry")){
-            return "Bacteria";
-        }else if (sentence.toLowerCase().contains("bat hear")){
-            return "Bacteria";
-        }else if (sentence.toLowerCase().contains("feed eat")){
-            return "Filling";
-        }else if (sentence.toLowerCase().contains("feed mean")){
-            return "Filling";
-        }else if (sentence.toLowerCase().contains("fear")){
-            return "Filling";
-        }else if (sentence.toLowerCase().contains("noun")&&(sentence.toLowerCase().contains("base"))){
-            return "Filling";
-        }else if (sentence.toLowerCase().contains("fear")){
-            return "Gum Disease";
-        }else if (sentence.toLowerCase().contains("high")&&sentence.toLowerCase().contains("cause")){
-            return "Halitosis";
-        }else if (sentence.toLowerCase().contains("decay")){
-            return "Tooth Decay";
-        }else if (sentence.toLowerCase().contains("how")){
-            return "Pulp";
-        }else if(sentence.toLowerCase().contains("pound")&&sentence.toLowerCase().contains("these")){
-            return "Gum Disease";
-        }else if (sentence.toLowerCase().contains("tall")&&sentence.toLowerCase().contains("sense")){
-            return "Halitosis";
-        }else if (sentence.toLowerCase().contains("suffix")&&sentence.toLowerCase().contains("eye")){
-            return "Biting surface";
-        }else if (sentence.toLowerCase().contains("sat")&& sentence.toLowerCase().contains("eye")){
-            return "Biting surface";
-        }else if (sentence.toLowerCase().contains("sat") && sentence.toLowerCase().contains("eye")){
-            return "Biting surface";
-        }else if (sentence.toLowerCase().contains("sat")&&sentence.toLowerCase().contains("eye")){
-            return "Biting surface";
-        }
-        return "";
-    }
 
-    private String getTranslation(Vector<String> inputs) {
-        if (inputs == null || inputs.size() == 0) {
+        if(sentence.contains("biting")){
+            return "Biting surface";
+        }else if (sentence.contains("great")){
+            return "Bridge";
+        }else if (sentence.contains("implants")){
+            return "Dental implants";
+        }else if (sentence.contains("outer")){
+            return "Outer surface";
+        }else if (sentence.contains("inner")){
+            return "Inner surface";
+        }else if (sentence.contains("mandible")){
+            return "Protrude mandible";
+        }else if (sentence.contains("canal") || sentence.contains("rail")){
+            return "Root Canal";
+        }else if (sentence.contains("wife them")){
+            return "Wisdom Tooth";
+        }else if (sentence.contains("life them")){
+            return "Wisdom Tooth";
+        }else if (sentence.contains("life gum")){
+            return "Wisdom Tooth";
+        }else if (sentence.contains("had eight horse")){
+            return "Halitosis";
+        }else if (sentence.contains("team fat men")){
+            return "Inflammation";
+        }else if (sentence.contains("team men")){
+            return "Inflammation";
+        }else if ( (sentence.contains("enough") && (sentence.contains("suffix"))
+                    || sentence.contains("sentence")) ){
+            return "Inner surface";
+        }else if (sentence.contains("out has")){
+            return "Outer surface";
+        }else if (sentence.contains("canal") && sentence.contains(("treatment"))) {
+            return "Root Canal Treatment";
+        }else if (sentence.contains("back area")){
+            return "Bacteria";
+        }else if (sentence.contains("back carry")){
+            return "Bacteria";
+        }else if (sentence.contains("bat hear")){
+            return "Bacteria";
+        }else if (sentence.contains("feed eat")){
+            return "Filling";
+        }else if (sentence.contains("feed mean")){
+            return "Filling";
+        }else if (sentence.contains("fear")){
+            return "Filling";
+        }else if (sentence.contains("noun") && (sentence.contains("base"))){
+            return "Filling";
+        }else if (sentence.contains("fear")){
+            return "Gum Disease";
+        }else if (sentence.contains("high") && sentence.contains("cause")){
+            return "Halitosis";
+        }else if (sentence.contains("decay")){
+            return "Tooth Decay";
+        }else if (sentence.contains("how")){
+            return "Pulp";
+        }else if(sentence.contains("pound") && sentence.contains("these")){
+            return "Gum Disease";
+        }else if (sentence.contains("tall") && sentence.contains("sense")){
+            return "Halitosis";
+        }else if (sentence.contains("suffix") && sentence.contains("eye")){
+            return "Biting surface";
+        }else if (sentence.contains("sat")&& sentence.contains("eye")){
+            return "Biting surface";
+        }else if (sentence.contains("sat") && sentence.contains("eye")){
+            return "Biting surface";
+        }else if (sentence.contains("sat") && sentence.contains("eye")){
+            return "Biting surface";
+        } else {
             return "";
         }
-        return mAppModel.getTranslation(inputs.firstElement(), mOriginalLanguage, mTranslationLanguage);
     }
 
+    private String getTranslation(String input) {
+        if (input.equals("")) {
+            return "";
+        }
+        return mAppModel.getTranslation(input, mOriginalLanguage, mTranslationLanguage);
+    }
+
+
+    private class LoaderAsyncTask extends AsyncTask<TranslationFragment, Void, Void> {
+        @Override
+        protected Void doInBackground(TranslationFragment... params) {
+            TranslationFragment fragment = params[0];
+            mSpeechRecognizer = new LocalSpeechRecognizer(fragment);
+            mSpeechRecognizer.setInputLanguage(mOriginalLanguage, getActivity().getApplicationContext());
+            fragment.mTextToSpeech = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if (status != TextToSpeech.ERROR) {
+                        mTextToSpeech.setLanguage(Locale.US);
+                    }
+                }
+            });
+            fragment.mTextToSpeech.setOnUtteranceCompletedListener(fragment);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mLoadingView.setVisibility(View.GONE);
+            mSpeechRecognizer.initListen();
+            mSpeechRecognizer.startListen();
+        }
+    }
 
 
 }

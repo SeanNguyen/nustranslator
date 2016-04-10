@@ -3,37 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="sg.edu.nus.nustranslator.ui.TranslationFragment"
-    android:background="@color/violetThemeColor"
+    android:background="@color/violet_theme_color"
     >
-
-    <!--Loading View-->
-    <RelativeLayout
-        android:id="@+id/main_loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/blackAlpha80"
-            android:clickable="true"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textColor="@color/whiteThemeColor"
-            android:textSize="20sp"
-            android:text="LOADING..."/>
-
-    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:orientation="vertical">
         <!--input-->
 
@@ -41,6 +16,8 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="70"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
             <Button
@@ -57,14 +34,20 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/firstResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/translator_not_activated_prompt"
+                    android:id="@+id/translation_prompt"/>
+
+                <TextView
+                    android:id="@+id/first_result"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:textStyle="bold"/>
 
                 <TextView
-                    android:id="@+id/otherResults"
+                    android:id="@+id/other_results"
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent"
                     android:textSize="20sp"/>
@@ -78,8 +61,8 @@
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@color/whiteThemeColor"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
 
         <!--result-->
         <LinearLayout
@@ -87,6 +70,8 @@
             android:layout_height="0dp"
             android:layout_weight="30"
             android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
             <Button
@@ -96,7 +81,7 @@
                 android:background="@drawable/speaker_icon"/>
 
             <TextView
-                android:id="@+id/resultText"
+                android:id="@+id/translation"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -105,8 +90,47 @@
                 android:layout_margin="16dp"/>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/controlView"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:padding="16dp">
+
+            <Button
+                android:id="@+id/translation_button"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_session_height"
+                android:text="@string/stop_translator"
+                android:textSize="@dimen/button_textSize"
+                android:background="@drawable/start_stop_button"
+                android:textColor="@color/violet_theme_color"
+                android:textStyle="bold"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
     </LinearLayout>
 
+    <!--Loading View, lower views appear on top-->
+    <RelativeLayout
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/blackAlpha80"
+            android:clickable="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/whiteThemeColor"
+            android:textSize="20sp"
+            android:text="@string/loading"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

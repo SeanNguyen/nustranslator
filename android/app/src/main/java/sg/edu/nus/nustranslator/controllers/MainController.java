@@ -34,7 +34,7 @@ public class MainController {
 
 
     public MainController(Context context) {
-        mAppModel = AppModel.getInstance();
+        mAppModel = AppModel.getInstance(context);
 
     }
 
