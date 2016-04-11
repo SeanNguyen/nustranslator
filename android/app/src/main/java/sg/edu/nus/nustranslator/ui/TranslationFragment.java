@@ -34,7 +34,7 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
     private String mTranslationLanguage;
     private MediaPlayer mMediaPlayer;
     private boolean nowPlaying = false;
-    private boolean started = false;
+    private boolean mInitComplete = false;
 
     public ISpeechRecognizer mSpeechRecognizer;
     private TextToSpeech mTextToSpeech;
@@ -66,17 +66,6 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
             mTranslationLanguage = getArguments().getString(TRANSLATION_LANGUAGE);
         }
         mAppModel = AppModel.getInstance(getContext().getApplicationContext());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        if(mMediaPlayer != null) {
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-            nowPlaying = false;
-        }
     }
 
     @Override
@@ -113,18 +102,29 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
             }
         });
 
+        new LoaderAsyncTask().execute(this);
+
         return v;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if(mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+            nowPlaying = false;
+            mSpeechRecognizer.stopListen();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        new LoaderAsyncTask().execute(this);
+        if(mInitComplete) {
+            mSpeechRecognizer.startListen();
+        }
     }
 
     @Override
@@ -146,14 +146,14 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
         displayResults.add(recognitionResult);
 
         String translatedResult = mAppModel.getTranslation(bestResult, mOriginalLanguage, mTranslationLanguage);
-        updateSpeechRecognitionResult(displayResults, translatedResult, state);
+        respondToRecognitionResult(displayResults, translatedResult, state);
 
         if(recognitionResult.split(" ").length >= 6){
             mSpeechRecognizer.reset();
         }
     }
 
-    private void updateSpeechRecognitionResult(ArrayList<String> results, String translatedResultTemp, String state) {
+    private void respondToRecognitionResult(ArrayList<String> results, String translatedResultTemp, String state) {
         // TODO: remove hardcoded strings
 
         if(state.equals(Configurations.SPHINX_ACTIVATED)){
@@ -318,11 +318,10 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            mInitComplete = true;
             mLoadingView.setVisibility(View.GONE);
             mSpeechRecognizer.initListen();
             mSpeechRecognizer.startListen();
         }
     }
-
-
 }
