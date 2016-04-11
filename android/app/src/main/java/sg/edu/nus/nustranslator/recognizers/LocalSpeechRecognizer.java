@@ -35,7 +35,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 
     public void initListen(){
         state = Configurations.SPHINX_NOT_ACTIVATED;
-        this.parent.onSpeechRecognitionResultUpdate("", state);
+        this.parent.onRecognitionResultUpdate("", state);
     }
 
     @Override
@@ -64,8 +64,8 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 
     @Override
     public void reset() {
-        this.startListen();
         this.stopListen();
+        this.startListen();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
                 changeState(Configurations.SPHINX_NOT_ACTIVATED);
                 text = DEACTIVATE_PHRASE;
             }
-            this.parent.onSpeechRecognitionResultUpdate(text, state);
+            this.parent.onRecognitionResultUpdate(text, state);
         }
     }
 
@@ -95,7 +95,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 //        preTime = System.currentTimeMillis();
 //        if (hypothesis != null) {
 //            String text = hypothesis.getHypstr();
-//            this.parent.onSpeechRecognitionResultUpdate(text);
+//            this.parent.onRecognitionResultUpdate(text);
 //
 //        }
 //    }
@@ -104,7 +104,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     public void onResult(Hypothesis hypothesis) {
 //        if (hypothesis != null) {
 //            String text = hypothesis.getHypstr();
-//            this.parent.onSpeechRecognitionResultUpdate(text);
+//            this.parent.onRecognitionResultUpdate(text);
 //        }
     }
 

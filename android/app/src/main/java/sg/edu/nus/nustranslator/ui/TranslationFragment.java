@@ -4,7 +4,6 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
@@ -25,7 +23,7 @@ import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
 import sg.edu.nus.nustranslator.Configurations;
 
 
-public class TranslationFragment extends Fragment implements TextToSpeech.OnUtteranceCompletedListener{
+public class TranslationFragment extends Fragment {
     private static final String ORIGINAL_LANGUAGE = "TranslationFragment.OriginalLanguage";
     private static final String TRANSLATION_LANGUAGE = "TranslationFragment.TranslationLanguage";
 
@@ -37,7 +35,6 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
     private boolean mInitComplete = false;
 
     public ISpeechRecognizer mSpeechRecognizer;
-    private TextToSpeech mTextToSpeech;
 
     private String mBestResult = "";
     private String lastRecognitionResult;
@@ -73,18 +70,29 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_translation, container, false);
         mLoadingView = v.findViewById(R.id.loading_view);
-        Button translationPlaybackButton = (Button)v.findViewById(R.id.translationPlaybackButton);
-        Button originalPlaybackButton = (Button) v.findViewById(R.id.originalLanguagePlaybackButton);
+
         mTranslationPrompt = (TextView) v.findViewById(R.id.translation_prompt);
         mTopResultView = (TextView) v.findViewById(R.id.first_result);
         mSimilarResultsView = (TextView) v.findViewById(R.id.other_results);
         mTranslationTextView = (TextView) v.findViewById(R.id.translation);
-        Button stopButton = (Button) v.findViewById(R.id.translation_button);
+
+        Button stopButton = (Button) v.findViewById(R.id.stop_translation_button);
+        Button clearButton = (Button) v.findViewById(R.id.clear_button);
+        Button translationPlaybackButton = (Button)v.findViewById(R.id.translationPlaybackButton);
+        Button originalPlaybackButton = (Button) v.findViewById(R.id.originalLanguagePlaybackButton);
+
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSpeechRecognizer.stopListen();
                 getFragmentManager().popBackStack();
+            }
+        });
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSpeechRecognizer.reset();
+                resetTranslationDisplay();
             }
         });
 
@@ -127,33 +135,34 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
         }
     }
 
-    @Override
-    public void onUtteranceCompleted(String utteranceId) {
-        mSpeechRecognizer.reset();
-    }
-
-    public void onSpeechRecognitionResultUpdate(String recognitionResult, String state) {
-        if (this.lastRecognitionResult != null && this.lastRecognitionResult.equals(recognitionResult)) {
+    // words detected include those previously mentioned
+    public void onRecognitionResultUpdate(String wordsDetected, String state) {
+        if (this.lastRecognitionResult != null && this.lastRecognitionResult.equals(wordsDetected)) {
             return;
         }
 
-        lastRecognitionResult = recognitionResult;
+        lastRecognitionResult = wordsDetected;
 
         //find the best match from the list of words we know (if one exists)
-        String bestResult = matchWithKnownWords(recognitionResult);
-        ArrayList<String> displayResults = new ArrayList<>();
-        displayResults.add(bestResult);
-        displayResults.add(recognitionResult);
+        String bestGuess = matchWithKnownWords(wordsDetected);
 
-        String translatedResult = mAppModel.getTranslation(bestResult, mOriginalLanguage, mTranslationLanguage);
-        respondToRecognitionResult(displayResults, translatedResult, state);
+        String translatedGuess = mAppModel.getTranslation(bestGuess, mOriginalLanguage, mTranslationLanguage);
+        respondToRecognitionResult(bestGuess, translatedGuess, wordsDetected, state);
 
-        if(recognitionResult.split(" ").length >= 6){
+        if(wordsDetected.split(" ").length >= 6){
             mSpeechRecognizer.reset();
+            resetTranslationDisplay();
         }
     }
 
-    private void respondToRecognitionResult(ArrayList<String> results, String translatedResultTemp, String state) {
+    private void resetTranslationDisplay() {
+        mBestResult = "";
+        mTopResultView.setText("");
+        mSimilarResultsView.setText("Words detected: ");
+        mTranslationTextView.setText("");
+    }
+
+    private void respondToRecognitionResult(String bestGuess, String translatedGuess, String wordsDetected, String state) {
         // TODO: remove hardcoded strings
 
         if(state.equals(Configurations.SPHINX_ACTIVATED)){
@@ -162,24 +171,23 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
             mTranslationPrompt.setText(R.string.translator_not_activated_prompt);
         }
 
-        if (results.get(0).equals("")) {
+        if (bestGuess.equals("")) {
             mTopResultView.setText(mBestResult);
-            mSimilarResultsView.setText("Words detected: " + results.get(1));
+            mSimilarResultsView.setText("Words detected: " + wordsDetected);
         } else {
-            mBestResult = results.get(0);
+            mBestResult = bestGuess;
 
             playMp3(mTranslationLanguage, mBestResult);
 
             mTopResultView.setText(mBestResult);
-            mSimilarResultsView.setText("Words detected: " + mBestResult+ " " + results.get(1));
-            mTranslationTextView.setText(translatedResultTemp);
+            mSimilarResultsView.setText("Words detected: " + mBestResult+ " " + wordsDetected);
+            mTranslationTextView.setText(translatedGuess);
         }
     }
 
     // to mandarin only
     private void playMp3(String translateTo, String text) {
-        if(text != null && !text.equals("") && translateTo.toLowerCase().equals("mandarin")
-                && mSpeechRecognizer != null && !nowPlaying) {
+        if(text != null && !text.equals("") && translateTo.toLowerCase().equals("mandarin") && !nowPlaying) {
             nowPlaying = true;
             mSpeechRecognizer.stopListen();
             if(mMediaPlayer == null) {
@@ -303,15 +311,6 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
             TranslationFragment fragment = params[0];
             mSpeechRecognizer = new LocalSpeechRecognizer(fragment);
             mSpeechRecognizer.setInputLanguage(mOriginalLanguage, getActivity().getApplicationContext());
-            fragment.mTextToSpeech = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
-                @Override
-                public void onInit(int status) {
-                    if (status != TextToSpeech.ERROR) {
-                        mTextToSpeech.setLanguage(Locale.US);
-                    }
-                }
-            });
-            fragment.mTextToSpeech.setOnUtteranceCompletedListener(fragment);
 
             return null;
         }

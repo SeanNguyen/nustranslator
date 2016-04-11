@@ -84,7 +84,7 @@ public class MainFragment extends Fragment {
 
         });
 
-        Button startTranslationButton = (Button) v.findViewById(R.id.translation_button);
+        Button startTranslationButton = (Button) v.findViewById(R.id.stop_translation_button);
         startTranslationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

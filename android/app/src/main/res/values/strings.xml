@@ -9,12 +9,13 @@
 
     <string name="start_translator">"Start"</string>
     <string name="stop_translator">"Stop"</string>
+    <string name="clear_translation">"Clear"</string>
     <!--Menu-->
     <string name="menu_updateData">"Update Data"</string>
     <string name="menu_viewAllSentences">"View Phrases"</string>
     <string name="menu_about">"About"</string>
     <string name="title_activity_help">"Help"</string>
 
-    <string name="loading">LOADING...</string>
+    <string name="loading">LOADING &#8230; This might take a minute or two.</string>
 
 </resources>

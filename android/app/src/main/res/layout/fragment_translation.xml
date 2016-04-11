@@ -13,12 +13,12 @@
         <!--input-->
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="70"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_weight="30">
 
             <Button
                 android:id="@+id/originalLanguagePlaybackButton"
@@ -29,7 +29,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -49,16 +49,27 @@
                 <TextView
                     android:id="@+id/other_results"
                     android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:textSize="20sp"/>
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <!--div-->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clear_translation"
+            android:id="@+id/clear_button"
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/button_textSize"
+            android:background="@drawable/start_stop_button"
+            android:textStyle="bold"
+            android:textColor="@color/violet_theme_color"
+            android:layout_margin="20dp" />
+
         <View
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/whiteThemeColor"
             android:layout_marginLeft="30dp"
@@ -66,10 +77,10 @@
 
         <!--result-->
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="30"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
@@ -82,7 +93,7 @@
 
             <TextView
                 android:id="@+id/translation"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:textStyle="bold"
@@ -98,7 +109,7 @@
             android:padding="16dp">
 
             <Button
-                android:id="@+id/translation_button"
+                android:id="@+id/stop_translation_button"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/button_session_height"
                 android:text="@string/stop_translator"
@@ -129,7 +140,8 @@
             android:layout_centerInParent="true"
             android:textColor="@color/whiteThemeColor"
             android:textSize="20sp"
-            android:text="@string/loading"/>
+            android:text="@string/loading"
+            android:layout_margin="20dp" />
 
     </RelativeLayout>
 

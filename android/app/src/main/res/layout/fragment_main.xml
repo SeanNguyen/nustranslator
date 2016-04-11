@@ -73,7 +73,7 @@
 
 
         <Button
-            android:id="@+id/translation_button"
+            android:id="@+id/stop_translation_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/start_translator"
