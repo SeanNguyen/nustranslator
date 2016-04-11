@@ -41,16 +41,20 @@ public class AppModel {
     }
 
     public String getTranslation(String input, String originalLanguage, String translationLanguage) {
-        input = input.toLowerCase();
-        Vector<String> originalSentences = mLanguagesWithSortedSentences.get(originalLanguage);
-        Vector<String> destinationSentences = mLanguagesWithSortedSentences.get(translationLanguage);
-
-        Collections.sort(originalSentences);
-        int index = Collections.binarySearch(originalSentences, input);
-        if(index <= -1) {
-            return "";
+        if(input.equals("")) {
+            return input;
         } else {
-            return destinationSentences.get(index);
+            input = input.toLowerCase();
+            Vector<String> originalSentences = mLanguagesWithSortedSentences.get(originalLanguage);
+            Vector<String> destinationSentences = mLanguagesWithSortedSentences.get(translationLanguage);
+
+            Collections.sort(originalSentences);
+            int index = Collections.binarySearch(originalSentences, input);
+            if(index <= -1) {
+                return "";
+            } else {
+                return destinationSentences.get(index);
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,15 +30,17 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
     private static final String TRANSLATION_LANGUAGE = "TranslationFragment.TranslationLanguage";
 
     private AppModel mAppModel;
-    private String mBestResult = "";
-    private String mTranslatedResult = "";
     private String mOriginalLanguage;
     private String mTranslationLanguage;
     private MediaPlayer mMediaPlayer;
+    private boolean nowPlaying = false;
+    private boolean started = false;
 
     public ISpeechRecognizer mSpeechRecognizer;
-    private String lastRecognitionResult;
     private TextToSpeech mTextToSpeech;
+
+    private String mBestResult = "";
+    private String lastRecognitionResult;
 
     private View mLoadingView;
     private TextView mTopResultView;
@@ -72,6 +75,7 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
         if(mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
+            nowPlaying = false;
         }
     }
 
@@ -95,16 +99,17 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
             }
         });
 
+        originalPlaybackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // currently not supported
+                //     playMp3(mOriginalLanguage, mBestResult);
+            }
+        });
         translationPlaybackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 playMp3(mTranslationLanguage, mBestResult);
-            }
-        });
-        originalPlaybackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playMp3(mOriginalLanguage, mBestResult);
             }
         });
 
@@ -114,7 +119,6 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
     @Override
     public void onResume() {
         super.onResume();
-        mMediaPlayer = new MediaPlayer();
     }
 
     @Override
@@ -125,9 +129,7 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
 
     @Override
     public void onUtteranceCompleted(String utteranceId) {
-        if (utteranceId.equals(mTranslatedResult)|| mTranslationLanguage.toLowerCase().equals("mandarin")) {
-            resetSpeechRecognizer();
-        }
+        mSpeechRecognizer.reset();
     }
 
     public void onSpeechRecognitionResultUpdate(String recognitionResult, String state) {
@@ -143,11 +145,11 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
         displayResults.add(bestResult);
         displayResults.add(recognitionResult);
 
-        mTranslatedResult = getTranslation(bestResult);
-        updateSpeechRecognitionResult(displayResults, mTranslatedResult, state);
+        String translatedResult = mAppModel.getTranslation(bestResult, mOriginalLanguage, mTranslationLanguage);
+        updateSpeechRecognitionResult(displayResults, translatedResult, state);
 
-        if(recognitionResult.split(" ").length >= 5){
-            resetSpeechRecognizer();
+        if(recognitionResult.split(" ").length >= 6){
+            mSpeechRecognizer.reset();
         }
     }
 
@@ -174,40 +176,36 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
         }
     }
 
-    private void resetSpeechRecognizer() {
-        mSpeechRecognizer.stopListen();
-        mSpeechRecognizer.startListen();
-    }
-
+    // to mandarin only
     private void playMp3(String translateTo, String text) {
         if(text != null && !text.equals("") && translateTo.toLowerCase().equals("mandarin")
-                && mSpeechRecognizer != null) {
+                && mSpeechRecognizer != null && !nowPlaying) {
+            nowPlaying = true;
             mSpeechRecognizer.stopListen();
-
             if(mMediaPlayer == null) {
                 mMediaPlayer = new MediaPlayer();
             }
 
             try {
-                String musicName = "m" + text.toLowerCase().replaceAll(" ", "") + ".mp3";
-                AssetFileDescriptor descriptor = getActivity().getAssets().openFd(musicName);
+                String audioFileName = "m" + text.toLowerCase().replaceAll(" ", "") + ".mp3";
+                Log.d(TranslationFragment.class.getSimpleName(), audioFileName);
+                AssetFileDescriptor descriptor = getActivity().getAssets().openFd(audioFileName);
+                Log.d(TranslationFragment.class.getSimpleName(), "Null? " + (descriptor == null));
                 mMediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
                 mMediaPlayer.prepare();
                 mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     public void onCompletion(MediaPlayer mp) {
-                        resetSpeechRecognizer();
                         mMediaPlayer.reset();
+                        nowPlaying = false;
+                        mSpeechRecognizer.startListen();
                     }
                 });
                 mMediaPlayer.setVolume(10f, 10f);
                 mMediaPlayer.setLooping(false);
                 mMediaPlayer.start();
                 descriptor.close();
-
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                mSpeechRecognizer.startListen();
             }
         }
     }
@@ -298,14 +296,6 @@ public class TranslationFragment extends Fragment implements TextToSpeech.OnUtte
             return "";
         }
     }
-
-    private String getTranslation(String input) {
-        if (input.equals("")) {
-            return "";
-        }
-        return mAppModel.getTranslation(input, mOriginalLanguage, mTranslationLanguage);
-    }
-
 
     private class LoaderAsyncTask extends AsyncTask<TranslationFragment, Void, Void> {
         @Override

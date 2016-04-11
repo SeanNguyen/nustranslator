@@ -63,6 +63,12 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     }
 
     @Override
+    public void reset() {
+        this.startListen();
+        this.stopListen();
+    }
+
+    @Override
     public void onPartialResult(Hypothesis hypothesis) {
         if (hypothesis != null) {
             String text =  hypothesis.getHypstr().toLowerCase();

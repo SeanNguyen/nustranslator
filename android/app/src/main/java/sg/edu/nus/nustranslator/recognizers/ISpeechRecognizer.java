@@ -9,9 +9,8 @@ public interface ISpeechRecognizer {
 
     void startListen();
     void initListen();
-
     void stopListen();
-
     void cancelListen();
+    void reset();
 
 }
