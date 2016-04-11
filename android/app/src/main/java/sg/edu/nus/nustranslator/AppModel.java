@@ -81,11 +81,11 @@ public class AppModel {
     }
 
     public Vector<String> getAllLanguages() {
-        return (Vector<String>)mLanguages.clone();
+        return new Vector<String>(mLanguages);
     }
 
     public Vector<String> getMainLanguages() {
-        return (Vector<String>)mMainLanguages.clone() ;
+        return new Vector<String>(mMainLanguages);
     }
 
     public int getNumberOfLanguage() {

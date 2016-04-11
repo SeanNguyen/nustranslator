@@ -80,6 +80,7 @@ public class DataManager {
                 if(i == 0) {
                     // TODO: note that first language is set to be main language for now
                     model.addMainLanguage(language, sentences);
+                    model.addLanguage(language, sentences);
                 } else {
                     model.addLanguage(language, sentences);
                 }
