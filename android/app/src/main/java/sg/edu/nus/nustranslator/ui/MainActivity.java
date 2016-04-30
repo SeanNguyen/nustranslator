@@ -1,15 +1,11 @@
 package sg.edu.nus.nustranslator.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 
 
@@ -23,20 +19,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
+        Fragment fragment = fm.findFragmentById(R.id.main_container);
 
         if(fragment == null) {
             fragment = new StartFragment();
             fm.beginTransaction()
-                    .add(R.id.fragmentContainer, fragment)
+                    .add(R.id.main_container, fragment)
                     .commit();
         }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(name, context, attrs);
     }
 
     @Override

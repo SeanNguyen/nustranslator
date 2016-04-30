@@ -93,7 +93,7 @@ public class StartFragment extends Fragment {
 
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 fm.beginTransaction()
-                        .replace(R.id.fragmentContainer, translationFragment)
+                        .replace(R.id.main_container, translationFragment)
                         .addToBackStack(null)
                         .commit();
             }
