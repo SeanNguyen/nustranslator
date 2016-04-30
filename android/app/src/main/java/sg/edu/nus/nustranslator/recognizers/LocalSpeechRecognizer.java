@@ -10,6 +10,7 @@ import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
+import sg.edu.nus.nustranslator.ui.IRecognitionUpdateListener;
 import sg.edu.nus.nustranslator.ui.TranslationFragment;
 import sg.edu.nus.nustranslator.Configurations;
 
@@ -21,10 +22,10 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     public static final String DEACTIVATE_PHRASE = "Translation End";
 
     private SpeechRecognizer mRecognizer;
-    private TranslationFragment mParent;
+    private IRecognitionUpdateListener mParent;
     private String mState;
 
-    public LocalSpeechRecognizer(TranslationFragment parent) {
+    public LocalSpeechRecognizer(IRecognitionUpdateListener parent) {
         mParent = parent;
         mState = Configurations.SPHINX_NOT_ACTIVATED;
     }
@@ -36,22 +37,22 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 
     public void initListen(){
         mState = Configurations.SPHINX_NOT_ACTIVATED;
-        this.mParent.onRecognitionResultUpdate("", mState);
+        mParent.onRecognitionResult("", mState);
     }
 
     @Override
     public void startListen() {
-        this.mRecognizer.startListening(mState);
+        mRecognizer.startListening(mState);
     }
 
     @Override
     public void stopListen() {
         // use mRecognizer cancel rather than stop, it responds faster but does not do a "onResult"
-        this.mRecognizer.cancel();
+        mRecognizer.cancel();
     }
     @Override
     public void cancelListen() {
-        this.mRecognizer.cancel();
+        mRecognizer.cancel();
     }
 
     @Override
@@ -66,8 +67,8 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 
     @Override
     public void reset() {
-        this.stopListen();
-        this.startListen();
+        stopListen();
+        startListen();
     }
 
     @Override
@@ -84,7 +85,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
                 changeState(Configurations.SPHINX_NOT_ACTIVATED);
                 text = DEACTIVATE_PHRASE;
             }
-            this.mParent.onRecognitionResultUpdate(text, mState);
+            mParent.onRecognitionResult(text, mState);
         }
     }
 
@@ -97,7 +98,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 //        preTime = System.currentTimeMillis();
 //        if (hypothesis != null) {
 //            String text = hypothesis.getHypstr();
-//            this.mParent.onRecognitionResultUpdate(text);
+//            mParent.onRecognitionResult(text);
 //
 //        }
 //    }
@@ -106,7 +107,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     public void onResult(Hypothesis hypothesis) {
 //        if (hypothesis != null) {
 //            String text = hypothesis.getHypstr();
-//            this.mParent.onRecognitionResultUpdate(text);
+//            mParent.onRecognitionResult(text);
 //        }
     }
 
@@ -122,13 +123,13 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             File internalDir =  new File(assetDir,"lb_with_200");
             //File dictionaryFile = context.getResources().getAssets().open( language + Configurations.Data_fileName_dict_ext);
 
-            this.mRecognizer = defaultSetup()
+            mRecognizer = defaultSetup()
                     .setAcousticModel(new File(modelsDir, Configurations.Sphinx_acousticModel_dir + language))
                     .setDictionary(new File(internalDir, language + Configurations.Data_fileName_dict_ext))
                     .setBoolean("-remove_noise", true)
                     .setKeywordThreshold(Configurations.Sphinx_keywordThreshold)
                     .getRecognizer();
-            this.mRecognizer.addListener(this);
+            mRecognizer.addListener(this);
 
 //            mRecognizer.addKeyphraseSearch(Configurations.SPHINX_NOT_ACTIVATED, ACTIVATE_PHRASE);
 

@@ -40,14 +40,14 @@
                     android:id="@+id/translation_prompt"/>
 
                 <TextView
-                    android:id="@+id/first_result"
+                    android:id="@+id/top_guess"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:textStyle="bold"/>
 
                 <TextView
-                    android:id="@+id/other_results"
+                    android:id="@+id/detected_words"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"/>

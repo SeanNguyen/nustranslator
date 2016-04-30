@@ -30,3 +30,6 @@ proguard/
 
 # Log Files
 *.log
+
+# ApkKey
+*./apk_key.jks

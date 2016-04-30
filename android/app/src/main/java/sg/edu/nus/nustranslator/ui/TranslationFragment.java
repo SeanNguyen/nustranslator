@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
@@ -23,7 +22,7 @@ import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
 import sg.edu.nus.nustranslator.Configurations;
 
 
-public class TranslationFragment extends Fragment {
+public class TranslationFragment extends Fragment implements IRecognitionUpdateListener {
     private static final String ORIGINAL_LANGUAGE = "TranslationFragment.OriginalLanguage";
     private static final String TRANSLATION_LANGUAGE = "TranslationFragment.TranslationLanguage";
 
@@ -36,15 +35,14 @@ public class TranslationFragment extends Fragment {
 
     public ISpeechRecognizer mSpeechRecognizer;
 
-    private String mBestResult = "";
-    private String lastRecognitionResult;
-
     private View mLoadingView;
-    private TextView mTopResultView;
-    private TextView mSimilarResultsView;
-    private TextView mTranslationTextView;
+    private TextView mBestGuessView;
+    private TextView mDetectedWordsView;
+    private TextView mTranslatedTextView;
     private TextView mTranslationPrompt;
 
+    private String mBestGuess;
+    private String mLastRecognitionResult;
 
     public static TranslationFragment newInstance(String param1, String param2) {
         TranslationFragment fragment = new TranslationFragment();
@@ -68,13 +66,13 @@ public class TranslationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_translation, container, false);
         mLoadingView = v.findViewById(R.id.loading_view);
-
         mTranslationPrompt = (TextView) v.findViewById(R.id.translation_prompt);
-        mTopResultView = (TextView) v.findViewById(R.id.first_result);
-        mSimilarResultsView = (TextView) v.findViewById(R.id.other_results);
-        mTranslationTextView = (TextView) v.findViewById(R.id.translation);
+        mBestGuessView = (TextView) v.findViewById(R.id.top_guess);
+        mDetectedWordsView = (TextView) v.findViewById(R.id.detected_words);
+        mTranslatedTextView = (TextView) v.findViewById(R.id.translation);
 
         Button stopButton = (Button) v.findViewById(R.id.stop_translation_button);
         final Button clearButton = (Button) v.findViewById(R.id.clear_button);
@@ -101,18 +99,16 @@ public class TranslationFragment extends Fragment {
         originalPlaybackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // currently not supported
-                //     playMp3(mOriginalLanguage, mBestResult);
             }
         });
         translationPlaybackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playMp3(mTranslationLanguage, mBestResult);
+                playMp3(mBestGuess);
             }
         });
 
-        new LoaderAsyncTask().execute(this);
+        new InitTranslatorAsyncTask().execute(this);
 
         return v;
     }
@@ -121,11 +117,15 @@ public class TranslationFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
+        if(mInitComplete) {
+            mSpeechRecognizer.stopListen();
+        }
+
         if(mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
             nowPlaying = false;
-            mSpeechRecognizer.stopListen();
+
         }
     }
 
@@ -137,19 +137,18 @@ public class TranslationFragment extends Fragment {
         }
     }
 
-    // words detected include those previously mentioned
-    public void onRecognitionResultUpdate(String wordsDetected, String state) {
-        if (this.lastRecognitionResult != null && this.lastRecognitionResult.equals(wordsDetected)) {
+    public void onRecognitionResult(String wordsDetected, String state) {
+        if (mLastRecognitionResult != null && mLastRecognitionResult.equals(wordsDetected)) {
             return;
         }
 
-        lastRecognitionResult = wordsDetected;
+        mLastRecognitionResult = wordsDetected;
 
-        //find the best match from the list of words we know (if one exists)
+        //find the best match from the list of words we know if one exists
         String bestGuess = matchWithKnownWords(wordsDetected);
 
         String translatedGuess = mAppModel.getTranslation(bestGuess, mOriginalLanguage, mTranslationLanguage);
-        respondToRecognitionResult(bestGuess, translatedGuess, wordsDetected, state);
+        displayRecognitionResult(bestGuess, translatedGuess, wordsDetected, state);
 
         if(wordsDetected.split(" ").length >= 6){
             mSpeechRecognizer.reset();
@@ -158,38 +157,32 @@ public class TranslationFragment extends Fragment {
     }
 
     private void resetTranslationDisplay() {
-        mBestResult = "";
-        mTopResultView.setText("");
-        mSimilarResultsView.setText("Words detected: ");
-        mTranslationTextView.setText("");
+        mBestGuess = "";
+        mBestGuessView.setText("");
+        mDetectedWordsView.setText(R.string.detected_words_prefix);
+        mTranslatedTextView.setText("");
     }
 
-    private void respondToRecognitionResult(String bestGuess, String translatedGuess, String wordsDetected, String state) {
-        // TODO: remove hardcoded strings
-
+    private void displayRecognitionResult(String bestGuess, String translatedGuess, String wordsDetected, String state) {
         if(state.equals(Configurations.SPHINX_ACTIVATED)){
             mTranslationPrompt.setText(R.string.translator_activated_prompt);
         } else {
             mTranslationPrompt.setText(R.string.translator_not_activated_prompt);
         }
 
-        if (bestGuess.equals("")) {
-            mTopResultView.setText(mBestResult);
-            mSimilarResultsView.setText("Words detected: " + wordsDetected);
-        } else {
-            mBestResult = bestGuess;
-
-            playMp3(mTranslationLanguage, mBestResult);
-
-            mTopResultView.setText(mBestResult);
-            mSimilarResultsView.setText("Words detected: " + mBestResult+ " " + wordsDetected);
-            mTranslationTextView.setText(translatedGuess);
+        if (!bestGuess.equals("")) {
+            mBestGuess = bestGuess;
+            playMp3(mBestGuess);
+            mTranslatedTextView.setText(translatedGuess);
         }
+
+        mBestGuessView.setText(String.format(getString(R.string.best_guess_prefix), mBestGuess));
+        mDetectedWordsView.setText(String.format(getString(R.string.detected_words_prefix),
+                                    wordsDetected));
     }
 
-    // to mandarin only
-    private void playMp3(String translateTo, String text) {
-        if(text != null && !text.equals("") && translateTo.toLowerCase().equals("mandarin") && !nowPlaying) {
+    private void playMp3(String word) {
+        if(word != null && !word.equals("") && !nowPlaying) {
             nowPlaying = true;
             mSpeechRecognizer.stopListen();
             if(mMediaPlayer == null) {
@@ -197,7 +190,7 @@ public class TranslationFragment extends Fragment {
             }
 
             try {
-                String audioFileName = "m" + text.toLowerCase().replaceAll(" ", "") + ".mp3";
+                String audioFileName = "m" + word.toLowerCase().replaceAll(" ", "") + ".mp3";
                 Log.d(TranslationFragment.class.getSimpleName(), audioFileName);
                 AssetFileDescriptor descriptor = getActivity().getAssets().openFd(audioFileName);
                 Log.d(TranslationFragment.class.getSimpleName(), "Null? " + (descriptor == null));
@@ -307,7 +300,7 @@ public class TranslationFragment extends Fragment {
         }
     }
 
-    private class LoaderAsyncTask extends AsyncTask<TranslationFragment, Void, Void> {
+    private class InitTranslatorAsyncTask extends AsyncTask<TranslationFragment, Void, Void> {
         @Override
         protected Void doInBackground(TranslationFragment... params) {
             TranslationFragment fragment = params[0];
