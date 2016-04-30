@@ -37,18 +37,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/translator_not_activated_prompt"
-                    android:id="@+id/translation_prompt"/>
+                    android:id="@+id/translation_prompt"
+                    android:paddingBottom="2dp"/>
 
                 <TextView
                     android:id="@+id/best_guess"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:paddingBottom="2dp"/>
 
                 <TextView
                     android:id="@+id/detected_words"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="2dp"
                     />
 
             </LinearLayout>

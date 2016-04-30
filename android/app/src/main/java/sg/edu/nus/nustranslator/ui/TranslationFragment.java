@@ -57,6 +57,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mBestGuess = "";
         mLastRecognitionResult = "";
         if (getArguments() != null) {
@@ -76,7 +77,6 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
         mBestGuessView = (TextView) v.findViewById(R.id.best_guess);
         mDetectedWordsView = (TextView) v.findViewById(R.id.detected_words);
         mTranslatedTextView = (TextView) v.findViewById(R.id.translation);
-
         Button stopButton = (Button) v.findViewById(R.id.stop_translation_button);
         final Button clearButton = (Button) v.findViewById(R.id.clear_button);
         Button translationPlaybackButton = (Button)v.findViewById(R.id.translationPlaybackButton);
@@ -110,10 +110,17 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
                 playMp3(mBestGuess);
             }
         });
+
         resetTranslationDisplay();
-        new InitTranslatorAsyncTask().execute(this);
+        initializeRecognizer();
 
         return v;
+    }
+
+    private void initializeRecognizer() {
+        // recognizer is initialized in separate thread to allow loading of resources
+        // while still allowing app navigation
+        new InitRecognizerAsyncTask().execute(this);
     }
 
     @Override
@@ -148,7 +155,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
         mLastRecognitionResult = wordsDetected;
 
         //find the best match from the list of words we know if one exists
-        String bestGuess = matchWithKnownWords(wordsDetected);
+        String bestGuess = matchAgainstKnownWords(wordsDetected);
 
         String translatedGuess = mAppModel.getTranslation(bestGuess, mOriginalLanguage, mTranslationLanguage);
         displayRecognitionResult(bestGuess, translatedGuess, wordsDetected, state);
@@ -216,7 +223,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
         }
     }
 
-    private String matchWithKnownWords(String sentence) {
+    private String matchAgainstKnownWords(String sentence) {
         sentence = sentence.toLowerCase();
         Vector<String> knownSentences = mAppModel.getSentencesByLanguageName(mOriginalLanguage);
         if (sentence.contains(LocalSpeechRecognizer.ACTIVATE_PHRASE.toLowerCase())){
@@ -231,6 +238,10 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
             }
         }
 
+        return matchAgainstHardcodedList(sentence);
+    }
+
+    private String matchAgainstHardcodedList(String sentence) {
         if(sentence.contains("biting")){
             return "Biting surface";
         }else if (sentence.contains("great")){
@@ -258,7 +269,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
         }else if (sentence.contains("team men")){
             return "Inflammation";
         }else if ( (sentence.contains("enough") && (sentence.contains("suffix"))
-                    || sentence.contains("sentence")) ){
+                || sentence.contains("sentence")) ){
             return "Inner surface";
         }else if (sentence.contains("out has")){
             return "Outer surface";
@@ -294,16 +305,12 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
             return "Biting surface";
         }else if (sentence.contains("sat")&& sentence.contains("eye")){
             return "Biting surface";
-        }else if (sentence.contains("sat") && sentence.contains("eye")){
-            return "Biting surface";
-        }else if (sentence.contains("sat") && sentence.contains("eye")){
-            return "Biting surface";
-        } else {
+        }else  {
             return "";
         }
     }
 
-    private class InitTranslatorAsyncTask extends AsyncTask<TranslationFragment, Void, Void> {
+    private class InitRecognizerAsyncTask extends AsyncTask<TranslationFragment, Void, Void> {
         @Override
         protected Void doInBackground(TranslationFragment... params) {
             TranslationFragment fragment = params[0];
