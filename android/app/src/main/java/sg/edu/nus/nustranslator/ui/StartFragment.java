@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
@@ -31,16 +32,15 @@ public class StartFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_start, container, false);
         mModel = AppModel.getInstance(getActivity().getApplicationContext());
 
-        final Vector<String> allLanguages = mModel.getAllLanguages();
-        final Vector<String> mainLangauges = mModel.getMainLanguages();
+        final ArrayList<String> allLanguages = mModel.getAllLanguages();
+        final ArrayList<String> mainLangauges = mModel.getMainLanguages();
 
         if(allLanguages.size() == 0) {
             Log.e(this.getClass().getSimpleName(), "no languages loaded yet!");
         }
 
-        final String firstRemovedLanguage = mainLangauges.firstElement();
+        final String firstRemovedLanguage = mainLangauges.get(0);
         allLanguages.remove(firstRemovedLanguage);
-
 
         final ArrayAdapter<String> originalLanguageAdapter =
                 new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_layout, mainLangauges) {

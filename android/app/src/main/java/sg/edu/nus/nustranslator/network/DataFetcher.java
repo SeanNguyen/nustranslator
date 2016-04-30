@@ -101,7 +101,7 @@ public class DataFetcher {
         for (int i = 0; i < arr.length(); i++) {
             String language = arr.getJSONObject(i).getString("language");
             String sentences = arr.getJSONObject(i).getString("sentences");
-            Vector<String> sentenceList = new Vector(Arrays.asList(sentences.split(Configurations.Newline)));
+            ArrayList<String> sentenceList = new ArrayList<>(Arrays.asList(sentences.split(Configurations.Newline)));
             model.addLanguage(language, sentenceList);
             numberOfPair = sentenceList.size();
         }

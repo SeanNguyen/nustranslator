@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import sg.edu.nus.nustranslator.AppModel;
@@ -44,24 +45,24 @@ public class HelpFragment extends Fragment {
         mSentenceList = (ListView) v.findViewById(R.id.help_sentenceList);
 
         mAppModel = AppModel.getInstance(getContext());
-        Vector<String> languages = mAppModel.getAllLanguages();
+        ArrayList<String> languages = mAppModel.getAllLanguages();
         updateLanguageList(languages);
 
         return v;
     }
 
     private void changeLanguage(int index) {
-        Vector<String> sentences = mAppModel.getSentencesByLanguageIndex(index);
+        ArrayList<String> sentences = mAppModel.getSentencesByLanguageIndex(index);
         updateSentenceList(sentences);
     }
 
-    private void updateLanguageList(Vector<String> languages) {
+    private void updateLanguageList(ArrayList<String> languages) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item_layout, languages);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout);
         mLanguageSpinner.setAdapter(adapter);
     }
 
-    private void updateSentenceList(Vector<String> sentences) {
+    private void updateSentenceList(ArrayList<String> sentences) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.sentence_item_layout, sentences);
         this.mSentenceList.setAdapter(adapter);
     }

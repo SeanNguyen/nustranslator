@@ -6,6 +6,7 @@ import android.util.Log;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -14,19 +15,21 @@ import sg.edu.nus.nustranslator.Configurations;
 import sg.edu.nus.nustranslator.network.DataFetcher;
 
 /**
+ * Possible TODO: migrate to json
+ *
  * data format is as follows:
  * data version
  * number of languages
  * number of sentences in each language
  * language name
- * sentences
+ * sentences (in sorted order)
  */
 public class DataManager {
     public static void serializeData(AppModel model, Context context) {
         String fileName = Configurations.Data_fileName_sentences;
         int noOfLanguage = model.getNumLanguages();
         int noOfPair = model.getNumPairs();
-        Vector<String> languages = model.getAllLanguages();
+        ArrayList<String> languages = model.getAllLanguages();
         try {
             BufferedWriter outputStream = new BufferedWriter(
                     new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
@@ -40,7 +43,7 @@ public class DataManager {
                 String language = languages.get(i);
                 outputStream.write(language);
                 outputStream.newLine();
-                Vector<String> sentences = model.getSentencesByLanguageName(language);
+                ArrayList<String> sentences = model.getSentencesByLanguageName(language);
                 for (int j = 0; j < noOfPair; j++) {
                     outputStream.write(sentences.get(j));
                     outputStream.newLine();
@@ -57,8 +60,10 @@ public class DataManager {
 
         Scanner scanner = null;
         try {
-            scanner = new Scanner(
-                    context.getResources().getAssets().open(Configurations.Data_fileName_dir + Configurations.Data_fileName_sentences));
+            scanner = new Scanner(context.getResources()
+                                        .getAssets()
+                                        .open(Configurations.Data_fileName_dir
+                                                + Configurations.Data_fileName_sentences));
             int dataVersion = Integer.parseInt(scanner.nextLine());
             model.setDataVersion(dataVersion);
 
@@ -68,7 +73,7 @@ public class DataManager {
 
             for (int i = 0; i <numLanguages; i++) {
                 String language = scanner.nextLine();
-                Vector<String> sentences = new Vector<String>();
+                ArrayList<String> sentences = new ArrayList<>();
                 for (int j = 0; j < numPairs; j++) {
                     String sentence = scanner.nextLine();
                     sentences.add(sentence.toLowerCase());
@@ -97,7 +102,7 @@ public class DataManager {
         dataFetcher.fetchData(model);
         serializeData(model, context);
 
-        Vector<String> languages = model.getAllLanguages();
+        ArrayList<String> languages = model.getAllLanguages();
         for (int i = 0; i < languages.size(); i++) {
             String language = languages.get(i).toLowerCase();
             String dictContent = dataFetcher.queryDict(language);
