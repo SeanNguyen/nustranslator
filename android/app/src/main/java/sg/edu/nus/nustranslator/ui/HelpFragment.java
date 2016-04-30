@@ -56,29 +56,13 @@ public class HelpFragment extends Fragment {
     }
 
     private void updateLanguageList(Vector<String> languages) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item_layout, languages) {
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View v = super.getView(position, convertView, parent);
-                ((TextView) v).setTextSize(16);
-                return v;
-            }
-
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View v = super.getDropDownView(position, convertView, parent);
-                ((TextView) v).setGravity(Gravity.CENTER);
-                return v;
-            }
-        };
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item_layout, languages);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout);
         mLanguageSpinner.setAdapter(adapter);
     }
 
     private void updateSentenceList(Vector<String> sentences) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.sentence_item_layout, sentences) {
-            public View getView(int position, View convertView, ViewGroup parent) {
-                return super.getView(position, convertView, parent);
-            }
-        };
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.sentence_item_layout, sentences);
         this.mSentenceList.setAdapter(adapter);
     }
 

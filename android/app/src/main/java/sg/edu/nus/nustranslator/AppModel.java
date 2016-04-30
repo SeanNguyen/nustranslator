@@ -2,6 +2,7 @@ package sg.edu.nus.nustranslator;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
@@ -13,14 +14,14 @@ public class AppModel {
     private static AppModel sAppModel;
     private int mNumPairs = 0;
     private int mDataVersion = 0;
-    private Vector<String> mMainLanguages;
-    private Vector<String> mLanguages;
+    private ArrayList<String> mMainLanguages;
+    private ArrayList<String> mLanguages;
     private HashMap<String, Vector<String>> mLanguagesWithSortedSentences;
 
     //constructor
     private AppModel(Context appContext) {
-        mMainLanguages = new Vector<>();
-        mLanguages = new Vector<>();
+        mMainLanguages = new ArrayList<>();
+        mLanguages = new ArrayList<>();
         mLanguagesWithSortedSentences = new HashMap<>();
         DataManager.deserializeData(this, appContext);
     }
@@ -36,7 +37,8 @@ public class AppModel {
     public void resetModel() {
         mNumPairs = 0;
         mDataVersion = 0;
-        mLanguages = new Vector<>();
+        mLanguages = new ArrayList<>();
+        mMainLanguages = new ArrayList<>();
         mLanguagesWithSortedSentences = new HashMap<>();
     }
 
@@ -92,23 +94,23 @@ public class AppModel {
         return new Vector<String>(mMainLanguages);
     }
 
-    public int getNumberOfLanguage() {
+    public int getNumLanguages() {
         return mLanguages.size();
     }
 
-    public int getmNumPairs() {
+    public int getNumPairs() {
         return mNumPairs;
     }
 
-    public void setmNumPairs(int n) {
+    public void setNumPairs(int n) {
         mNumPairs = n;
     }
 
-    public int getmDataVersion() {
+    public int getDataVersion() {
         return mDataVersion;
     }
 
-    public void setmDataVersion(int version) {
+    public void setDataVersion(int version) {
         mDataVersion = version;
     }
 

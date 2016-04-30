@@ -28,8 +28,7 @@ public class Configurations {
 
     //Sphinx Keywords
     public static final String SPHINX_ACTIVATED = "search";
-    public static final String SPHINX_NOT_ACTIVATED = "triggerstart";
-    public static final String Sphinx_keyword_trigger_end = "triggerend";
+    public static final String SPHINX_NOT_ACTIVATED = "not_activated";
 
     //Data storage
     public static final String Data_fileName_dir = "data/";
@@ -39,12 +38,8 @@ public class Configurations {
 
     //String Manipulation
     public static final String Newline = String.format("%n");
-    public static final String Empty = "";
 
     //UX
     public static final long UX_resetTime = 300;
 
-    //available languages
-    public static final String LANGUAGE_ENGLISH = "english";
-    public static final String LANGUAGE_MANDARIN = "mandarin";
 }

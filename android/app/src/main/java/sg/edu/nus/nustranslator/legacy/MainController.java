@@ -1,10 +1,13 @@
-package sg.edu.nus.nustranslator;
+package sg.edu.nus.nustranslator.legacy;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import sg.edu.nus.nustranslator.AppModel;
+import sg.edu.nus.nustranslator.Configurations;
 
 
 public class MainController {
@@ -99,7 +102,7 @@ public class MainController {
         AsyncTask asyncTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] params) {
-                if (index < 0 || index >= mAppModel.getNumberOfLanguage()) {
+                if (index < 0 || index >= mAppModel.getNumLanguages()) {
                    // mAppModel.setOriginalLanguage(Configurations.Empty);
                 } else {
                     String language = mAppModel.getAllLanguages().get(index);
@@ -118,7 +121,7 @@ public class MainController {
     }
 
     public void setDestinationLanguage(int index) {
-        if (index < 0 || index >= this.mAppModel.getNumberOfLanguage()) {
+        if (index < 0 || index >= this.mAppModel.getNumLanguages()) {
             //this.mAppModel.setDestinationLanguage(Configurations.Empty);
         } else {
             String language = this.mAppModel.getAllLanguages().get(index);

@@ -91,7 +91,7 @@ public class DataFetcher {
         JSONObject jsonObject = new JSONObject(input);
         String version = jsonObject.getString("version");
         int dataVersion = Integer.parseInt(version);
-        if (model.getmDataVersion() >= dataVersion) {
+        if (model.getDataVersion() >= dataVersion) {
             Log.e("FETCH DATA", "Data is up to date");
                 return true;
         }
@@ -105,8 +105,8 @@ public class DataFetcher {
             model.addLanguage(language, sentenceList);
             numberOfPair = sentenceList.size();
         }
-        model.setmNumPairs(numberOfPair);
-        model.setmDataVersion(dataVersion);
+        model.setNumPairs(numberOfPair);
+        model.setDataVersion(dataVersion);
         return true;
     }
 

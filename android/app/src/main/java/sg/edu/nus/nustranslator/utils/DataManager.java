@@ -1,6 +1,7 @@
 package sg.edu.nus.nustranslator.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,23 +13,24 @@ import sg.edu.nus.nustranslator.AppModel;
 import sg.edu.nus.nustranslator.Configurations;
 import sg.edu.nus.nustranslator.network.DataFetcher;
 
-
+/**
+ * data format is as follows:
+ * data version
+ * number of languages
+ * number of sentences in each language
+ * language name
+ * sentences
+ */
 public class DataManager {
     public static void serializeData(AppModel model, Context context) {
-        //the format will be:
-        //data version
-        //number of language
-        //number of sentence in each language
-        //Language name
-        //sentences
         String fileName = Configurations.Data_fileName_sentences;
-        int noOfLanguage = model.getNumberOfLanguage();
-        int noOfPair = model.getmNumPairs();
+        int noOfLanguage = model.getNumLanguages();
+        int noOfPair = model.getNumPairs();
         Vector<String> languages = model.getAllLanguages();
         try {
             BufferedWriter outputStream = new BufferedWriter(
                     new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
-            outputStream.write(String.valueOf(model.getmDataVersion()));
+            outputStream.write(String.valueOf(model.getDataVersion()));
             outputStream.newLine();
             outputStream.write(String.valueOf(noOfLanguage));
             outputStream.newLine();
@@ -51,28 +53,23 @@ public class DataManager {
     }
 
     public static void deserializeData(AppModel model, Context context) {
-        //the format will be:
-        //data version
-        //number of language
-        //number of sentence in each language
-        //Language name
-        //sentences
         model.resetModel();
 
+        Scanner scanner = null;
         try {
-            Scanner scanner = new Scanner(
+            scanner = new Scanner(
                     context.getResources().getAssets().open(Configurations.Data_fileName_dir + Configurations.Data_fileName_sentences));
             int dataVersion = Integer.parseInt(scanner.nextLine());
-            model.setmDataVersion(dataVersion);
+            model.setDataVersion(dataVersion);
 
-            int noOfLanguage = Integer.parseInt(scanner.nextLine());
-            int noOfPair = Integer.parseInt(scanner.nextLine());
-            model.setmNumPairs(noOfPair);
+            int numLanguages = Integer.parseInt(scanner.nextLine());
+            int numPairs = Integer.parseInt(scanner.nextLine());
+            model.setNumPairs(numPairs);
 
-            for (int i = 0; i <noOfLanguage; i++) {
+            for (int i = 0; i <numLanguages; i++) {
                 String language = scanner.nextLine();
                 Vector<String> sentences = new Vector<String>();
-                for (int j = 0; j < noOfPair; j++) {
+                for (int j = 0; j < numPairs; j++) {
                     String sentence = scanner.nextLine();
                     sentences.add(sentence.toLowerCase());
                 }
@@ -85,13 +82,13 @@ public class DataManager {
                     model.addLanguage(language, sentences);
                 }
             }
-            scanner.close();
         } catch (IOException e) {
-            System.out.print("couldn't find the data.txt");
+            Log.e(DataManager.class.getSimpleName(), "Couldn't find data.txt");
             e.printStackTrace();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } finally {
+            if(scanner != null) {
+                scanner.close();
+            }
         }
     }
 
@@ -113,8 +110,6 @@ public class DataManager {
     private static void saveDict(String language, String content, Context context) {
         try {
             String fileName = language + Configurations.Data_fileName_dict_ext;
-           // BufferedWriter outputStream = new BufferedWriter(
-           //         new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
             BufferedWriter outputStream = new BufferedWriter(
                     new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
             outputStream.write(content);
