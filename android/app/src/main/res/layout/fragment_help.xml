@@ -28,7 +28,7 @@ android:background="@color/violet_theme_color">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Language"
+            android:text="@string/language"
             android:textSize="@dimen/textSize"
             android:textColor="@color/whiteThemeColor"/>
 

@@ -10,8 +10,6 @@ import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
-import sg.edu.nus.nustranslator.ui.IRecognitionUpdateListener;
-import sg.edu.nus.nustranslator.ui.TranslationFragment;
 import sg.edu.nus.nustranslator.Configurations;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
@@ -22,22 +20,17 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     public static final String DEACTIVATE_PHRASE = "Translation End";
 
     private SpeechRecognizer mRecognizer;
-    private IRecognitionUpdateListener mParent;
+    private IRecognitionUpdateListener mListener;
     private String mState;
 
-    public LocalSpeechRecognizer(IRecognitionUpdateListener parent) {
-        mParent = parent;
+    public LocalSpeechRecognizer(IRecognitionUpdateListener listener) {
+        mListener = listener;
         mState = Configurations.SPHINX_NOT_ACTIVATED;
     }
 
     @Override
     public void setInputLanguage(String language, Context context) {
         setupRecognizer(context, language);
-    }
-
-    public void initListen(){
-        mState = Configurations.SPHINX_NOT_ACTIVATED;
-        mParent.onRecognitionResult("", mState);
     }
 
     @Override
@@ -56,6 +49,12 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     }
 
     @Override
+    public void reset() {
+        stopListen();
+        startListen();
+    }
+
+    @Override
     public void onBeginningOfSpeech() {
 
     }
@@ -65,12 +64,10 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
 
     }
 
-    @Override
-    public void reset() {
-        stopListen();
-        startListen();
-    }
-
+    /**
+     * Executed whenever something is heard
+     * @param hypothesis
+     */
     @Override
     public void onPartialResult(Hypothesis hypothesis) {
         if (hypothesis != null) {
@@ -85,8 +82,16 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
                 changeState(Configurations.SPHINX_NOT_ACTIVATED);
                 text = DEACTIVATE_PHRASE;
             }
-            mParent.onRecognitionResult(text, mState);
+            mListener.onRecognitionResult(text, mState);
         }
+    }
+
+    /**
+     * Exectued only when recognizer.stop is called
+     * @param hypothesis
+     */
+    @Override
+    public void onResult(Hypothesis hypothesis) {
     }
 
     private void changeState(String stateName) {
@@ -94,25 +99,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
         mState =  stateName;
         mRecognizer.startListening(stateName);
     }
-//    if ((System.currentTimeMillis()-preTime) >500) {
-//        preTime = System.currentTimeMillis();
-//        if (hypothesis != null) {
-//            String text = hypothesis.getHypstr();
-//            mParent.onRecognitionResult(text);
-//
-//        }
-//    }
 
-    @Override
-    public void onResult(Hypothesis hypothesis) {
-//        if (hypothesis != null) {
-//            String text = hypothesis.getHypstr();
-//            mParent.onRecognitionResult(text);
-//        }
-    }
-
-
-    //Private Helper Methods
     private void setupRecognizer(Context context, String language) {
         try {
             language = language.toLowerCase();
@@ -131,11 +118,11 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
                     .getRecognizer();
             mRecognizer.addListener(this);
 
-//            mRecognizer.addKeyphraseSearch(Configurations.SPHINX_NOT_ACTIVATED, ACTIVATE_PHRASE);
-
+            // a model used just for the trigger command to increase accuracy
             File triggerModel = new File(internalDir, "triggerCommand.lm");
             mRecognizer.addNgramSearch(Configurations.SPHINX_NOT_ACTIVATED, triggerModel);
-            // Create language model search.
+
+            // model to use after trigger is called
             File languageModel = new File(internalDir, language + Configurations.Data_fileName_languageModel_ext);
             mRecognizer.addNgramSearch(Configurations.SPHINX_ACTIVATED, languageModel);
 

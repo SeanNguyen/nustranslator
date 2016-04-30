@@ -17,6 +17,7 @@ import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
 import sg.edu.nus.nustranslator.AppModel;
+import sg.edu.nus.nustranslator.recognizers.IRecognitionUpdateListener;
 import sg.edu.nus.nustranslator.recognizers.ISpeechRecognizer;
 import sg.edu.nus.nustranslator.recognizers.LocalSpeechRecognizer;
 import sg.edu.nus.nustranslator.Configurations;
@@ -56,6 +57,8 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mBestGuess = "";
+        mLastRecognitionResult = "";
         if (getArguments() != null) {
             mOriginalLanguage = getArguments().getString(ORIGINAL_LANGUAGE);
             mTranslationLanguage = getArguments().getString(TRANSLATION_LANGUAGE);
@@ -70,7 +73,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
         View v = inflater.inflate(R.layout.fragment_translation, container, false);
         mLoadingView = v.findViewById(R.id.loading_view);
         mTranslationPrompt = (TextView) v.findViewById(R.id.translation_prompt);
-        mBestGuessView = (TextView) v.findViewById(R.id.top_guess);
+        mBestGuessView = (TextView) v.findViewById(R.id.best_guess);
         mDetectedWordsView = (TextView) v.findViewById(R.id.detected_words);
         mTranslatedTextView = (TextView) v.findViewById(R.id.translation);
 
@@ -107,7 +110,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
                 playMp3(mBestGuess);
             }
         });
-
+        resetTranslationDisplay();
         new InitTranslatorAsyncTask().execute(this);
 
         return v;
@@ -138,7 +141,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
     }
 
     public void onRecognitionResult(String wordsDetected, String state) {
-        if (mLastRecognitionResult != null && mLastRecognitionResult.equals(wordsDetected)) {
+        if (mLastRecognitionResult.equals(wordsDetected)) {
             return;
         }
 
@@ -158,19 +161,19 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
 
     private void resetTranslationDisplay() {
         mBestGuess = "";
-        mBestGuessView.setText("");
-        mDetectedWordsView.setText(R.string.detected_words_prefix);
+        mBestGuessView.setText(String.format(getString(R.string.best_guess_prefix), ""));
+        mDetectedWordsView.setText(String.format(getString(R.string.detected_words_prefix),""));
         mTranslatedTextView.setText("");
     }
 
     private void displayRecognitionResult(String bestGuess, String translatedGuess, String wordsDetected, String state) {
-        if(state.equals(Configurations.SPHINX_ACTIVATED)){
+        if(state.equals(Configurations.SPHINX_ACTIVATED)) {
             mTranslationPrompt.setText(R.string.translator_activated_prompt);
         } else {
             mTranslationPrompt.setText(R.string.translator_not_activated_prompt);
         }
 
-        if (!bestGuess.equals("")) {
+        if(!bestGuess.equals("")) {
             mBestGuess = bestGuess;
             playMp3(mBestGuess);
             mTranslatedTextView.setText(translatedGuess);
@@ -314,7 +317,6 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
         protected void onPostExecute(Void aVoid) {
             mInitComplete = true;
             mLoadingView.setVisibility(View.GONE);
-            mSpeechRecognizer.initListen();
             mSpeechRecognizer.startListen();
         }
     }
