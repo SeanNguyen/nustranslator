@@ -77,7 +77,7 @@ public class TranslationFragment extends Fragment {
         mTranslationTextView = (TextView) v.findViewById(R.id.translation);
 
         Button stopButton = (Button) v.findViewById(R.id.stop_translation_button);
-        Button clearButton = (Button) v.findViewById(R.id.clear_button);
+        final Button clearButton = (Button) v.findViewById(R.id.clear_button);
         Button translationPlaybackButton = (Button)v.findViewById(R.id.translationPlaybackButton);
         Button originalPlaybackButton = (Button) v.findViewById(R.id.originalLanguagePlaybackButton);
 
@@ -91,8 +91,10 @@ public class TranslationFragment extends Fragment {
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clearButton.setEnabled(false);
                 mSpeechRecognizer.reset();
                 resetTranslationDisplay();
+                clearButton.setEnabled(true);
             }
         });
 

@@ -20,12 +20,13 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     public static final String ACTIVATE_PHRASE = "Translation Start";
     public static final String DEACTIVATE_PHRASE = "Translation End";
 
-    private SpeechRecognizer recognizer;
-    private TranslationFragment parent;
-    private String state = Configurations.SPHINX_NOT_ACTIVATED;
+    private SpeechRecognizer mRecognizer;
+    private TranslationFragment mParent;
+    private String mState;
 
     public LocalSpeechRecognizer(TranslationFragment parent) {
-        this.parent = parent;
+        mParent = parent;
+        mState = Configurations.SPHINX_NOT_ACTIVATED;
     }
 
     @Override
@@ -34,22 +35,23 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     }
 
     public void initListen(){
-        state = Configurations.SPHINX_NOT_ACTIVATED;
-        this.parent.onRecognitionResultUpdate("", state);
+        mState = Configurations.SPHINX_NOT_ACTIVATED;
+        this.mParent.onRecognitionResultUpdate("", mState);
     }
 
     @Override
     public void startListen() {
-        this.recognizer.startListening(state);
+        this.mRecognizer.startListening(mState);
     }
 
     @Override
     public void stopListen() {
-        this.recognizer.stop();
+        // use mRecognizer cancel rather than stop, it responds faster but does not do a "onResult"
+        this.mRecognizer.cancel();
     }
     @Override
     public void cancelListen() {
-        this.recognizer.cancel();
+        this.mRecognizer.cancel();
     }
 
     @Override
@@ -74,28 +76,28 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             String text =  hypothesis.getHypstr().toLowerCase();
 
             //if not yet activatereceivedeved activate command
-            if (state.equals(Configurations.SPHINX_NOT_ACTIVATED) && text.contains(ACTIVATE_PHRASE.toLowerCase())) {
+            if (mState.equals(Configurations.SPHINX_NOT_ACTIVATED) && text.contains(ACTIVATE_PHRASE.toLowerCase())) {
                 changeState(Configurations.SPHINX_ACTIVATED);
                 text = ACTIVATE_PHRASE;
             }
-            else if (state.equals(Configurations.SPHINX_ACTIVATED) && text.contains(DEACTIVATE_PHRASE.toLowerCase())) {
+            else if (mState.equals(Configurations.SPHINX_ACTIVATED) && text.contains(DEACTIVATE_PHRASE.toLowerCase())) {
                 changeState(Configurations.SPHINX_NOT_ACTIVATED);
                 text = DEACTIVATE_PHRASE;
             }
-            this.parent.onRecognitionResultUpdate(text, state);
+            this.mParent.onRecognitionResultUpdate(text, mState);
         }
     }
 
     private void changeState(String stateName) {
-        recognizer.stop();
-        state =  stateName;
-        recognizer.startListening(stateName);
+        mRecognizer.stop();
+        mState =  stateName;
+        mRecognizer.startListening(stateName);
     }
 //    if ((System.currentTimeMillis()-preTime) >500) {
 //        preTime = System.currentTimeMillis();
 //        if (hypothesis != null) {
 //            String text = hypothesis.getHypstr();
-//            this.parent.onRecognitionResultUpdate(text);
+//            this.mParent.onRecognitionResultUpdate(text);
 //
 //        }
 //    }
@@ -104,7 +106,7 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
     public void onResult(Hypothesis hypothesis) {
 //        if (hypothesis != null) {
 //            String text = hypothesis.getHypstr();
-//            this.parent.onRecognitionResultUpdate(text);
+//            this.mParent.onRecognitionResultUpdate(text);
 //        }
     }
 
@@ -120,21 +122,21 @@ public class LocalSpeechRecognizer implements ISpeechRecognizer, RecognitionList
             File internalDir =  new File(assetDir,"lb_with_200");
             //File dictionaryFile = context.getResources().getAssets().open( language + Configurations.Data_fileName_dict_ext);
 
-            this.recognizer = defaultSetup()
+            this.mRecognizer = defaultSetup()
                     .setAcousticModel(new File(modelsDir, Configurations.Sphinx_acousticModel_dir + language))
                     .setDictionary(new File(internalDir, language + Configurations.Data_fileName_dict_ext))
                     .setBoolean("-remove_noise", true)
                     .setKeywordThreshold(Configurations.Sphinx_keywordThreshold)
                     .getRecognizer();
-            this.recognizer.addListener(this);
+            this.mRecognizer.addListener(this);
 
-//            recognizer.addKeyphraseSearch(Configurations.SPHINX_NOT_ACTIVATED, ACTIVATE_PHRASE);
+//            mRecognizer.addKeyphraseSearch(Configurations.SPHINX_NOT_ACTIVATED, ACTIVATE_PHRASE);
 
             File triggerModel = new File(internalDir, "triggerCommand.lm");
-            recognizer.addNgramSearch(Configurations.SPHINX_NOT_ACTIVATED, triggerModel);
+            mRecognizer.addNgramSearch(Configurations.SPHINX_NOT_ACTIVATED, triggerModel);
             // Create language model search.
             File languageModel = new File(internalDir, language + Configurations.Data_fileName_languageModel_ext);
-            recognizer.addNgramSearch(Configurations.SPHINX_ACTIVATED, languageModel);
+            mRecognizer.addNgramSearch(Configurations.SPHINX_ACTIVATED, languageModel);
 
         } catch (IOException e) {
             Log.e(LocalSpeechRecognizer.class.getSimpleName(), e.getMessage());

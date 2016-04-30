@@ -19,7 +19,7 @@ import java.util.Vector;
 import sg.edu.nus.nustranslator.R;
 import sg.edu.nus.nustranslator.AppModel;
 
-public class MainFragment extends Fragment {
+public class StartFragment extends Fragment {
 
     private Spinner mOriginalLanguageSpinner;
     private Spinner mTranslationLanguageSpinner;
@@ -28,7 +28,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_main, container, false);
+        View v = inflater.inflate(R.layout.fragment_start, container, false);
         mModel = AppModel.getInstance(getActivity().getApplicationContext());
 
         final Vector<String> allLanguages = mModel.getAllLanguages();
@@ -58,7 +58,6 @@ public class MainFragment extends Fragment {
                 return v;
             }
         };
-
 
 
         translationLanguageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
