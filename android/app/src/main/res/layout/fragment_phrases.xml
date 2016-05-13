@@ -2,12 +2,12 @@
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context=".ui.HelpActivity"
+tools:context=".ui.PhrasesActivity"
 android:orientation="vertical"
 android:background="@color/violet_theme_color">
 
     <ListView
-        android:id="@+id/help_sentenceList"
+        android:id="@+id/phrase_sentenceList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="100">
@@ -33,7 +33,7 @@ android:background="@color/violet_theme_color">
             android:textColor="@color/whiteThemeColor"/>
 
         <Spinner
-            android:id="@+id/help_languageSpinner"
+            android:id="@+id/phrase_languageSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_viewAllSentences:
-                Intent intent = new Intent(this, HelpActivity.class);
+                Intent intent = new Intent(this, PhrasesActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_about:

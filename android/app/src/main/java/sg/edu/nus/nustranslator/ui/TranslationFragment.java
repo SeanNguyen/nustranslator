@@ -13,8 +13,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Vector;
 
 import sg.edu.nus.nustranslator.R;
 import sg.edu.nus.nustranslator.AppModel;
@@ -32,7 +30,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
     private String mOriginalLanguage;
     private String mTranslationLanguage;
     private MediaPlayer mMediaPlayer;
-    private boolean nowPlaying = false;
+    private boolean mNowPlaying = false;
     private boolean mInitComplete = false;
 
     public ISpeechRecognizer mSpeechRecognizer;
@@ -135,7 +133,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
         if(mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
-            nowPlaying = false;
+            mNowPlaying = false;
 
         }
     }
@@ -193,8 +191,8 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
     }
 
     private void playMp3(String word) {
-        if(word != null && !word.equals("") && !nowPlaying) {
-            nowPlaying = true;
+        if(word != null && !word.equals("") && !mNowPlaying) {
+            mNowPlaying = true;
             mSpeechRecognizer.stopListen();
             if(mMediaPlayer == null) {
                 mMediaPlayer = new MediaPlayer();
@@ -210,7 +208,7 @@ public class TranslationFragment extends Fragment implements IRecognitionUpdateL
                 mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     public void onCompletion(MediaPlayer mp) {
                         mMediaPlayer.reset();
-                        nowPlaying = false;
+                        mNowPlaying = false;
                         mSpeechRecognizer.startListen();
                     }
                 });
